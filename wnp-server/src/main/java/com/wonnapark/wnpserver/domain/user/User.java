@@ -18,7 +18,7 @@ public class User extends BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "paltform", nullable = false)
+    @Column(name = "platform", nullable = false)
     private OauthProvider platform;
 
     @Column(name = "nickname", unique = true, nullable = false)
