@@ -3,13 +3,14 @@ package com.wonnapark.wnpserver.domain.oauth.dto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.wonnapark.wnpserver.domain.user.OAuthProvider;
+import com.wonnapark.wnpserver.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class KakaoInfoResponse extends OAuthInfoResponse {
+public class KakaoInfoResponse implements OAuthInfoResponse {
 
     private KakaoAccount kakaoAccount;
 
@@ -55,4 +56,14 @@ public class KakaoInfoResponse extends OAuthInfoResponse {
         return kakaoAccount.gender;
     }
 
+    @Override
+    public User toEntity() {
+        return User.builder()
+                .platform(getOAuthProvider())
+                .nickname(getNickname())
+                .email(getEmail())
+                .ageRange(getAgeRange())
+                .gender(getGender())
+                .build();
+    }
 }
