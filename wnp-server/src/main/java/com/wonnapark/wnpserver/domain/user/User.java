@@ -19,7 +19,7 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "platform", nullable = false)
-    private OauthProvider platform;
+    private OAuthProvider platform;
 
     @Column(name = "nickname", unique = true, nullable = false)
     private String nickname;
@@ -28,20 +28,20 @@ public class User extends BaseEntity {
     private String email;
 
     @Column(name = "age")
-    private String age;
+    private String ageRange;
 
-    @Column(name = "gender", nullable = false)
+    @Column(name = "gender")
     private String gender;
 
-    @Column(name = "isDeleted")
+    @Column(name = "is_deleted")
     private boolean isDeleted;
 
     @Builder
-    private User(OauthProvider platform, String nickname, String email, String age, String gender, boolean isDeleted) {
+    private User(OAuthProvider platform, String nickname, String email, String ageRange, String gender, boolean isDeleted) {
         this.platform = platform;
         this.nickname = nickname;
         this.email = email;
-        this.age = age;
+        this.ageRange = ageRange;
         this.gender = gender;
         this.isDeleted = isDeleted;
     }

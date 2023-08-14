@@ -1,5 +1,5 @@
 package com.wonnapark.wnpserver.domain.user;
 
-public enum OauthProvider {
+public enum OAuthProvider {
     KAKAO
 }
