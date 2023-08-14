@@ -6,11 +6,15 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
+
+import java.time.LocalDateTime;
 
 @Table(name = "users")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "is_deleted IS NULL")
 public class User extends BaseEntity {
 
     @Id
@@ -33,16 +37,15 @@ public class User extends BaseEntity {
     @Column(name = "gender")
     private String gender;
 
-    @Column(name = "is_deleted")
-    private boolean isDeleted;
+    @Column(name = "is_deleted", nullable = true)
+    private LocalDateTime isDeleted;
 
     @Builder
-    private User(OAuthProvider platform, String nickname, String email, String ageRange, String gender, boolean isDeleted) {
+    private User(OAuthProvider platform, String nickname, String email, String ageRange, String gender) {
         this.platform = platform;
         this.nickname = nickname;
         this.email = email;
         this.ageRange = ageRange;
         this.gender = gender;
-        this.isDeleted = isDeleted;
     }
 }
