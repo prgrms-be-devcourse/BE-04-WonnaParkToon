@@ -4,8 +4,8 @@ import com.wonnapark.wnpserver.domain.oauth.dto.OAuthInfoResponse;
 import com.wonnapark.wnpserver.domain.oauth.dto.OAuthLoginRequest;
 import com.wonnapark.wnpserver.domain.oauth.token.AuthToken;
 import com.wonnapark.wnpserver.domain.oauth.token.AuthTokenGenerator;
-import com.wonnapark.wnpserver.domain.user.User;
-import com.wonnapark.wnpserver.domain.user.infrastructure.UserRepository;
+import com.wonnapark.wnpserver.domain.user.application.UserService;
+import com.wonnapark.wnpserver.domain.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OAuthLoginService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final AuthTokenGenerator authTokenGenerator;
     private final OAuthRequestService oAuthRequestService;
 
@@ -24,19 +24,13 @@ public class OAuthLoginService {
     }
 
     private Long findOrCreateMember(OAuthInfoResponse response) {
-        return userRepository.findByEmail(response.getEmail())
-                .map(User::getId)
-                .orElseGet(() -> createMember(response));
+        UserResponse storedUser;
+        try {
+            storedUser = userService.findUserByEmail(response.getEmail());
+            return storedUser.id();
+        } catch (Exception e) {
+            return userService.create(response);
+        }
     }
 
-    private Long createMember(OAuthInfoResponse response) {
-        User user = User.builder()
-                .platform(response.getOAuthProvider())
-                .nickname(response.getNickname())
-                .email(response.getEmail())
-                .ageRange(response.getAgeRange())
-                .gender(response.getGender())
-                .build();
-        return userRepository.save(user).getId();
-    }
 }
