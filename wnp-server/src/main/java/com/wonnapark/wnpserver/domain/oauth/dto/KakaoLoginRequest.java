@@ -8,7 +8,11 @@ import org.springframework.util.MultiValueMap;
 @Getter
 public class KakaoLoginRequest extends OAuthLoginRequest {
 
-    private String authorizationCode;
+    private String code;
+
+    public KakaoLoginRequest(String code) {
+        this.code = code;
+    }
 
     @Override
     public OAuthProvider getOAuthProvider() {
@@ -18,7 +22,7 @@ public class KakaoLoginRequest extends OAuthLoginRequest {
     @Override
     public MultiValueMap<String, String> makeBody() {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("code", authorizationCode);
+        body.add("code", code);
         return body;
     }
 }

@@ -20,7 +20,7 @@ public class OAuthRequestService {
                 .collect(Collectors.toUnmodifiableMap(OAuthApiClient::getOAuthProvider, Function.identity()));
     }
 
-    public OAuthInfoResponse request(OAuthLoginRequest request) {
+    public OAuthInfoResponse requestInfo(OAuthLoginRequest request) {
         OAuthApiClient client = clients.get(request.getOAuthProvider());
         String accessToken = client.requestAccessToken(request);
         return client.requestOauthInfo(accessToken);
