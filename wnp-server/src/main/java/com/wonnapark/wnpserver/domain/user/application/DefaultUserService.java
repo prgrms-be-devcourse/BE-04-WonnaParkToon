@@ -21,8 +21,8 @@ public class DefaultUserService implements UserService {
         return userRepository.save(user).getId();
     }
 
-    public UserResponse findUserByEmail(String email) {
-        User user = userRepository.findByEmail(email)
+    public UserResponse findUserByProviderId(String providerId) {
+        User user = userRepository.findByProviderId(providerId)
                 .orElseThrow();
         return UserResponse.from(user);
     }

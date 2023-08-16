@@ -18,15 +18,14 @@ public class OAuthLoginService {
     private final OAuthRequestService oAuthRequestService;
 
     public AuthToken login(OAuthLoginRequest request) {
-        OAuthInfoResponse response = oAuthRequestService.request(request);
+        OAuthInfoResponse response = oAuthRequestService.requestInfo(request);
         Long memberId = findOrCreateMember(response);
         return authTokenGenerator.generate(memberId);
     }
 
     private Long findOrCreateMember(OAuthInfoResponse response) {
-        UserResponse storedUser;
         try {
-            storedUser = userService.findUserByEmail(response.getEmail());
+            UserResponse storedUser = userService.findUserByProviderId(response.getProviderId());
             return storedUser.id();
         } catch (Exception e) {
             return userService.create(response);

@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class KakaoInfoResponse implements OAuthInfoResponse {
 
+    private String id;
+
     private KakaoAccount kakaoAccount;
 
     @Getter
@@ -32,8 +34,8 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     }
 
     @Override
-    public String getEmail() {
-        return kakaoAccount.email;
+    public String getProviderId() {
+        return id;
     }
 
     @Override
@@ -59,9 +61,9 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     @Override
     public User toEntity() {
         return User.builder()
+                .providerId(getId())
                 .platform(getOAuthProvider())
                 .nickname(getNickname())
-                .email(getEmail())
                 .ageRange(getAgeRange())
                 .gender(getGender())
                 .build();
