@@ -11,6 +11,7 @@ public class AuthTokenGenerator {
     private static final String BEARER_TYPE = "Bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
+    private static final long MILLI_SECOND = 1000L;
 
     private final JwtTokenGenerator jwtTokenGenerator;
 
@@ -23,8 +24,7 @@ public class AuthTokenGenerator {
         String accessToken = jwtTokenGenerator.generate(subject, accessTokenExpiredAt);
         String refreshToken = jwtTokenGenerator.generate(subject, refreshTokenExpiredAt);
 
-        return AuthToken.of(accessToken, refreshToken, BEARER_TYPE, ACCESS_TOKEN_EXPIRE_TIME / 1000L);
-        // 1000 매직넘버?
+        return AuthToken.of(accessToken, refreshToken, BEARER_TYPE, ACCESS_TOKEN_EXPIRE_TIME / MILLI_SECOND);
     }
 
     public Long extractUserId(String accessToken) {
