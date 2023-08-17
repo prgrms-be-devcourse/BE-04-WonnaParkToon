@@ -1,9 +1,9 @@
 package com.wonnapark.wnpserver.domain.episode;
 
+import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import com.wonnapark.wnpserver.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
