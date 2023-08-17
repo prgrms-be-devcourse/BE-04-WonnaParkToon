@@ -1,4 +1,4 @@
-package com.wonnapark.wnpserver.domain.auth.token;
+package com.wonnapark.wnpserver.domain.auth.application;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

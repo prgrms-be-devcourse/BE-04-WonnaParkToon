@@ -1,5 +1,6 @@
-package com.wonnapark.wnpserver.domain.auth.token;
+package com.wonnapark.wnpserver.domain.auth.application;
 
+import com.wonnapark.wnpserver.domain.auth.dto.AuthToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

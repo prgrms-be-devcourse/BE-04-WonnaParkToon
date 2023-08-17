@@ -1,8 +1,8 @@
 package com.wonnapark.wnpserver.domain.oauth.token;
 
-import com.wonnapark.wnpserver.domain.auth.token.AuthToken;
-import com.wonnapark.wnpserver.domain.auth.token.AuthTokenGenerator;
-import com.wonnapark.wnpserver.domain.auth.token.JwtTokenGenerator;
+import com.wonnapark.wnpserver.domain.auth.dto.AuthToken;
+import com.wonnapark.wnpserver.domain.auth.application.AuthTokenGenerator;
+import com.wonnapark.wnpserver.domain.auth.application.JwtTokenGenerator;
 import com.wonnapark.wnpserver.global.config.OauthConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
