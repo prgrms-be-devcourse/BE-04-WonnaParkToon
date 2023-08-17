@@ -2,8 +2,8 @@ package com.wonnapark.wnpserver.domain.oauth.application;
 
 import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
 import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
-import com.wonnapark.wnpserver.domain.oauth.token.AuthToken;
-import com.wonnapark.wnpserver.domain.oauth.token.AuthTokenGenerator;
+import com.wonnapark.wnpserver.domain.auth.token.AuthToken;
+import com.wonnapark.wnpserver.domain.auth.token.AuthTokenGenerator;
 import com.wonnapark.wnpserver.domain.user.application.UserService;
 import com.wonnapark.wnpserver.domain.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;

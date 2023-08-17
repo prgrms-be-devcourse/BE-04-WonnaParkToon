@@ -1,4 +1,4 @@
-package com.wonnapark.wnpserver.domain.oauth.token;
+package com.wonnapark.wnpserver.domain.auth.token;
 
 public record AuthToken(
         String accessToken,

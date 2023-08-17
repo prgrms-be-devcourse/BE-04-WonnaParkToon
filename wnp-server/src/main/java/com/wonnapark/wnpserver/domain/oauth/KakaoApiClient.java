@@ -1,9 +1,9 @@
 package com.wonnapark.wnpserver.domain.oauth;
 
 import com.wonnapark.wnpserver.domain.oauth.dto.response.KakaoInfoResponse;
+import com.wonnapark.wnpserver.domain.oauth.dto.response.KakaoToken;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
 import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
-import com.wonnapark.wnpserver.domain.oauth.token.KakaoToken;
 import com.wonnapark.wnpserver.domain.user.OAuthProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
