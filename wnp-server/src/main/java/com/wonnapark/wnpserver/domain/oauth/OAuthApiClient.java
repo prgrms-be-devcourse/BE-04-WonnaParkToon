@@ -1,4 +1,4 @@
-package com.wonnapark.wnpserver.domain.oauth.infrastructure;
+package com.wonnapark.wnpserver.domain.oauth;
 
 import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
 import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
