@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.domain.oauth.presentation;
 
 import com.wonnapark.wnpserver.domain.oauth.application.OAuthLoginService;
-import com.wonnapark.wnpserver.domain.oauth.dto.KakaoLoginRequest;
+import com.wonnapark.wnpserver.domain.oauth.dto.request.KakaoLoginRequest;
 import com.wonnapark.wnpserver.domain.oauth.token.AuthToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
