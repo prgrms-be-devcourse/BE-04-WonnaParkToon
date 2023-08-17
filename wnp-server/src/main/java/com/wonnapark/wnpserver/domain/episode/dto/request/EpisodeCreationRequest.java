@@ -12,7 +12,7 @@ public record EpisodeCreationRequest(
         String title,
         @NotNull
         LocalDateTime releaseDateTime,
-        @NotBlank
+        @NotBlank @Length(max = 255)
         String thumbnail,
         @NotBlank @Length(min = 1, max = 100)
         String artistComment
