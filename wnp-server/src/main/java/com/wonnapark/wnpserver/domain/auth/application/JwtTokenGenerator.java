@@ -37,7 +37,6 @@ public class JwtTokenGenerator {
 
     public String extractSubject(String accessToken) {
         Claims claims = parseClaims(accessToken);
-        System.out.println("claims.getExpiration() = " + claims.getExpiration());
         return claims.getSubject();
     }
 
