@@ -37,7 +37,7 @@ public class User extends BaseEntity {
     @Column(name = "gender")
     private String gender;
 
-    @Column(name = "is_deleted", nullable = true)
+    @Column(name = "is_deleted", nullable = true, columnDefinition = "TIMESTAMP(6)")
     private LocalDateTime isDeleted;
 
     @Builder
