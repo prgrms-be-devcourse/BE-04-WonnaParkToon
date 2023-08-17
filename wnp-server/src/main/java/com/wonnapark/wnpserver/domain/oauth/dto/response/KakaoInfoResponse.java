@@ -21,8 +21,7 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     private static class KakaoAccount {
         private Profile profile;
-        private String email;
-        private String ageRange;
+        private String birthYear;
         private String gender;
 
         @Getter
@@ -49,8 +48,8 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     }
 
     @Override
-    public String getAgeRange() {
-        return kakaoAccount.ageRange;
+    public String getBirthYear() {
+        return kakaoAccount.birthYear;
     }
 
     @Override
@@ -64,7 +63,7 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
                 .providerId(getId())
                 .platform(getOAuthProvider())
                 .nickname(getNickname())
-                .ageRange(getAgeRange())
+                .birthYear(getBirthYear())
                 .gender(getGender())
                 .build();
     }

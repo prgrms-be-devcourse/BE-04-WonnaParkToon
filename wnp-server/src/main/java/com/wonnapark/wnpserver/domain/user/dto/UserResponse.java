@@ -16,7 +16,7 @@ public record UserResponse(
                 user.getProviderId(),
                 user.getPlatform(),
                 user.getNickname(),
-                user.getAgeRange(),
+                user.getBirthYear(),
                 user.getGender());
     }
 }

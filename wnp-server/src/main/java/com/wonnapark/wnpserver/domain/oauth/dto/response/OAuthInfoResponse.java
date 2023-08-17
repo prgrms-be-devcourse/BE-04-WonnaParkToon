@@ -11,7 +11,7 @@ public interface OAuthInfoResponse {
 
     OAuthProvider getOAuthProvider();
 
-    String getAgeRange();
+    String getBirthYear();
 
     String getGender();
 

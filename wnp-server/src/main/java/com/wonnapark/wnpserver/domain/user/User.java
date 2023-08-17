@@ -31,8 +31,8 @@ public class User extends BaseEntity {
     @Column(name = "nickname", unique = true, nullable = false)
     private String nickname;
 
-    @Column(name = "age")
-    private String ageRange;
+    @Column(name = "birth_year")
+    private String birthYear;
 
     @Column(name = "gender")
     private String gender;
@@ -41,11 +41,11 @@ public class User extends BaseEntity {
     private LocalDateTime isDeleted;
 
     @Builder
-    private User(String providerId, OAuthProvider platform, String nickname, String ageRange, String gender) {
+    private User(String providerId, OAuthProvider platform, String nickname, String birthYear, String gender) {
         this.providerId = providerId;
         this.platform = platform;
         this.nickname = nickname;
-        this.ageRange = ageRange;
+        this.birthYear = birthYear;
         this.gender = gender;
     }
 }
