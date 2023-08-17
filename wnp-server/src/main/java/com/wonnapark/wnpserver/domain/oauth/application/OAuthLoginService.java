@@ -19,11 +19,11 @@ public class OAuthLoginService {
 
     public AuthToken login(OAuthLoginRequest request) {
         OAuthInfoResponse response = oAuthRequestService.requestInfo(request);
-        Long memberId = findOrCreateMember(response);
+        Long memberId = findOrCreateUser(response);
         return authTokenGenerator.generate(memberId);
     }
 
-    private Long findOrCreateMember(OAuthInfoResponse response) {
+    private Long findOrCreateUser(OAuthInfoResponse response) {
         try {
             UserResponse storedUser = userService.findUserByProviderId(response.getProviderId());
             return storedUser.id();
