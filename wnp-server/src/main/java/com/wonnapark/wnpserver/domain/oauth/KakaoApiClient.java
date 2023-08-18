@@ -1,10 +1,11 @@
 package com.wonnapark.wnpserver.domain.oauth;
 
+import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.KakaoInfoResponse;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.KakaoToken;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
-import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
 import com.wonnapark.wnpserver.domain.user.OAuthProvider;
+import io.jsonwebtoken.lang.Assert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -49,7 +50,7 @@ public class KakaoApiClient extends OAuthApiClient {
 
         KakaoToken response = restTemplate.postForObject(url, request, KakaoToken.class);
 
-        assert response != null;
+        Assert.notNull(response, "토큰 못 받았어요"); // 커스텀 예외로 ?
         return response.accessToken();
     }
 

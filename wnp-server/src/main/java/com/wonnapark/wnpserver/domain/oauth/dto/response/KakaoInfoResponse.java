@@ -21,7 +21,7 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     private static class KakaoAccount {
         private Profile profile;
-        private String birthYear;
+        private String birthyear;
         private String gender;
 
         @Getter
@@ -49,7 +49,7 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
 
     @Override
     public String getBirthYear() {
-        return kakaoAccount.birthYear;
+        return kakaoAccount.birthyear;
     }
 
     @Override
