@@ -1,11 +1,10 @@
 package com.wonnapark.wnpserver.domain.auth.application;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.wonnapark.wnpserver.global.exception.auth.JwtInvalidException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +14,12 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
-public class JwtTokenGenerator {
+public class JwtTokenManager {
 
     private static final String ISSUER = "wonnapark";
     private final Key key;
 
-    public JwtTokenGenerator(@Value("${jwt.secret-key}") String secretKey) {
+    public JwtTokenManager(@Value("${jwt.secret-key}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -35,20 +34,28 @@ public class JwtTokenGenerator {
                 .compact();
     }
 
-    public String extractSubject(String accessToken) {
-        Claims claims = parseClaims(accessToken);
+    public String extractSubject(String token) {
+        Claims claims = authenticate(token);
+        System.out.println("claims = " + claims);
         return claims.getSubject();
     }
 
-    private Claims parseClaims(String accessToken) {
+    public Claims authenticate(String token) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(accessToken)
+                    .parseClaimsJws(token)
                     .getBody();
+        } catch (SignatureException e) {
+            throw new JwtInvalidException("signature key is different");
         } catch (ExpiredJwtException e) {
-            return e.getClaims();
+            throw new JwtInvalidException("expired token");
+        } catch (MalformedJwtException e) {
+            throw new JwtInvalidException("malformed token");
+        } catch (IllegalArgumentException e) {
+            throw new JwtInvalidException("using illegal argument like null");
         }
     }
+
 }

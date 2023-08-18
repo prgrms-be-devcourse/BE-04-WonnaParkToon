@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+
 @Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
@@ -16,14 +18,15 @@ public class DefaultUserService implements UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long create(OAuthInfoResponse response) {
+    public UserResponse create(OAuthInfoResponse response) {
         User user = response.toEntity();
-        return userRepository.save(user).getId();
+        User savedUser = userRepository.save(user);
+        return UserResponse.from(savedUser);
     }
 
     public UserResponse findUserByProviderId(String providerId) {
         User user = userRepository.findByProviderId(providerId)
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
         return UserResponse.from(user);
     }
 }
