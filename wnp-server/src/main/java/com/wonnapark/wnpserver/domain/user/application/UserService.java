@@ -5,7 +5,7 @@ import com.wonnapark.wnpserver.domain.user.dto.UserResponse;
 
 public interface UserService {
 
-    Long create(OAuthInfoResponse response);
+    UserResponse create(OAuthInfoResponse response);
 
     UserResponse findUserByProviderId(String providerId);
 }

@@ -8,7 +8,7 @@ public record UserResponse(
         String providerId,
         OAuthProvider platform,
         String nickname,
-        String ageRange,
+        String birthYear,
         String gender
 ){
     public static UserResponse from(User user) {
