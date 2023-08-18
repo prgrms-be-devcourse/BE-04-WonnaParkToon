@@ -26,11 +26,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        log.info("필터 처리하지 않는 Api -> {}", request.getRequestURI());
         String[] blackList = {
-                "/anonymous/**",
+                "/anonymous",
                 "/api/auth/kakao",
-                "**/h2-console**"
+                "/h2-console"
         };
         String path = request.getRequestURI();
         return Arrays.stream(blackList).anyMatch(path::startsWith);
