@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class KakaoInfoResponse implements OAuthInfoResponse {
 
-    private String id;
+    private Long id;
 
     private KakaoAccount kakaoAccount;
 
@@ -33,7 +33,7 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     }
 
     @Override
-    public String getProviderId() {
+    public Long getProviderId() {
         return id;
     }
 

@@ -22,7 +22,7 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(name = "provider_id")
-    private String providerId;
+    private Long providerId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "platform", nullable = false)
@@ -41,7 +41,7 @@ public class User extends BaseEntity {
     private LocalDateTime isDeleted;
 
     @Builder
-    private User(String providerId, OAuthProvider platform, String nickname, String birthYear, String gender) {
+    private User(Long providerId, OAuthProvider platform, String nickname, String birthYear, String gender) {
         this.providerId = providerId;
         this.platform = platform;
         this.nickname = nickname;

@@ -7,5 +7,5 @@ public interface UserService {
 
     UserResponse create(OAuthInfoResponse response);
 
-    UserResponse findUserByProviderId(String providerId);
+    UserResponse findUserByProviderId(Long providerId);
 }

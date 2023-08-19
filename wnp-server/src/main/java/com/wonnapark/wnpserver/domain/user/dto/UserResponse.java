@@ -5,7 +5,7 @@ import com.wonnapark.wnpserver.domain.user.User;
 
 public record UserResponse(
         Long id,
-        String providerId,
+        Long providerId,
         OAuthProvider platform,
         String nickname,
         String birthYear,
