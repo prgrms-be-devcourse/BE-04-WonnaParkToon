@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.time.DayOfWeek;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,6 +36,12 @@ public class DefaultWebtoonService implements WebtoonService {
     public Page<WebtoonSimpleResponse> findAllWebtoons(Pageable pageable) {
         return webtoonRepository.findAll(pageable)
                 .map(WebtoonSimpleResponse::from);
+    }
+
+    public List<WebtoonSimpleResponse> findWebtoonsByPublishDay(DayOfWeek publishDay){
+        return webtoonRepository.findByPublishDaysContains(publishDay).stream()
+                .map(WebtoonSimpleResponse::from)
+                .toList();
     }
 
     @Transactional

@@ -14,6 +14,7 @@ public interface WebtoonService {
     Long createWebtoon(WebtoonCreateRequest request);
     WebtoonResponse findWebtoonById(Long id);
     Page<WebtoonSimpleResponse> findAllWebtoons(Pageable pageable);
+    List<WebtoonSimpleResponse> findWebtoonsByPublishDay(DayOfWeek publishDay);
     WebtoonResponse updateWebtoon(WebtoonUpdateRequest request, Long id);
     void delete(Long id);
 }
