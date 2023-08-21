@@ -6,6 +6,8 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -60,6 +62,7 @@ public class Webtoon extends BaseEntity {
     @ElementCollection
     @CollectionTable(name = "publish_day", joinColumns = @JoinColumn(name = "webtoon_id"))
     @Column(name = "publish_days")
+    @Enumerated(EnumType.STRING)
     private List<DayOfWeek> publishDays = new ArrayList<>();
 
     @Builder
@@ -80,8 +83,4 @@ public class Webtoon extends BaseEntity {
         this.thumbnail = thumbnail;
     }
 
-//    public void addPublishDay(PublishDay publishDay){
-//        publishDays.add(publishDay);
-//        publishDay.setWebtoon(this);
-//    }
 }
