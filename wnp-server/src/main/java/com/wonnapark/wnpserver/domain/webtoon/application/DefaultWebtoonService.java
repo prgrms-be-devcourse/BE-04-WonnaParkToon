@@ -1,5 +1,6 @@
 package com.wonnapark.wnpserver.domain.webtoon.application;
 
+import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import com.wonnapark.wnpserver.domain.webtoon.dto.request.WebtoonCreateRequest;
 import com.wonnapark.wnpserver.domain.webtoon.dto.request.WebtoonUpdateRequest;
 import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonResponse;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,7 +31,7 @@ public class DefaultWebtoonService implements WebtoonService {
         return WebtoonResponse.from(webtoon);
     }
 
-    public Page<WebtoonSimpleResponse> findWebtoons(Pageable pageable) {
+    public Page<WebtoonSimpleResponse> findAllWebtoons(Pageable pageable) {
         return webtoonRepository.findAll(pageable)
                 .map(WebtoonSimpleResponse::from);
     }
