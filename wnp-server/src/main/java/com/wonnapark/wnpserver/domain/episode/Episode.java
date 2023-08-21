@@ -1,9 +1,9 @@
 package com.wonnapark.wnpserver.domain.episode;
 
+import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import com.wonnapark.wnpserver.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,7 +31,7 @@ public class Episode extends BaseEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "title")
+    @Column(name = "title", length = 35)
     private String title;
 
     @Column(name = "release_date", nullable = false, columnDefinition = "TIMESTAMP(6)")
@@ -40,7 +40,7 @@ public class Episode extends BaseEntity {
     @Column(name = "thumbnail", nullable = false)
     private String thumbnail;
 
-    @Column(name = "artist_comment", nullable = false)
+    @Column(name = "artist_comment", nullable = false, length = 100)
     private String artistComment;
 
     @ManyToOne

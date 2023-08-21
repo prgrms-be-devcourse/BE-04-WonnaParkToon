@@ -32,7 +32,7 @@ public class EpisodeUrl {
     @Column(name = "url", nullable = false)
     private String url;
 
-    @Column(name = "order", nullable = false, columnDefinition = "TINYINT")
+    @Column(name = "orders", nullable = false, columnDefinition = "TINYINT")
     private int order;
 
     @Column(name = "is_deleted")
