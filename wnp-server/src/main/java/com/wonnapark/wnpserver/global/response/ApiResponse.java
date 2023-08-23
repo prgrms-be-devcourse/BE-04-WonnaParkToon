@@ -10,7 +10,7 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
-    public static <T> ApiResponse<T> of(T data) {
+    public static <T> ApiResponse<T> from(T data) {
         return new ApiResponse<>(data);
     }
 
