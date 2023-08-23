@@ -1,6 +1,7 @@
 package com.wonnapark.wnpserver.domain.user.application;
 
 import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
+import com.wonnapark.wnpserver.domain.user.OAuthProvider;
 import com.wonnapark.wnpserver.domain.user.User;
 import com.wonnapark.wnpserver.domain.user.dto.UserResponse;
 import com.wonnapark.wnpserver.domain.user.infrastructure.UserRepository;
@@ -24,8 +25,8 @@ public class DefaultUserService implements UserService {
         return UserResponse.from(savedUser);
     }
 
-    public UserResponse findUserByProviderId(String providerId) {
-        User user = userRepository.findByProviderId(providerId)
+    public UserResponse findUserByProviderIdAndPlatform(Long providerId, OAuthProvider platform) {
+        User user = userRepository.findByProviderIdAndPlatform(providerId, platform)
                 .orElseThrow(NoSuchElementException::new);
         return UserResponse.from(user);
     }

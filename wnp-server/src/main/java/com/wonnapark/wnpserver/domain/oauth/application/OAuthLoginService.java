@@ -26,7 +26,7 @@ public class OAuthLoginService {
 
     private AuthTokenRequest findOrCreateUser(OAuthInfoResponse response) {
         try {
-            UserResponse storedUser = userService.findUserByProviderId(response.getProviderId());
+            UserResponse storedUser = userService.findUserByProviderIdAndPlatform(response.getProviderId(), response.getOAuthProvider());
             return new AuthTokenRequest(storedUser.id(), storedUser.birthYear());
         } catch (Exception e) {
             UserResponse storedUser = userService.create(response);
