@@ -1,29 +1,37 @@
 package com.wonnapark.wnpserver.domain.episode.dto.request;
 
 import com.wonnapark.wnpserver.domain.episode.Episode;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record EpisodeCreationRequest(
-        @NotBlank @Length(min = 1, max = 35)
+        @NotBlank(message = "제목은 공백이나 null일 수 없습니다.")
+        @Length(min = 1, max = 35, message = "제목은 1자 이상 35자 이하여야 합니다.")
         String title,
-        @NotNull
+        @NotNull(message = "공개일은 null일 수 없습니다.")
         LocalDateTime releaseDateTime,
-        @NotBlank @Length(max = 255)
+        @NotBlank(message = "썸네일은 공백이나 null일 수 없습니다.")
+        @Length(max = 255, message = "썸네일 길이는 255자 이하여야 합니다.")
         String thumbnail,
-        @NotBlank @Length(min = 1, max = 100)
-        String artistComment
+        @NotBlank(message = "작가의 말은 공백이나 null일 수 없습니다.")
+        @Length(min = 1, max = 100, message = "작가의 말은 1자 이상 100자 이하여야 합니다.")
+        String artistComment,
+        @Valid
+        @NotNull(message = "에피소드 URL은 null일 수 없습니다.")
+        List<EpisodeUrlCreationRequest> episodeUrlCreationRequests
 ) {
 
-    public static Episode toEntity(EpisodeCreationRequest request) {
+    public Episode toEntity() {
         return Episode.builder()
-                .title(request.title)
-                .releaseDateTime(request.releaseDateTime)
-                .thumbnail(request.thumbnail)
-                .artistComment(request.artistComment)
+                .title(this.title)
+                .releaseDateTime(this.releaseDateTime)
+                .thumbnail(this.thumbnail)
+                .artistComment(this.artistComment)
                 .build();
     }
 
