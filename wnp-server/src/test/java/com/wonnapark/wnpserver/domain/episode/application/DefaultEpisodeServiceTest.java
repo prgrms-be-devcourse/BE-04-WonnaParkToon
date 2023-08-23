@@ -11,9 +11,9 @@ import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeUrlCreationRequ
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeDetailFormResponse;
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.domain.episode.infrastructure.EpisodeRepository;
-import com.wonnapark.wnpserver.domain.episode.infrastructure.EpisodeUrlRepository;
+import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,20 +25,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultEpisodeServiceTest {
@@ -48,32 +45,35 @@ class DefaultEpisodeServiceTest {
     @Mock
     private EpisodeRepository episodeRepository;
     @Mock
-    private EpisodeUrlRepository episodeUrlRepository;
+    private WebtoonRepository webtoonRepository;
 
     @Test
     @DisplayName("에피소드를 생성할 수 있다.")
     void testCreateEpisode() {
         // given
-        EpisodeCreationRequest episodeCreationRequest = Instancio.create(EpisodeCreationRequest.class);
         List<EpisodeUrlCreationRequest> episodeUrlCreationRequests = Instancio.ofList(EpisodeUrlCreationRequest.class).create();
-        Episode episode = createEpisodeBy(episodeCreationRequest, episodeUrlCreationRequests);
-        System.out.println(episode);
+        EpisodeCreationRequest episodeCreationRequest = Instancio.of(EpisodeCreationRequest.class)
+                .set(field(EpisodeCreationRequest::episodeUrlCreationRequests), episodeUrlCreationRequests)
+                .create();
+        Webtoon webtoon = Instancio.create(Webtoon.class);
+        Episode episode = createEpisodeByRequest(episodeCreationRequest);
+        given(webtoonRepository.findById(any(Long.class))).willReturn(Optional.of(webtoon));
         given(episodeRepository.save(any(Episode.class))).willReturn(episode);
 
         // when
-        Long returnedId = episodeService.createEpisode(episodeCreationRequest, episodeUrlCreationRequests);
+        Long returnedId = episodeService.createEpisode(webtoon.getId(), episodeCreationRequest);
 
         // then
         assertThat(returnedId).isEqualTo(episode.getId());
     }
 
-    private Episode createEpisodeBy(EpisodeCreationRequest episodeCreationRequest, List<EpisodeUrlCreationRequest> episodeUrlCreationRequests) {
+    private Episode createEpisodeByRequest(EpisodeCreationRequest episodeCreationRequest) {
         return Instancio.of(Episode.class)
                 .set(field(Episode::getTitle), episodeCreationRequest.title())
                 .set(field(Episode::getArtistComment), episodeCreationRequest.artistComment())
                 .set(field(Episode::getReleaseDateTime), episodeCreationRequest.releaseDateTime())
                 .set(field(Episode::getThumbnail), episodeCreationRequest.thumbnail())
-                .set(field(Episode::getEpisodeUrls), episodeUrlCreationRequests.stream().map(EpisodeUrlCreationRequest::toEntity).toList())
+                .set(field(Episode::getEpisodeUrls), episodeCreationRequest.episodeUrlCreationRequests().stream().map(EpisodeUrlCreationRequest::toEntity).toList())
                 .create();
     }
 
@@ -84,10 +84,11 @@ class DefaultEpisodeServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         List<Episode> responses = Instancio.ofList(Episode.class).create();
         Page<Episode> page = new PageImpl<>(responses, pageable, responses.size());
-        given(episodeRepository.findAll(any(Pageable.class))).willReturn(page);
+        Webtoon webtoon = Instancio.create(Webtoon.class);
+        given(episodeRepository.findAllById(any(Long.class), any(Pageable.class))).willReturn(page);
 
         // when
-        Page<EpisodeListFormResponse> episodeListForm = episodeService.findEpisodeListForm(pageable);
+        Page<EpisodeListFormResponse> episodeListForm = episodeService.findEpisodeListForm(webtoon.getId(), pageable);
 
         // then
         assertThat(episodeListForm.getTotalElements()).isEqualTo(responses.size());

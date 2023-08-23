@@ -1,7 +1,8 @@
 package com.wonnapark.wnpserver.domain.episode.infrastructure;
 
 import com.wonnapark.wnpserver.domain.episode.Episode;
-import com.wonnapark.wnpserver.domain.episode.EpisodeUrl;
+import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,15 +24,26 @@ class EpisodeRepositoryTest {
 
     @Autowired
     private EpisodeRepository episodeRepository;
+
+    @Autowired
+    private WebtoonRepository webtoonRepository;
+    private Webtoon webtoon;
     private Episode episode;
 
     @BeforeEach
     void init() {
-        episode = episodeRepository.save(
-                Instancio.of(Episode.class)
-                        .ignore(field(Episode::getId))
-                        .create()
-        );
+        webtoon = Instancio.of(Webtoon.class)
+                .ignore(field(Webtoon::getId))
+                .create();
+        webtoonRepository.save(webtoon);
+
+        episode = Instancio.of(Episode.class)
+                .ignore(field(Episode::getId))
+                .ignore(field(Episode::getWebtoon))
+                .ignore(field(Episode::getEpisodeUrls))
+                .create();
+        episode.setWebtoon(webtoon);
+        episodeRepository.save(episode);
     }
 
     @Test
@@ -50,7 +62,7 @@ class EpisodeRepositoryTest {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         // when
-        Page<Episode> episodePage = episodeRepository.findAll(pageable);
+        Page<Episode> episodePage = episodeRepository.findAllById(webtoon.getId(), pageable);
         // then
         assertThat(episodePage).isNotNull();
     }
