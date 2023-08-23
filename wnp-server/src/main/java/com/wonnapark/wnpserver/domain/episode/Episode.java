@@ -2,8 +2,10 @@ package com.wonnapark.wnpserver.domain.episode;
 
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import com.wonnapark.wnpserver.global.common.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,7 +33,7 @@ public class Episode extends BaseEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "title", length = 35)
+    @Column(name = "title", nullable = false, length = 35)
     private String title;
 
     @Column(name = "release_date", nullable = false, columnDefinition = "TIMESTAMP(6)")
@@ -43,11 +45,11 @@ public class Episode extends BaseEntity {
     @Column(name = "artist_comment", nullable = false, length = 100)
     private String artistComment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "webtoon_id", nullable = false)
     private Webtoon webtoon;
 
-    @OneToMany(mappedBy = "episode")
+    @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
     List<EpisodeUrl> episodeUrls = new ArrayList<>();
 
     @Column(name = "is_deleted", nullable = false)
@@ -83,10 +85,14 @@ public class Episode extends BaseEntity {
         episodeUrls.forEach(EpisodeUrl::delete);
     }
 
-    public void setEpisodeUrls(List<EpisodeUrl> episodeUrl) {
-        for (EpisodeUrl url : episodeUrl) {
+    public void setEpisodeUrls(List<EpisodeUrl> episodeUrls) {
+        for (EpisodeUrl url : episodeUrls) {
             url.setEpisode(this);
         }
+    }
+
+    public void setWebtoon(Webtoon webtoon) {
+        this.webtoon = webtoon;
     }
 
 }
