@@ -8,10 +8,11 @@ import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeReleaseDateTime
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeThumbnailUpdateRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeTitleUpdateRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeUrlCreationRequest;
-import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeDetailFormResponse;
+import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.domain.episode.infrastructure.EpisodeRepository;
-import com.wonnapark.wnpserver.domain.episode.infrastructure.EpisodeUrlRepository;
+import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,24 +28,25 @@ import java.util.List;
 public class DefaultEpisodeService implements EpisodeService {
 
     private final EpisodeRepository episodeRepository;
-    private final EpisodeUrlRepository episodeUrlRepository;
+    private final WebtoonRepository webtoonRepository;
 
     @Override
     @Transactional
-    public Long createEpisode(EpisodeCreationRequest request, List<EpisodeUrlCreationRequest> episodeUrlCreationRequests) {
-        Episode newEpisode = EpisodeCreationRequest.toEntity(request);
-        List<EpisodeUrl> episodeUrls = episodeUrlCreationRequests.stream()
+    public Long createEpisode(Long webtoonId, EpisodeCreationRequest request) {
+        Webtoon webtoon = webtoonRepository.findById(webtoonId)
+                .orElseThrow(EntityNotFoundException::new);
+        Episode newEpisode = request.toEntity();
+        List<EpisodeUrl> episodeUrls = request.episodeUrlCreationRequests().stream()
                 .map(EpisodeUrlCreationRequest::toEntity)
                 .toList();
-
+        newEpisode.setWebtoon(webtoon);
         newEpisode.setEpisodeUrls(episodeUrls);
-        episodeUrlRepository.saveAll(episodeUrls);
         return episodeRepository.save(newEpisode).getId();
     }
 
     @Override
-    public Page<EpisodeListFormResponse> findEpisodeListForm(Pageable pageable) {
-        return episodeRepository.findAll(pageable)
+    public Page<EpisodeListFormResponse> findEpisodeListForm(Long webtoonId, Pageable pageable) {
+        return episodeRepository.findAllById(webtoonId, pageable)
                 .map(EpisodeListFormResponse::from);
     }
 
