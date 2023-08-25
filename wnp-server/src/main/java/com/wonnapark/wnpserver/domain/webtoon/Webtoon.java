@@ -87,4 +87,14 @@ public class Webtoon extends BaseEntity {
         this.thumbnail = thumbnail;
     }
 
+    /**
+     * @return 연령 제한이 성인 이상이면 true, 그렇지 않다면 false
+     */
+    public boolean isXRated() {
+        final int ADULT_AGE = 19;
+
+        if (this.ageLimit < ADULT_AGE) return false;
+        return true;
+    }
+
 }
