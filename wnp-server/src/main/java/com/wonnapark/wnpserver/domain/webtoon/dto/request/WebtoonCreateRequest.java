@@ -11,15 +11,17 @@ public record WebtoonCreateRequest(
         String detail,
         String genre,
         String thumbnail,
+        Integer ageLimit,
         List<DayOfWeek> publishDays
-){
-    public static Webtoon toEntity(WebtoonCreateRequest request){
+) {
+    public static Webtoon toEntity(WebtoonCreateRequest request) {
         return Webtoon.builder()
                 .title(request.title())
                 .artist(request.artist())
                 .detail(request.detail())
                 .genre(request.genre())
                 .thumbnail(request.thumbnail())
+                .ageLimit(request.ageLimit())
                 .publishDays(request.publishDays())
                 .build();
     }

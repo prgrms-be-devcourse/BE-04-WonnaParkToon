@@ -1,12 +1,10 @@
 package com.wonnapark.wnpserver.domain.webtoon.dto.response;
 
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
-import lombok.Builder;
 
 import java.time.DayOfWeek;
 import java.util.List;
 
-@Builder
 public record WebtoonResponse(
         Long id,
         String title,
@@ -14,6 +12,7 @@ public record WebtoonResponse(
         String detail,
         String genre,
         String thumbnail,
+        Integer ageLimit,
         List<DayOfWeek> publishDays
 ) {
     public static WebtoonResponse from(Webtoon webtoon) {
@@ -27,4 +26,5 @@ public record WebtoonResponse(
                 .publishDays(webtoon.getPublishDays())
                 .build();
     }
+
 }

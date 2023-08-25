@@ -1,7 +1,6 @@
 package com.wonnapark.wnpserver.domain.webtoon;
 
 import com.wonnapark.wnpserver.global.common.BaseEntity;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -13,12 +12,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -59,6 +58,10 @@ public class Webtoon extends BaseEntity {
     @Column(name = "is_deleted", nullable = true)
     private LocalDateTime isDeleted;
 
+    @Column(name = "age_limit", nullable = false)
+    @ColumnDefault("0")
+    private Integer ageLimit;
+
     @ElementCollection
     @CollectionTable(name = "publish_day", joinColumns = @JoinColumn(name = "webtoon_id"))
     @Column(name = "publish_days")
@@ -66,12 +69,13 @@ public class Webtoon extends BaseEntity {
     private List<DayOfWeek> publishDays = new ArrayList<>();
 
     @Builder
-    private Webtoon(String title, String artist, String detail, String genre, String thumbnail, List<DayOfWeek> publishDays) {
+    private Webtoon(String title, String artist, String detail, String genre, String thumbnail, Integer ageLimit, List<DayOfWeek> publishDays) {
         this.title = title;
         this.artist = artist;
         this.detail = detail;
         this.genre = genre;
         this.thumbnail = thumbnail;
+        this.ageLimit = ageLimit;
         this.publishDays = new ArrayList<DayOfWeek>(publishDays);
     }
 

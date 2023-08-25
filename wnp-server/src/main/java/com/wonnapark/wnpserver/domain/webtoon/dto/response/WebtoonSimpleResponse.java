@@ -8,7 +8,8 @@ public record WebtoonSimpleResponse(
         Long id,
         String title,
         String artist,
-        String thumbnail
+        String thumbnail,
+        Integer ageLimit
 ) {
 
     public static WebtoonSimpleResponse from(Webtoon webtoon) {
