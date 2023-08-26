@@ -16,15 +16,16 @@ public record WebtoonResponse(
         List<DayOfWeek> publishDays
 ) {
     public static WebtoonResponse from(Webtoon webtoon) {
-        return WebtoonResponse.builder()
-                .id(webtoon.getId())
-                .title(webtoon.getTitle())
-                .artist(webtoon.getArtist())
-                .detail(webtoon.getDetail())
-                .genre(webtoon.getGenre())
-                .thumbnail(webtoon.getThumbnail())
-                .publishDays(webtoon.getPublishDays())
-                .build();
+        return new WebtoonResponse(
+                webtoon.getId(),
+                webtoon.getTitle(),
+                webtoon.getArtist(),
+                webtoon.getDetail(),
+                webtoon.getGenre(),
+                webtoon.getThumbnail(),
+                webtoon.getAgeLimit(),
+                webtoon.getPublishDays()
+        );
     }
 
 }
