@@ -1,12 +1,12 @@
 package com.wonnapark.wnpserver.domain.auth.application;
 
-import com.wonnapark.wnpserver.domain.auth.AccessToken;
 import com.wonnapark.wnpserver.domain.auth.RefreshToken;
-import com.wonnapark.wnpserver.domain.auth.SubjectInfo;
+import com.wonnapark.wnpserver.domain.auth.dto.AccessTokenResponse;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
 import com.wonnapark.wnpserver.domain.auth.exception.JwtInvalidException;
 import com.wonnapark.wnpserver.domain.auth.infrastructure.RefreshTokenRepository;
+import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.global.response.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -39,12 +39,12 @@ public class JwtTokenService {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    public AccessToken generateAccessToken(AuthTokenRequest request) {
+    public AccessTokenResponse generateAccessToken(AuthTokenRequest request) {
         long now = (new Date()).getTime();
         Date expiredAt = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String subject = request.userId() + DELIMITER + request.birthYear();
         String accessTokenInfo = Jwts.builder().setSubject(subject).setIssuer(ISSUER).setIssuedAt(Timestamp.valueOf(LocalDateTime.now())).setExpiration(expiredAt).signWith(key, SignatureAlgorithm.HS512).compact();
-        return new AccessToken(accessTokenInfo);
+        return new AccessTokenResponse(accessTokenInfo);
     }
 
     public RefreshToken generateRefreshToken(AuthTokenRequest request) {
@@ -57,11 +57,11 @@ public class JwtTokenService {
     }
 
     public AuthTokenResponse generateAuthToken(AuthTokenRequest request) {
-        AccessToken accessToken = generateAccessToken(request);
+        AccessTokenResponse accessTokenResponse = generateAccessToken(request);
         RefreshToken refreshToken = generateRefreshToken(request);
         return AuthTokenResponse.builder()
                 .grantType(BEARER_TYPE)
-                .accessToken(accessToken.tokenInfo())
+                .accessToken(accessTokenResponse.tokenInfo())
                 .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME / MILLI_SECOND)
                 .refreshToken(refreshToken.getTokenInfo())
                 .build();
@@ -86,11 +86,11 @@ public class JwtTokenService {
         }
     }
 
-    public SubjectInfo extractSubjectInfo(String token) {
+    public UserInfo extractUserInfo(String token) {
         Claims claims = parseClaims(token);
         String extracted = claims.getSubject();
         String[] subject = extracted.split(DELIMITER);
-        return SubjectInfo.from(subject);
+        return UserInfo.from(subject);
     }
 
     private Claims parseClaims(String token) {
