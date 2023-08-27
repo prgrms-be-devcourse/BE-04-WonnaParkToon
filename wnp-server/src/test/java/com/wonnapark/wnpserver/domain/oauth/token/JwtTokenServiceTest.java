@@ -1,9 +1,9 @@
 package com.wonnapark.wnpserver.domain.oauth.token;
 
 import com.wonnapark.wnpserver.domain.auth.SubjectInfo;
-import com.wonnapark.wnpserver.domain.auth.application.AuthTokenService;
-import com.wonnapark.wnpserver.domain.auth.dto.AuthToken;
+import com.wonnapark.wnpserver.domain.auth.application.JwtTokenService;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenRequest;
+import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,13 +13,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
 
-@SpringBootTest
-class AuthTokenServiceTest {
+@SpringBootTest(classes = JwtTokenService.class)
+class JwtTokenServiceTest {
+
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;
 
     @Autowired
-    private AuthTokenService authTokenService;
+    private JwtTokenService jwtTokenService;
 
-    @DisplayName("JWT 토큰 생성 성공")
+
+    @DisplayName("인증 토큰 생성 성공")
     @Test
     void generateTokenTest() {
         //given
@@ -28,16 +31,16 @@ class AuthTokenServiceTest {
                 .create();
 
         //when
-        AuthToken authToken = authTokenService.generate(request);
+        AuthTokenResponse authTokenResponse = jwtTokenService.generateAuthToken(request);
 
         //then
-        assertThat(authToken.grantType()).isEqualTo("Bearer");
-        assertThat(authToken.accessToken()).isNotBlank();
-        assertThat(authToken.refreshToken()).isNotBlank();
-        assertThat(authToken.expiredAt()).isNotNull();
+        assertThat(authTokenResponse.grantType()).isEqualTo("Bearer");
+        assertThat(authTokenResponse.accessToken()).isNotBlank();
+        assertThat(authTokenResponse.refreshToken()).isNotBlank();
+        assertThat(authTokenResponse.accessTokenExpiresIn()).isNotNull();
     }
 
-    @DisplayName("JWT 토큰 검증 성공")
+    @DisplayName("JWT Subject 검증 성공")
     @Test
     void extractUserIdTest() {
         //given
@@ -45,11 +48,11 @@ class AuthTokenServiceTest {
                 .set(field(AuthTokenRequest::birthYear), "1998")
                 .create();
         Long userID = request.userId();
-        AuthToken authToken = authTokenService.generate(request);
-        String accessToken = authToken.accessToken();
+        AuthTokenResponse authTokenResponse = jwtTokenService.generateAuthToken(request);
+        String accessToken = authTokenResponse.accessToken();
 
         //when
-        SubjectInfo subjectInfo = authTokenService.extractSubjectInfo(accessToken);
+        SubjectInfo subjectInfo = jwtTokenService.extractSubjectInfo(accessToken);
 
         //then
         assertThat(subjectInfo.userID()).isEqualTo(userID);
