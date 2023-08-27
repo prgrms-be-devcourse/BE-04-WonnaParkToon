@@ -1,4 +1,4 @@
-package com.wonnapark.wnpserver.domain.oauth;
+package com.wonnapark.wnpserver.domain.oauth.infrastructure;
 
 import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.KakaoInfoResponse;

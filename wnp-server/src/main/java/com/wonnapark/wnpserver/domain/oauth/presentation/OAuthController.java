@@ -1,6 +1,6 @@
 package com.wonnapark.wnpserver.domain.oauth.presentation;
 
-import com.wonnapark.wnpserver.domain.auth.dto.AuthToken;
+import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
 import com.wonnapark.wnpserver.domain.oauth.application.OAuthLoginService;
 import com.wonnapark.wnpserver.domain.oauth.dto.request.KakaoLoginRequest;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class OAuthController {
     private final OAuthLoginService oauthLoginService;
 
     @GetMapping("/kakao")
-    public ResponseEntity<AuthToken> loginKakao(@ModelAttribute KakaoLoginRequest request) {
+    public ResponseEntity<AuthTokenResponse> loginKakao(@ModelAttribute KakaoLoginRequest request) {
         return ResponseEntity.ok(oauthLoginService.login(request));
     }
 

@@ -1,8 +1,8 @@
 package com.wonnapark.wnpserver.domain.oauth.application;
 
-import com.wonnapark.wnpserver.domain.oauth.OAuthApiClient;
 import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
+import com.wonnapark.wnpserver.domain.oauth.infrastructure.OAuthApiClient;
 import com.wonnapark.wnpserver.domain.user.OAuthProvider;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.wonnapark.wnpserver.global.filter;
+package com.wonnapark.wnpserver.global.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonnapark.wnpserver.global.response.ErrorCode;

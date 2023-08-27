@@ -1,8 +1,8 @@
 package com.wonnapark.wnpserver.domain.oauth.application;
 
-import com.wonnapark.wnpserver.domain.auth.application.AuthTokenService;
-import com.wonnapark.wnpserver.domain.auth.dto.AuthToken;
+import com.wonnapark.wnpserver.domain.auth.application.JwtTokenService;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenRequest;
+import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
 import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
 import com.wonnapark.wnpserver.domain.user.application.UserService;
@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 public class OAuthLoginService {
 
     private final UserService userService;
-    private final AuthTokenService authTokenService;
+    private final JwtTokenService jwtTokenService;
     private final OAuthRequestService oAuthRequestService;
 
-    public AuthToken login(OAuthLoginRequest request) {
+    public AuthTokenResponse login(OAuthLoginRequest request) {
         OAuthInfoResponse response = oAuthRequestService.requestInfo(request);
-        AuthTokenRequest AuthRequest = findOrCreateUser(response);
-        return authTokenService.generate(AuthRequest);
+        AuthTokenRequest authTokenRequest = findOrCreateUser(response);
+        return jwtTokenService.generateAuthToken(authTokenRequest);
     }
 
     private AuthTokenRequest findOrCreateUser(OAuthInfoResponse response) {
