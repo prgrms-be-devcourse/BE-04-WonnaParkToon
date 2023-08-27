@@ -17,8 +17,8 @@ public class RefreshToken {
     private String tokenInfo;
 
     @Builder
-    private RefreshToken(Long userId, String tokenInfo) {
+    private RefreshToken(Long userId, String refreshToken) {
         this.userId = userId;
-        this.tokenInfo = tokenInfo;
+        this.tokenInfo = refreshToken;
     }
 }

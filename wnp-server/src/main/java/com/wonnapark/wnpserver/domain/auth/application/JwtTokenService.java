@@ -4,6 +4,7 @@ import com.wonnapark.wnpserver.domain.auth.RefreshToken;
 import com.wonnapark.wnpserver.domain.auth.dto.AccessTokenResponse;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
+import com.wonnapark.wnpserver.domain.auth.dto.RefreshTokenResponse;
 import com.wonnapark.wnpserver.domain.auth.exception.JwtInvalidException;
 import com.wonnapark.wnpserver.domain.auth.infrastructure.RefreshTokenRepository;
 import com.wonnapark.wnpserver.global.common.UserInfo;
@@ -43,27 +44,41 @@ public class JwtTokenService {
         long now = (new Date()).getTime();
         Date expiredAt = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String subject = request.userId() + DELIMITER + request.birthYear();
-        String accessTokenInfo = Jwts.builder().setSubject(subject).setIssuer(ISSUER).setIssuedAt(Timestamp.valueOf(LocalDateTime.now())).setExpiration(expiredAt).signWith(key, SignatureAlgorithm.HS512).compact();
-        return new AccessTokenResponse(accessTokenInfo);
+        String accessToken = Jwts.builder()
+                .setSubject(subject)
+                .setIssuer(ISSUER)
+                .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
+                .setExpiration(expiredAt)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+        return new AccessTokenResponse(BEARER_TYPE, accessToken, ACCESS_TOKEN_EXPIRE_TIME / MILLI_SECOND);
     }
 
-    public RefreshToken generateRefreshToken(AuthTokenRequest request) {
+    public RefreshTokenResponse generateRefreshToken(AuthTokenRequest request) {
         long now = (new Date()).getTime();
         Date expiredAt = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
-        String subject = request.userId() + DELIMITER + request.birthYear();
-        String refreshTokenInfo = Jwts.builder().setSubject(subject).setIssuer(ISSUER).setIssuedAt(Timestamp.valueOf(LocalDateTime.now())).setExpiration(expiredAt).signWith(key, SignatureAlgorithm.HS512).compact();
-        RefreshToken refreshToken = RefreshToken.builder().tokenInfo(refreshTokenInfo).userId(request.userId()).build();
-        return refreshTokenRepository.save(refreshToken);
+        String refreshToken = Jwts.builder()
+                .setIssuer(ISSUER)
+                .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
+                .setExpiration(expiredAt)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+        RefreshToken refreshTokenEntity = RefreshToken.builder()
+                .refreshToken(refreshToken)
+                .userId(request.userId())
+                .build();
+        refreshTokenRepository.save(refreshTokenEntity);
+        return new RefreshTokenResponse(BEARER_TYPE, refreshToken);
     }
 
     public AuthTokenResponse generateAuthToken(AuthTokenRequest request) {
         AccessTokenResponse accessTokenResponse = generateAccessToken(request);
-        RefreshToken refreshToken = generateRefreshToken(request);
+        RefreshTokenResponse refreshTokenResponse = generateRefreshToken(request);
         return AuthTokenResponse.builder()
                 .grantType(BEARER_TYPE)
-                .accessToken(accessTokenResponse.tokenInfo())
+                .accessToken(accessTokenResponse.accessToken())
                 .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME / MILLI_SECOND)
-                .refreshToken(refreshToken.getTokenInfo())
+                .refreshToken(refreshTokenResponse.refreshToken())
                 .build();
     }
 
