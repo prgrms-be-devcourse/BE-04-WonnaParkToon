@@ -1,11 +1,9 @@
 package com.wonnapark.wnpserver.domain.episode.dto.response;
 
 import com.wonnapark.wnpserver.domain.episode.Episode;
-import lombok.Builder;
 
 import java.util.List;
 
-@Builder
 public record EpisodeDetailFormResponse(
         Long id,
         String artistComment,
@@ -18,12 +16,12 @@ public record EpisodeDetailFormResponse(
                 .map(EpisodeUrlResponse::from)
                 .toList();
 
-        return EpisodeDetailFormResponse.builder()
-                .id(episode.getId())
-                .title(episode.getTitle())
-                .artistComment(episode.getArtistComment())
-                .episodeUrlResponses(episodeUrlResponses)
-                .build();
+        return new EpisodeDetailFormResponse(
+                episode.getId(),
+                episode.getArtistComment(),
+                episode.getTitle(),
+                episodeUrlResponses
+        );
     }
 
 }

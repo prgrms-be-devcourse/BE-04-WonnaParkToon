@@ -1,27 +1,35 @@
 package com.wonnapark.wnpserver.domain.episode.dto.response;
 
 import com.wonnapark.wnpserver.domain.episode.Episode;
-import lombok.Builder;
 
 import java.time.LocalDate;
 
-@Builder
 public record EpisodeListFormResponse(
         Long id,
         String title,
         String thumbnail,
-        LocalDate releaseDate
+        LocalDate releaseDate,
+        boolean isViewed
 ) {
 
     public static EpisodeListFormResponse from(Episode episode) {
-        LocalDate releaseDate = episode.getReleaseDateTime().toLocalDate();
+        return new EpisodeListFormResponse(
+                episode.getId(),
+                episode.getTitle(),
+                episode.getThumbnail(),
+                episode.getReleaseDateTime().toLocalDate(),
+                false
+        );
+    }
 
-        return EpisodeListFormResponse.builder()
-                .id(episode.getId())
-                .title(episode.getTitle())
-                .thumbnail(episode.getThumbnail())
-                .releaseDate(releaseDate)
-                .build();
+    public static EpisodeListFormResponse from(Episode episode, boolean isViewed) {
+        return new EpisodeListFormResponse(
+                episode.getId(),
+                episode.getTitle(),
+                episode.getThumbnail(),
+                episode.getReleaseDateTime().toLocalDate(),
+                isViewed
+        );
     }
 
 }
