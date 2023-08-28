@@ -1,6 +1,7 @@
 package com.wonnapark.wnpserver.domain.episode.dto.request;
 
 import com.wonnapark.wnpserver.domain.episode.Episode;
+import com.wonnapark.wnpserver.domain.episode.EpisodeUrl;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,12 +28,15 @@ public record EpisodeCreationRequest(
 ) {
 
     public Episode toEntity() {
-        return Episode.builder()
+        Episode episode = Episode.builder()
                 .title(this.title)
                 .releaseDateTime(this.releaseDateTime)
                 .thumbnail(this.thumbnail)
                 .artistComment(this.artistComment)
                 .build();
+        List<EpisodeUrl> episodeUrls = this.episodeUrlCreationRequests.stream().map(EpisodeUrlCreationRequest::toEntity).toList();
+        episode.setEpisodeUrls(episodeUrls);
+        return episode;
     }
 
 }
