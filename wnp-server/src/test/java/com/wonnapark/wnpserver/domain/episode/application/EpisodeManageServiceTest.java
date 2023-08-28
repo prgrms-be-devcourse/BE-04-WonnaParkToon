@@ -8,8 +8,6 @@ import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeReleaseDateTime
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeThumbnailUpdateRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeTitleUpdateRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeUrlCreationRequest;
-import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeDetailFormResponse;
-import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.domain.episode.infrastructure.EpisodeRepository;
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;
@@ -20,10 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,10 +32,10 @@ import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
-class DefaultEpisodeServiceTest {
+class EpisodeManageServiceImplTest {
 
     @InjectMocks
-    private DefaultEpisodeService episodeService;
+    private EpisodeManageServiceImpl episodeService;
     @Mock
     private EpisodeRepository episodeRepository;
     @Mock
@@ -75,37 +69,6 @@ class DefaultEpisodeServiceTest {
                 .set(field(Episode::getThumbnail), episodeCreationRequest.thumbnail())
                 .set(field(Episode::getEpisodeUrls), episodeCreationRequest.episodeUrlCreationRequests().stream().map(EpisodeUrlCreationRequest::toEntity).toList())
                 .create();
-    }
-
-    @Test
-    @DisplayName("에피소드 리스트 폼을 페이지로 조회할 수 있다.")
-    void testFindEpisodeListForm() {
-        // given
-        Pageable pageable = PageRequest.of(0, 10);
-        List<Episode> responses = Instancio.ofList(Episode.class).create();
-        Page<Episode> page = new PageImpl<>(responses, pageable, responses.size());
-        Webtoon webtoon = Instancio.create(Webtoon.class);
-        given(episodeRepository.findAllById(any(Long.class), any(Pageable.class))).willReturn(page);
-
-        // when
-        Page<EpisodeListFormResponse> episodeListForm = episodeService.findEpisodeListForm(webtoon.getId(), pageable);
-
-        // then
-        assertThat(episodeListForm.getTotalElements()).isEqualTo(responses.size());
-    }
-
-    @Test
-    @DisplayName("에피소드 메인 폼을 조회할 수 있다.")
-    void testFindEpisodeMainForm() {
-        // given
-        Episode episode = Instancio.create(Episode.class);
-        given(episodeRepository.findById(any(Long.class))).willReturn(Optional.of(episode));
-
-        // when
-        EpisodeDetailFormResponse episodeMainForm = episodeService.findEpisodeMainForm(episode.getId());
-
-        // then
-        assertThat(episode.getId()).isEqualTo(episodeMainForm.id());
     }
 
     @Test
