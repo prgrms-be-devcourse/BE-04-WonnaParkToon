@@ -30,12 +30,15 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Episode extends BaseEntity {
 
+    private static final int MAX_TITLE_LENGTH = 35;
+    private static final int MAX_ARTIST_COMMENT_LENGTH = 100;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "title", nullable = false, length = 35)
+    @Column(name = "title", nullable = false, length = MAX_TITLE_LENGTH, unique = true)
     private String title;
 
     @Column(name = "release_date", nullable = false, columnDefinition = "TIMESTAMP(6)")
@@ -44,7 +47,7 @@ public class Episode extends BaseEntity {
     @Column(name = "thumbnail", nullable = false)
     private String thumbnail;
 
-    @Column(name = "artist_comment", nullable = false, length = 100)
+    @Column(name = "artist_comment", nullable = false, length = MAX_ARTIST_COMMENT_LENGTH)
     private String artistComment;
 
     @ManyToOne(fetch = FetchType.LAZY)
