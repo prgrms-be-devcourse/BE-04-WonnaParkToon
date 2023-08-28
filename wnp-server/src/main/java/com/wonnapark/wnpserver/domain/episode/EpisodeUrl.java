@@ -32,26 +32,9 @@ public class EpisodeUrl {
     @Column(name = "url", nullable = false)
     private String url;
 
-    @Column(name = "orders", nullable = false, columnDefinition = "SMALLINT")
-    private int order;
-
-    @Column(name = "is_deleted")
-    private boolean isDeleted = false;
-
     @Builder
-    private EpisodeUrl(String url, int order) {
+    private EpisodeUrl(String url) {
         this.url = url;
-        this.order = order;
-    }
-
-    public void changeUrl(String url) {
-        // TODO: 업데이트 고민하고 상의할 부분이 많음
-        this.url = url;
-    }
-
-    public void delete() {
-        isDeleted = true;
-        episode.getEpisodeUrls().remove(this);
     }
 
     public void setEpisode(Episode episode) {
