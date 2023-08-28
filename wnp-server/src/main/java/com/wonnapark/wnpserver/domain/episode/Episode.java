@@ -17,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.List;
 
 @Table(name = "episodes")
 @Entity
+@Where(clause = "is_deleted = false")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Episode extends BaseEntity {
@@ -50,7 +52,7 @@ public class Episode extends BaseEntity {
     private Webtoon webtoon;
 
     @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<EpisodeUrl> episodeUrls = new ArrayList<>();
+    private final List<EpisodeUrl> episodeUrls = new ArrayList<>();
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
@@ -72,7 +74,7 @@ public class Episode extends BaseEntity {
         this.artistComment = artistComment;
     }
 
-    public void changeThumbNail(String thumbnail) {
+    public void changeThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
     }
 
@@ -80,15 +82,17 @@ public class Episode extends BaseEntity {
         this.releaseDateTime = releaseDateTime;
     }
 
+    public void changeEpisodeUrls(List<EpisodeUrl> episodeUrls) {
+        this.episodeUrls.clear();
+        setEpisodeUrls(episodeUrls);
+    }
+
     public void delete() {
         isDeleted = true;
-        episodeUrls.forEach(EpisodeUrl::delete);
     }
 
     public void setEpisodeUrls(List<EpisodeUrl> episodeUrls) {
-        for (EpisodeUrl url : episodeUrls) {
-            url.setEpisode(this);
-        }
+        episodeUrls.forEach(episodeUrl -> episodeUrl.setEpisode(this));
     }
 
     public void setWebtoon(Webtoon webtoon) {
