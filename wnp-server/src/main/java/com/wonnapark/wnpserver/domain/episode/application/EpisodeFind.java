@@ -1,0 +1,18 @@
+package com.wonnapark.wnpserver.domain.episode.application;
+
+import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeDetailFormResponse;
+import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface EpisodeFind {
+
+    Page<EpisodeListFormResponse> findEpisodeListForm(Long webtoonId, Pageable pageable);
+
+    Page<EpisodeListFormResponse> findEpisodeListForm(Long userId, Long webtoonId, Pageable pageable);
+
+    EpisodeDetailFormResponse findEpisodeDetailForm(Long episodeId);
+
+    EpisodeDetailFormResponse findEpisodeDetailForm(Long userId, Long episodeId);
+
+}
