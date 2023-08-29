@@ -6,7 +6,6 @@ import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeDetailFormResp
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.domain.episode.infrastructure.EpisodeRepository;
 import com.wonnapark.wnpserver.domain.episode.infrastructure.ViewHistoryRepository;
-import com.wonnapark.wnpserver.domain.user.User;
 import com.wonnapark.wnpserver.domain.user.infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.wonnapark.wnpserver.domain.episode.application.EpisodeErrorMessage.EPISODE_NOT_FOUND;
-import static com.wonnapark.wnpserver.domain.episode.application.EpisodeErrorMessage.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -38,16 +36,15 @@ public class EpisodeFindService implements EpisodeFind {
     @Override
     public Page<EpisodeListFormResponse> findEpisodeListForm(Long userId, Long webtoonId, Pageable pageable) {
         Page<Episode> episodes = episodeRepository.findAllByWebtoonId(webtoonId, pageable);
-        List<Long> viewedEpisodeIds = viewHistoryRepository.findEpisodeIdByWebtoonIdAndUserId(webtoonId, userId);  // 이게 더 빠를거 같은데?? 근데 전체를 조회하는게 맞나??
+        List<Long> episodeIds = episodes.getContent().stream()
+                .map(Episode::getId)
+                .toList();
+        List<Long> viewedEpisodeIds = viewHistoryRepository.findEpisodeIdsInGivenEpisodeIdsByUserId(episodeIds, userId);
 
         return episodes.map(episode -> {
             boolean isViewed = viewedEpisodeIds.contains(episode.getId());
             return EpisodeListFormResponse.from(episode, isViewed);
         });
-//        return episodes.map(episode -> {
-//            boolean isViewed = viewHistoryRepository.existsByEpisodeIdAndUserId(episode.getId(), userId); // 쿼리가 너무 많이 나감 (N + 1) 쿼리 20개
-//            return EpisodeListFormResponse.from(episode, isViewed);
-//        });
     }
 
     @Override
@@ -65,9 +62,7 @@ public class EpisodeFindService implements EpisodeFind {
         Episode episode = episodeRepository.findById(episodeId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND, episodeId)));
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(USER_NOT_FOUND, userId)));
-        saveViewHistory(user, episode);
+        saveViewHistory(userId, episodeId);
 
         // TODO: 조회수 처리
 
@@ -75,13 +70,13 @@ public class EpisodeFindService implements EpisodeFind {
     }
 
     @Transactional
-    public void saveViewHistory(User user, Episode episode) {
-        if (viewHistoryRepository.existsByEpisodeIdAndUserId(episode.getId(), user.getId())) {
+    public void saveViewHistory(Long userId, Long episodeId) {
+        if (viewHistoryRepository.existsByUserIdAndEpisodeId(userId, episodeId)) {
             return;
         }
         ViewHistory viewHistory = ViewHistory.builder()
-                .user(user)
-                .episode(episode)
+                .userId(userId)
+                .episodeId(episodeId)
                 .build();
         viewHistoryRepository.save(viewHistory);
     }
