@@ -33,10 +33,10 @@ public class EpisodeManageService implements EpisodeManage {
     @Transactional
     public Long createEpisode(Long webtoonId, EpisodeCreationRequest request) {
         if (episodeRepository.existsByTitle(request.title())) {
-            throw new EntityExistsException(String.format(DUPLICATED_EPISODE, request.title()));
+            throw new EntityExistsException(String.format(DUPLICATED_EPISODE.getMessage(), request.title()));
         }
         Webtoon webtoon = webtoonRepository.findById(webtoonId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(WEBTOON_NOT_FOUND, webtoonId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(WEBTOON_NOT_FOUND.getMessage(), webtoonId)));
         Episode newEpisode = request.toEntity();
         newEpisode.setWebtoon(webtoon);
         return episodeRepository.save(newEpisode).getId();
@@ -46,7 +46,7 @@ public class EpisodeManageService implements EpisodeManage {
     @Transactional
     public void updateEpisodeTitle(Long episodeId, EpisodeTitleUpdateRequest request) {
         Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND, episodeId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
         episode.changeTitle(request.title());
     }
 
@@ -54,7 +54,7 @@ public class EpisodeManageService implements EpisodeManage {
     @Transactional
     public void updateEpisodeArtistComment(Long episodeId, EpisodeArtistCommentUpdateRequest request) {
         Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND, episodeId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
         episode.changeArtistComment(request.artistComment());
     }
 
@@ -62,7 +62,7 @@ public class EpisodeManageService implements EpisodeManage {
     @Transactional
     public void updateEpisodeThumbnail(Long episodeId, EpisodeThumbnailUpdateRequest request) {
         Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND, episodeId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
         episode.changeThumbnail(request.thumbnail());
     }
 
@@ -70,7 +70,7 @@ public class EpisodeManageService implements EpisodeManage {
     @Transactional
     public void updateEpisodeReleaseDateTime(Long episodeId, EpisodeReleaseDateTimeUpdateRequest request) {
         Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND, episodeId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
         episode.changeReleaseDateTime(request.releaseDateTime());
     }
 
@@ -78,7 +78,7 @@ public class EpisodeManageService implements EpisodeManage {
     @Transactional
     public void updateEpisodeUrls(Long episodeId, EpisodeUrlsUpdateRequest request) {
         Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND, episodeId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
         episode.changeEpisodeUrls(request.toEntityList());
     }
 
@@ -86,7 +86,7 @@ public class EpisodeManageService implements EpisodeManage {
     @Transactional
     public void deleteEpisode(Long episodeId) {
         Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND, episodeId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
         episode.delete();
     }
 

@@ -50,7 +50,7 @@ public class EpisodeFindService implements EpisodeFind {
     @Override
     public EpisodeDetailFormResponse findEpisodeDetailForm(Long episodeId) {
         Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND, episodeId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
 
         // TODO: 조회수 처리
 
@@ -60,7 +60,7 @@ public class EpisodeFindService implements EpisodeFind {
     @Override
     public EpisodeDetailFormResponse findEpisodeDetailForm(Long userId, Long episodeId) {
         Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND, episodeId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
 
         saveViewHistory(userId, episodeId);
 
