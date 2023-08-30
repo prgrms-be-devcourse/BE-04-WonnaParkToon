@@ -7,9 +7,8 @@ import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormRespon
 import com.wonnapark.wnpserver.domain.episode.infrastructure.EpisodeRepository;
 import com.wonnapark.wnpserver.domain.episode.infrastructure.ViewHistoryRepository;
 import com.wonnapark.wnpserver.domain.user.User;
-import com.wonnapark.wnpserver.domain.user.infrastructure.UserRepository;
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
-import org.instancio.Instancio;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +23,10 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
+import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createEpisode;
+import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createEpisodes;
+import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createUser;
+import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createWebtoon;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -35,28 +38,29 @@ import static org.mockito.Mockito.never;
 @ExtendWith(MockitoExtension.class)
 class EpisodeFindServiceTest {
     @InjectMocks
-    EpisodeFindService episodeFindService;
+    private EpisodeFindService episodeFindService;
     @Mock
-    EpisodeRepository episodeRepository;
+    private EpisodeRepository episodeRepository;
     @Mock
-    ViewHistoryRepository viewHistoryRepository;
-    @Mock
-    UserRepository userRepository;
+    private ViewHistoryRepository viewHistoryRepository;
+    private Webtoon webtoon;
+
+    @BeforeEach
+    void init() {
+        webtoon = createWebtoon();
+    }
 
     @Test
     @DisplayName("웹툰 ID를 통해 에피소드 리스트 폼을 페이지 조회할 수 있다.")
     void commonFindEpisodeListForm() {
         // given
-        User user = makeUser();
-        Webtoon webtoon = makeWebtoon();
-        Pageable pageable = makePageable();
-        List<Episode> episodes = makeEpisodes();
+        Pageable pageable = createPageable();
+        List<Episode> episodes = createEpisodes(webtoon);
         Page<Episode> page = new PageImpl<>(episodes, pageable, episodes.size());
         given(episodeRepository.findAllByWebtoonId(webtoon.getId(), pageable)).willReturn(page);
         // when
         Page<EpisodeListFormResponse> episodeListForm = episodeFindService.findEpisodeListForm(webtoon.getId(), pageable);
         // then
-
         assertThat(episodeListForm.getTotalElements()).isEqualTo(Math.min(episodes.size(), pageable.getPageSize()));
     }
 
@@ -64,7 +68,7 @@ class EpisodeFindServiceTest {
     @DisplayName("에피소드 ID를 통해 에피소드 디테일 폼을 조회할 수 있다.")
     void commonFindEpisodeDetailForm() {
         // given
-        Episode episode = makeOneEpisode();
+        Episode episode = createEpisode(webtoon);
         given(episodeRepository.findById(anyLong())).willReturn(Optional.of(episode));
         // when
         EpisodeDetailFormResponse episodeDetailForm = episodeFindService.findEpisodeDetailForm(episode.getId());
@@ -73,16 +77,25 @@ class EpisodeFindServiceTest {
     }
 
     @Test
-    @DisplayName("유저 ID와 웹툰 ID를 통해 유저가 본 웹툰은 체크된 에피소드 리스트 폼을 페이지 조회할 수 있다.")
+    @DisplayName("유저 ID와 웹툰 ID를 통해 이미 본 에피소드에 대한 정보를 포함한 에피소드 리스트를 페이지 조회할 수 있다.")
     void userFindEpisodeListForm() {
         // given
-        User user = makeUser();
-        Webtoon webtoon = makeWebtoon();
-        Pageable pageable = makePageable();
-        List<Episode> episodes = makeEpisodes();
+        User user = createUser();
+        Pageable pageable = createPageable();
+        List<Episode> episodes = createEpisodes(webtoon);
         Page<Episode> page = new PageImpl<>(episodes, pageable, episodes.size());
         given(episodeRepository.findAllByWebtoonId(webtoon.getId(), pageable)).willReturn(page);
-        given(viewHistoryRepository.findEpisodeIdByWebtoonIdAndUserId(anyLong(), anyLong())).willReturn(episodes.stream().map(Episode::getId).toList());
+        given(viewHistoryRepository.findEpisodeIdsInGivenEpisodeIdsByUserId(
+                        user.getId(),
+                        episodes.stream()
+                                .map(Episode::getId)
+                                .toList()
+                )
+        ).willReturn(
+                episodes.stream()
+                        .map(Episode::getId)
+                        .toList()
+        );
         // when
         Page<EpisodeListFormResponse> episodeListForm = episodeFindService.findEpisodeListForm(user.getId(), webtoon.getId(), pageable);
         // then
@@ -95,10 +108,9 @@ class EpisodeFindServiceTest {
     @DisplayName("유저 ID와 에피소드 ID를 통해 에피소드 디테일 폼을 조회할 수 있다.")
     void userFindEpisodeDetailForm() {
         // given
-        User user = makeUser();
-        Episode episode = makeOneEpisode();
-        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
-        given(episodeRepository.findById(anyLong())).willReturn(Optional.of(episode));
+        User user = createUser();
+        Episode episode = createEpisode(webtoon);
+        given(episodeRepository.findById(episode.getId())).willReturn(Optional.of(episode));
         // when
         EpisodeDetailFormResponse episodeDetailForm = episodeFindService.findEpisodeDetailForm(user.getId(), episode.getId());
         // then
@@ -109,11 +121,11 @@ class EpisodeFindServiceTest {
     @DisplayName("조회 기록이 존재하지 않다면 조회 기록을 저장할 수 있다.")
     void saveViewHistory() {
         // given
-        User user = makeUser();
-        Episode episode = makeOneEpisode();
-        given(viewHistoryRepository.existsByEpisodeIdAndUserId(anyLong(), anyLong())).willReturn(false);
+        User user = createUser();
+        Episode episode = createEpisode(webtoon);
+        given(viewHistoryRepository.existsByUserIdAndEpisodeId(user.getId(), episode.getId())).willReturn(false);
         // when
-        episodeFindService.saveViewHistory(user, episode);
+        episodeFindService.saveViewHistory(user.getId(), episode.getId());
         // then
         then(viewHistoryRepository).should(atMostOnce()).save(any(ViewHistory.class));
     }
@@ -122,32 +134,17 @@ class EpisodeFindServiceTest {
     @DisplayName("조회 기록이 존재하면 조회 기록을 저장하지 않는다.")
     void saveExistingViewHistory() {
         // given
-        User user = makeUser();
-        Episode episode = makeOneEpisode();
-        given(viewHistoryRepository.existsByEpisodeIdAndUserId(anyLong(), anyLong())).willReturn(true);
+        User user = createUser();
+        Episode episode = createEpisode(webtoon);
+        given(viewHistoryRepository.existsByUserIdAndEpisodeId(user.getId(), episode.getId())).willReturn(true);
         // when
-        episodeFindService.saveViewHistory(user, episode);
+        episodeFindService.saveViewHistory(user.getId(), episode.getId());
         // then
         then(viewHistoryRepository).should(never()).save(any(ViewHistory.class));
     }
 
-    private Pageable makePageable() {
-        return PageRequest.of(0, 10);
+    private Pageable createPageable() {
+        return PageRequest.of(0, 20);
     }
 
-    private Episode makeOneEpisode() {
-        return Instancio.create(Episode.class);
-    }
-
-    private List<Episode> makeEpisodes() {
-        return Instancio.ofList(Episode.class).create();
-    }
-
-    private User makeUser() {
-        return Instancio.create(User.class);
-    }
-
-    private Webtoon makeWebtoon() {
-        return Instancio.create(Webtoon.class);
-    }
 }
