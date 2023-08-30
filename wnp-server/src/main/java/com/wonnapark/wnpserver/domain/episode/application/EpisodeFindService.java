@@ -6,7 +6,6 @@ import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeDetailFormResp
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.domain.episode.infrastructure.EpisodeRepository;
 import com.wonnapark.wnpserver.domain.episode.infrastructure.ViewHistoryRepository;
-import com.wonnapark.wnpserver.domain.user.infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,7 +24,6 @@ public class EpisodeFindService implements EpisodeFind {
 
     private final EpisodeRepository episodeRepository;
     private final ViewHistoryRepository viewHistoryRepository;
-    private final UserRepository userRepository;
 
     @Override
     public Page<EpisodeListFormResponse> findEpisodeListForm(Long webtoonId, Pageable pageable) {
