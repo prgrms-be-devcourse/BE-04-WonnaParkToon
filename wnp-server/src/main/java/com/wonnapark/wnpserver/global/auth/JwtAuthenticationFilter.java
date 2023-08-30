@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final String BEARER_TYPE = "Bearer";
     private static final String REFRESH_TOKEN = "Refresh-Token";
     private final ObjectMapper objectMapper;
 
@@ -37,25 +39,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String path = request.getRequestURI();
         String accessToken = parseToken(request, HttpHeaders.AUTHORIZATION);
         String refreshToken = parseToken(request, REFRESH_TOKEN);
-        log.info("인증 필터 호출 Api -> {}", request.getRequestURI());
 
         if (isTokenNull(accessToken, response)) {
             return;
         }
-        if (request.getRequestURI().equals("/api/auth/reissue")) {
+        if (path.equals("/api/auth/reissue")) {
             if (isTokenNull(refreshToken, response)) {
                 return;
             }
         }
         filterChain.doFilter(request, response);
-        log.info("인증 필터 종료 Api -> {}", request.getRequestURI());
     }
 
     private String parseToken(HttpServletRequest request, String headerName) {
         String token = request.getHeader(headerName);
-        return token;
+        if (StringUtils.hasText(token)) {
+            return token;
+        }
+        return null;
     }
 
     private boolean isTokenNull(String token, HttpServletResponse response) {
