@@ -39,11 +39,11 @@ public class ViewHistory {
     }
 
     @EmbeddedId
-    ViewHistoryId id;
+    private ViewHistoryId id;
 
     @Builder
     private ViewHistory(Long episodeId, Long userId) {
         id = new ViewHistoryId(episodeId, userId);
     }
-    
+
 }
