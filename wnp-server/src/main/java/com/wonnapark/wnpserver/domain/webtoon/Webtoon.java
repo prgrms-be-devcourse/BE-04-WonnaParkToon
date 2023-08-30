@@ -1,8 +1,10 @@
 package com.wonnapark.wnpserver.domain.webtoon;
 
+import com.wonnapark.wnpserver.domain.webtoon.infrastructure.AgeRatingConverter;
 import com.wonnapark.wnpserver.global.common.BaseEntity;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -58,9 +60,9 @@ public class Webtoon extends BaseEntity {
     @Column(name = "is_deleted", nullable = true)
     private LocalDateTime isDeleted;
 
-    @Column(name = "age_limit", nullable = false)
-    @ColumnDefault("0")
-    private Integer ageLimit;
+    @Column(name = "age_rating", nullable = true)
+    @Convert(converter = AgeRatingConverter.class)
+    private AgeRating ageRating;
 
     @ElementCollection
     @CollectionTable(name = "publish_day", joinColumns = @JoinColumn(name = "webtoon_id"))
@@ -69,13 +71,13 @@ public class Webtoon extends BaseEntity {
     private List<DayOfWeek> publishDays = new ArrayList<>();
 
     @Builder
-    private Webtoon(String title, String artist, String detail, String genre, String thumbnail, Integer ageLimit, List<DayOfWeek> publishDays) {
+    private Webtoon(String title, String artist, String detail, String genre, String thumbnail, AgeRating ageRating, List<DayOfWeek> publishDays) {
         this.title = title;
         this.artist = artist;
         this.detail = detail;
         this.genre = genre;
         this.thumbnail = thumbnail;
-        this.ageLimit = ageLimit;
+        this.ageRating = ageRating;
         this.publishDays = new ArrayList<DayOfWeek>(publishDays);
     }
 

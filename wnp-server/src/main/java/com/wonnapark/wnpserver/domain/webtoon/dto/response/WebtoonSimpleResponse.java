@@ -7,7 +7,7 @@ public record WebtoonSimpleResponse(
         String title,
         String artist,
         String thumbnail,
-        Integer ageLimit
+        String ageRating
 ) {
 
     public static WebtoonSimpleResponse from(Webtoon webtoon) {
@@ -16,7 +16,7 @@ public record WebtoonSimpleResponse(
                 webtoon.getTitle(),
                 webtoon.getArtist(),
                 webtoon.getThumbnail(),
-                webtoon.getAgeLimit()
+                webtoon.getAgeRating().getRatingName()
         );
     }
 }

@@ -12,7 +12,7 @@ public record WebtoonDetailResponse(
         String detail,
         String genre,
         String thumbnail,
-        Integer ageLimit,
+        String ageRating,
         List<DayOfWeek> publishDays
 ) {
 
@@ -24,7 +24,7 @@ public record WebtoonDetailResponse(
                 webtoon.getDetail(),
                 webtoon.getGenre(),
                 webtoon.getThumbnail(),
-                webtoon.getAgeLimit(),
+                webtoon.getAgeRating().getRatingName(),
                 List.copyOf(webtoon.getPublishDays())
         );
     }
