@@ -21,7 +21,7 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "provider_id")
+    @Column(name = "provider_id", nullable = false)
     private Long providerId;
 
     @Enumerated(EnumType.STRING)
@@ -31,21 +31,21 @@ public class User extends BaseEntity {
     @Column(name = "nickname", unique = true, nullable = false)
     private String nickname;
 
-    @Column(name = "birth_year")
-    private String birthYear;
+    @Column(name = "age")
+    private int age;
 
-    @Column(name = "gender")
+    @Column(name = "gender", nullable = false)
     private String gender;
 
     @Column(name = "is_deleted", nullable = true, columnDefinition = "TIMESTAMP(6)")
     private LocalDateTime isDeleted;
 
     @Builder
-    private User(Long providerId, OAuthProvider platform, String nickname, String birthYear, String gender) {
+    private User(Long providerId, OAuthProvider platform, String nickname, int age, String gender) {
         this.providerId = providerId;
         this.platform = platform;
         this.nickname = nickname;
-        this.birthYear = birthYear;
+        this.age = age;
         this.gender = gender;
     }
 }

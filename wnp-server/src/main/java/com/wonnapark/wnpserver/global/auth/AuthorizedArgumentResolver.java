@@ -1,7 +1,6 @@
 package com.wonnapark.wnpserver.global.auth;
 
 import com.wonnapark.wnpserver.domain.auth.application.JwtTokenService;
-import com.wonnapark.wnpserver.domain.user.User;
 import com.wonnapark.wnpserver.domain.user.infrastructure.UserRepository;
 import com.wonnapark.wnpserver.global.common.Authorized;
 import com.wonnapark.wnpserver.global.common.UserInfo;
@@ -13,8 +12,6 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public class AuthorizedArgumentResolver implements HandlerMethodArgumentResolver {
@@ -34,7 +31,6 @@ public class AuthorizedArgumentResolver implements HandlerMethodArgumentResolver
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String accessToken = parseToken(request, HttpHeaders.AUTHORIZATION);
         UserInfo userInfo = jwtTokenService.extractUserInfo(accessToken);
-        Optional<User> byId = userRepository.findById(userInfo.userId());
         return userInfo;
     }
 

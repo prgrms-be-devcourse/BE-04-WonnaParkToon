@@ -7,6 +7,8 @@ import com.wonnapark.wnpserver.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -63,8 +65,14 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
                 .providerId(getId())
                 .platform(getOAuthProvider())
                 .nickname(getNickname())
-                .birthYear(getBirthYear())
+                .age(getAgeFromBirthYear(getBirthYear()))
                 .gender(getGender())
                 .build();
+    }
+
+    private int getAgeFromBirthYear(String birthYear) {
+        int currentYear = LocalDateTime.now().getYear();
+        int userBirthYear = Integer.parseInt(birthYear);
+        return currentYear - userBirthYear;
     }
 }

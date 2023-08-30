@@ -42,7 +42,7 @@ public class JwtTokenService {
     public AccessTokenResponse generateAccessToken(AuthTokenRequest request) {
         long now = (new Date()).getTime();
         Date expiredAt = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
-        String subject = request.userId() + DELIMITER + request.birthYear();
+        String subject = request.userId() + DELIMITER + request.age();
         String accessToken = Jwts.builder()
                 .setSubject(subject)
                 .setIssuer(ISSUER)
@@ -102,9 +102,9 @@ public class JwtTokenService {
 
     public UserInfo extractUserInfo(String token) {
         Claims claims = parseClaims(token);
-        String extracted = claims.getSubject();
-        String[] subject = extracted.split(DELIMITER);
-        return UserInfo.from(subject);
+        String subject = claims.getSubject();
+        String[] extracted = subject.split(DELIMITER);
+        return UserInfo.from(extracted);
     }
 
     private Claims parseClaims(String token) {

@@ -8,15 +8,15 @@ public record UserResponse(
         Long providerId,
         OAuthProvider platform,
         String nickname,
-        String birthYear,
+        int age,
         String gender
-){
+) {
     public static UserResponse from(User user) {
         return new UserResponse(user.getId(),
                 user.getProviderId(),
                 user.getPlatform(),
                 user.getNickname(),
-                user.getBirthYear(),
+                user.getAge(),
                 user.getGender());
     }
 }
