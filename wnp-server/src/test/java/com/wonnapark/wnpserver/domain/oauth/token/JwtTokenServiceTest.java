@@ -1,9 +1,9 @@
 package com.wonnapark.wnpserver.domain.oauth.token;
 
-import com.wonnapark.wnpserver.domain.auth.SubjectInfo;
 import com.wonnapark.wnpserver.domain.auth.application.JwtTokenService;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
+import com.wonnapark.wnpserver.global.common.UserInfo;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,10 +52,10 @@ class JwtTokenServiceTest {
         String accessToken = authTokenResponse.accessToken();
 
         //when
-        SubjectInfo subjectInfo = jwtTokenService.extractSubjectInfo(accessToken);
+        UserInfo userInfo = jwtTokenService.extractUserInfo(accessToken);
 
         //then
-        assertThat(subjectInfo.userID()).isEqualTo(userID);
-        assertThat(subjectInfo.birthYear()).isEqualTo(request.birthYear());
+        assertThat(userInfo.userId()).isEqualTo(userID);
+        assertThat(userInfo.birthYear()).isEqualTo(request.birthYear());
     }
 }

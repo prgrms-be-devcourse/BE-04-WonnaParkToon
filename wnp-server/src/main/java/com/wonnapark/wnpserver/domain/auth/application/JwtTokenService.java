@@ -14,18 +14,17 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Component
+//@Component
 public class JwtTokenService {
 
-    private static final String ISSUER = "wonnapark";
     private static final String BEARER_TYPE = "Bearer";
+    private static final String ISSUER = "wonnapark";
     private static final String DELIMITER = "&";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
@@ -82,7 +81,7 @@ public class JwtTokenService {
                 .build();
     }
 
-    public boolean validToken(String token) {
+    public boolean isValidToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -90,8 +89,8 @@ public class JwtTokenService {
                     .parseClaimsJws(token)
                     .getBody();
             return true;
-        } catch (ExpiredJwtException expiredJwtException) {
-            throw new JwtInvalidException(ErrorCode.EXPIRED_TOKEN.getMessage(), expiredJwtException.getCause());
+//        } catch (ExpiredJwtException expiredJwtException) {
+//            throw new JwtInvalidException(ErrorCode.EXPIRED_TOKEN.getMessage(), expiredJwtException.getCause());
         } catch (SignatureException signatureException) {
             throw new JwtInvalidException(ErrorCode.WRONG_SIGNATURE_TOKEN.getMessage(), signatureException.getCause());
         } catch (MalformedJwtException | UnsupportedJwtException unsupportedJwtException) {
