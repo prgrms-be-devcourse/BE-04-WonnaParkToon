@@ -1,5 +1,6 @@
 package com.wonnapark.wnpserver.domain.webtoon.dto.request;
 
+import com.wonnapark.wnpserver.domain.webtoon.AgeRating;
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 
 import java.time.DayOfWeek;
@@ -11,7 +12,7 @@ public record WebtoonCreateRequest(
         String detail,
         String genre,
         String thumbnail,
-        Integer ageLimit,
+        String ageRating,
         List<DayOfWeek> publishDays
 ) {
     public static Webtoon toEntity(WebtoonCreateRequest request) {
@@ -21,7 +22,7 @@ public record WebtoonCreateRequest(
                 .detail(request.detail())
                 .genre(request.genre())
                 .thumbnail(request.thumbnail())
-                .ageLimit(request.ageLimit())
+                .ageRating(AgeRating.of(request.ageRating()))
                 .publishDays(request.publishDays())
                 .build();
     }
