@@ -14,21 +14,18 @@ public final class EpisodeFixtures {
 
     public static Webtoon createWebtoon() {
         return Instancio.of(Webtoon.class)
-                .ignore(field(Webtoon::getId))
                 .ignore(field(Webtoon::getIsDeleted))
                 .create();
     }
 
     public static User createUser() {
         return Instancio.of(User.class)
-                .ignore(field(User::getId))
                 .ignore(field(User::getIsDeleted))
                 .create();
     }
 
     public static Episode createEpisode(Webtoon webtoon) {
         Episode episode = Instancio.of(Episode.class)
-                .ignore(field(Episode::getId))
                 .ignore(field(Episode::getWebtoon))
                 .ignore(field(Episode::isDeleted))
                 .ignore(field(Episode::getEpisodeUrls))
@@ -43,7 +40,6 @@ public final class EpisodeFixtures {
 
     public static List<Episode> createEpisodes(Webtoon webtoon) {
         List<Episode> episodes = Instancio.ofList(Episode.class)
-                .ignore(field(Episode::getId))
                 .ignore(field(Episode::getWebtoon))
                 .ignore(field(Episode::isDeleted))
                 .ignore(field(Episode::getEpisodeUrls))
@@ -77,7 +73,6 @@ public final class EpisodeFixtures {
     public static List<EpisodeUrl> createEpisodeUrls() {
         return Instancio.ofList(EpisodeUrl.class)
                 .ignore(field(EpisodeUrl::getEpisode))
-                .ignore(field(EpisodeUrl::getId))
                 .create();
     }
 
