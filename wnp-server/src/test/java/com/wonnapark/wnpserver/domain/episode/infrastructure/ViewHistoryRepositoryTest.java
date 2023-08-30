@@ -1,7 +1,6 @@
 package com.wonnapark.wnpserver.domain.episode.infrastructure;
 
 import com.wonnapark.wnpserver.domain.episode.Episode;
-import com.wonnapark.wnpserver.domain.episode.EpisodeUrl;
 import com.wonnapark.wnpserver.domain.episode.ViewHistory;
 import com.wonnapark.wnpserver.domain.user.User;
 import com.wonnapark.wnpserver.domain.user.infrastructure.UserRepository;
@@ -16,8 +15,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
+import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createEpisode;
+import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createEpisodes;
+import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createUser;
+import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createViewHistories;
+import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createViewHistory;
+import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createWebtoon;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Select.field;
 
 
 @DataJpaTest
@@ -33,67 +37,63 @@ class ViewHistoryRepositoryTest {
     private EpisodeRepository episodeRepository;
     private Webtoon webtoon;
     private User user;
-    private List<Episode> episodes;
 
     @BeforeEach
     void init() {
-        webtoon = saveWebtoon();
-        user = saveUser();
-        episodes = saveEpisodes(webtoon);
+        webtoon = webtoonRepository.save(createWebtoon());
+        user = userRepository.save(createUser());
     }
 
     @Test
-    @DisplayName("웹툰 ID와 유저 ID를 통해 view_history 테이블에서 에피소드 ID를 찾을 수 있다")
-    void name() {
+    @DisplayName("유저 ID와 에피소드 ID에 해당하는 VIEW_HISTORY가 없을 때 true를 반환힐 수 있다.")
+    void existsByUserIdAndEpisodeId_true() {
         // given
-        saveViewHistories(user, webtoon, episodes);
+        Episode episode = episodeRepository.save(createEpisode(webtoon));
+        ViewHistory viewHistory = viewHistoryRepository.save(createViewHistory(user.getId(), episode.getId()));
+
         // when
-        List<Long> episodeIdByWebtoonIdAndUserId = viewHistoryRepository.findEpisodeIdByWebtoonIdAndUserId(webtoon.getId(), user.getId());
+        boolean hasData = viewHistoryRepository.existsByUserIdAndEpisodeId(user.getId(), episode.getId());
         // then
-        assertThat(episodeIdByWebtoonIdAndUserId).hasSize(episodes.size());
-        assertThat(episodeIdByWebtoonIdAndUserId).usingRecursiveComparison().isEqualTo(episodes.stream().map(Episode::getId).toList());
+        assertThat(hasData).isTrue();
     }
 
-    private Webtoon saveWebtoon() {
-        Webtoon webtoon = Instancio.of(Webtoon.class)
-                .ignore(field(Webtoon::getId))
-                .create();
-        return webtoonRepository.save(webtoon);
+    @Test
+    @DisplayName("유저 ID와 에피소드 ID에 해당하는 VIEW_HISTORY가 없을 때 false를 반환힐 수 있다.")
+    void existsByUserIdAndEpisodeId_false() {
+        // given
+        Long fakeUserId = Instancio.create(Long.class);
+        Long fakeEpisodeId = Instancio.create(Long.class);
+        // when
+        boolean hasData = viewHistoryRepository.existsByUserIdAndEpisodeId(fakeUserId, fakeEpisodeId);
+        // then
+        assertThat(hasData).isFalse();
     }
 
-    private User saveUser() {
-        User user = Instancio.of(User.class)
-                .ignore(field(User::getId))
-                .create();
-        return userRepository.save(user);
+    @Test
+    @DisplayName("주어진 유저 ID와 에피소드 ID들에 대한 VIEW_HISTORY가 존재하면 일치하는 에피소드 ID들 반환할 수 있다")
+    void findEpisodeIdsInGivenEpisodeIdsByUserId_viewedEpisodeIds() {
+        // given
+        List<Episode> episodes = createEpisodes(webtoon);
+        episodeRepository.saveAll(episodes);
+        List<Long> episodeIds = episodes.stream().map(Episode::getId).toList();
+        List<ViewHistory> viewHistories = viewHistoryRepository.saveAll(createViewHistories(user.getId(), episodeIds));
+        // when
+        List<Long> viewedEpisodeIds = viewHistoryRepository.findEpisodeIdsInGivenEpisodeIdsByUserId(user.getId(), episodeIds);
+        // then
+        assertThat(viewedEpisodeIds).containsExactlyInAnyOrderElementsOf(episodeIds);
     }
 
-    private List<Episode> saveEpisodes(Webtoon webtoon) {
-        List<Episode> episodes = Instancio.ofList(Episode.class)
-                .ignore(field(Episode::getId))
-                .ignore(field(Episode::getWebtoon))
-                .ignore(field(Episode::getEpisodeUrls))
-                .create();
-        episodes.forEach(episode -> {
-            episode.setWebtoon(webtoon);
-            List<EpisodeUrl> episodeUrls = Instancio.ofList(EpisodeUrl.class)
-                    .ignore(field(EpisodeUrl::getEpisode))
-                    .ignore(field(EpisodeUrl::getId))
-                    .create();
-            episode.setEpisodeUrls(episodeUrls);
-        });
-        return episodeRepository.saveAll(episodes);
-    }
 
-    private void saveViewHistories(User user, Webtoon webtoon, List<Episode> episodes) {
-        List<ViewHistory> viewHistories = episodes.stream().map(
-                episode -> ViewHistory.builder()
-                        .webtoon(webtoon)
-                        .user(user)
-                        .episode(episode)
-                        .build()
-        ).toList();
-        viewHistoryRepository.saveAll(viewHistories);
+    @Test
+    @DisplayName("주어진 유저 ID와 에피소드 ID들에 대한 VIEW_HISTORY가 존재하지 않으면 빈 리스트를 반환할 수 있다")
+    void findEpisodeIdsInGivenEpisodeIdsByUserId_emptyList() {
+        // given
+        List<Episode> episodes = createEpisodes(webtoon);
+        List<Long> episodeIds = episodes.stream().map(Episode::getId).toList();
+        // when
+        List<Long> viewedEpisodeIds = viewHistoryRepository.findEpisodeIdsInGivenEpisodeIdsByUserId(user.getId(), episodeIds);
+        // then
+        assertThat(viewedEpisodeIds).isEmpty();
     }
 
 }
