@@ -12,6 +12,6 @@ public interface ViewHistoryRepository extends JpaRepository<ViewHistory, Long> 
     boolean existsByUserIdAndEpisodeId(Long userId, Long episodeId);
 
     @Query("SELECT v.id.episodeId FROM ViewHistory v WHERE v.id.userId = :userId AND v.id.episodeId IN :episodeIds")
-    List<Long> findEpisodeIdsInGivenEpisodeIdsByUserId(List<Long> episodeIds, Long userId);
+    List<Long> findEpisodeIdsInGivenEpisodeIdsByUserId(Long userId, List<Long> episodeIds);
 
 }

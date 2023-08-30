@@ -42,8 +42,8 @@ public class ViewHistory {
     private ViewHistoryId id;
 
     @Builder
-    private ViewHistory(Long episodeId, Long userId) {
-        id = new ViewHistoryId(episodeId, userId);
+    private ViewHistory(Long userId, Long episodeId) {
+        id = new ViewHistoryId(userId, episodeId);
     }
 
 }

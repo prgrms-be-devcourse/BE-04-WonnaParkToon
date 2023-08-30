@@ -39,7 +39,7 @@ public class EpisodeFindService implements EpisodeFind {
         List<Long> episodeIds = episodes.getContent().stream()
                 .map(Episode::getId)
                 .toList();
-        List<Long> viewedEpisodeIds = viewHistoryRepository.findEpisodeIdsInGivenEpisodeIdsByUserId(episodeIds, userId);
+        List<Long> viewedEpisodeIds = viewHistoryRepository.findEpisodeIdsInGivenEpisodeIdsByUserId(userId, episodeIds);
 
         return episodes.map(episode -> {
             boolean isViewed = viewedEpisodeIds.contains(episode.getId());
