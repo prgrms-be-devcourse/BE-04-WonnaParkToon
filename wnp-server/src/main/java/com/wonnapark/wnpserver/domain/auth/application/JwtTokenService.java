@@ -1,6 +1,7 @@
 package com.wonnapark.wnpserver.domain.auth.application;
 
 import com.wonnapark.wnpserver.domain.auth.RefreshToken;
+import com.wonnapark.wnpserver.domain.auth.TokenConstants;
 import com.wonnapark.wnpserver.domain.auth.dto.AccessTokenResponse;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
@@ -14,16 +15,17 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Optional;
 
-//@Component
+@Component
 public class JwtTokenService {
 
-    private static final String BEARER_TYPE = "Bearer";
     private static final String ISSUER = "wonnapark";
     private static final String DELIMITER = "&";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;
@@ -50,7 +52,7 @@ public class JwtTokenService {
                 .setExpiration(expiredAt)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
-        return new AccessTokenResponse(BEARER_TYPE, accessToken, ACCESS_TOKEN_EXPIRE_TIME / MILLI_SECOND);
+        return new AccessTokenResponse(TokenConstants.BEARER_TYPE, accessToken, ACCESS_TOKEN_EXPIRE_TIME / MILLI_SECOND);
     }
 
     public RefreshTokenResponse generateRefreshToken(AuthTokenRequest request) {
@@ -67,14 +69,20 @@ public class JwtTokenService {
                 .userId(request.userId())
                 .build();
         refreshTokenRepository.save(refreshTokenEntity);
-        return new RefreshTokenResponse(BEARER_TYPE, refreshToken);
+        return new RefreshTokenResponse(TokenConstants.BEARER_TYPE, refreshToken);
     }
 
     public AuthTokenResponse generateAuthToken(AuthTokenRequest request) {
         AccessTokenResponse accessTokenResponse = generateAccessToken(request);
-        RefreshTokenResponse refreshTokenResponse = generateRefreshToken(request);
+        RefreshTokenResponse refreshTokenResponse;
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findById(String.valueOf(request.userId()));
+        if (refreshToken.isPresent()) {
+            refreshTokenResponse = RefreshTokenResponse.from(refreshToken.get());
+        } else {
+            refreshTokenResponse = generateRefreshToken(request);
+        }
         return AuthTokenResponse.builder()
-                .grantType(BEARER_TYPE)
+                .grantType(TokenConstants.BEARER_TYPE)
                 .accessToken(accessTokenResponse.accessToken())
                 .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME / MILLI_SECOND)
                 .refreshToken(refreshTokenResponse.refreshToken())

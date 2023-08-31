@@ -14,11 +14,11 @@ public class RefreshToken {
     private Long userId;
 
     @Indexed
-    private String tokenInfo;
+    private String refreshToken;
 
     @Builder
     private RefreshToken(Long userId, String refreshToken) {
         this.userId = userId;
-        this.tokenInfo = refreshToken;
+        this.refreshToken = refreshToken;
     }
 }
