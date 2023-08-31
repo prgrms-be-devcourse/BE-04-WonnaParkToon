@@ -80,12 +80,17 @@ public class Webtoon extends BaseEntity {
         this.publishDays = new ArrayList<DayOfWeek>(publishDays);
     }
 
-    public void update(String title, String artist, String detail, String genre, String thumbnail) {
+    /**
+     * Webtoon 멤버 변수를 새로운 값으로 변경하는 메서드
+     */
+    public void change(String title, String artist, String detail, String genre, String thumbnail, String ageRating, List<DayOfWeek> publishDays) {
         this.title = title;
         this.artist = artist;
         this.detail = detail;
         this.genre = genre;
         this.thumbnail = thumbnail;
+        this.ageRating = AgeRating.of(ageRating);
+        this.publishDays = new ArrayList<DayOfWeek>(publishDays);
     }
 
     /**
