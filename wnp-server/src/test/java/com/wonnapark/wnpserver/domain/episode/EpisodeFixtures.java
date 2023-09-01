@@ -3,6 +3,9 @@ package com.wonnapark.wnpserver.domain.episode;
 import com.wonnapark.wnpserver.domain.user.User;
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import org.instancio.Instancio;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -74,6 +77,10 @@ public final class EpisodeFixtures {
         return Instancio.ofList(EpisodeUrl.class)
                 .ignore(field(EpisodeUrl::getEpisode))
                 .create();
+    }
+
+    public static Pageable createPageable() {
+        return PageRequest.of(0, 20, Sort.by("createAt").descending());
     }
 
 }
