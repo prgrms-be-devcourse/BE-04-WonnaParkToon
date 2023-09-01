@@ -25,7 +25,6 @@ import java.util.Date;
 @Component
 public class JwtTokenService {
 
-    private static final String ISSUER = "wonnapark";
     private static final String DELIMITER = "&";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
@@ -46,7 +45,7 @@ public class JwtTokenService {
         String subject = request.userId() + DELIMITER + request.age();
         String accessToken = Jwts.builder()
                 .setSubject(subject)
-                .setIssuer(ISSUER)
+                .setIssuer(TokenConstants.ISSUER)
                 .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .setExpiration(expiredAt)
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -58,7 +57,7 @@ public class JwtTokenService {
         long now = (new Date()).getTime();
         Date expiredAt = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
         String refreshToken = Jwts.builder()
-                .setIssuer(ISSUER)
+                .setIssuer(TokenConstants.ISSUER)
                 .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .setExpiration(expiredAt)
                 .signWith(key, SignatureAlgorithm.HS512)
