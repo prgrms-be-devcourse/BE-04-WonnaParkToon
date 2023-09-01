@@ -8,6 +8,7 @@ import com.wonnapark.wnpserver.global.response.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("api/v1/admin/webtoons")
@@ -41,6 +43,14 @@ public class AdminWebtoonController {
         WebtoonDetailResponse response = adminWebtoonService.updateWebtoon(request, webtoonId);
 
         return ApiResponse.from(response);
+    }
+
+    @PatchMapping("/{webtoonId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<LocalDateTime> deleteWebtoon(@PathVariable Long webtoonId) {
+        LocalDateTime deletedDateTime = adminWebtoonService.delete(webtoonId);
+
+        return ApiResponse.from(deletedDateTime);
     }
 
 }

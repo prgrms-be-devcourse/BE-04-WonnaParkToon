@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 import static com.wonnapark.wnpserver.domain.webtoon.application.WebtoonExceptionMessage.WEBTOON_NOT_FOUND;
 
 @Service
@@ -40,6 +42,15 @@ public class AdminWebtoonService {
         );
 
         return WebtoonDetailResponse.from(webtoon);
+    }
+
+    @Transactional
+    public LocalDateTime delete(Long webtoonId) {
+        Webtoon webtoon = webtoonRepository.findById(webtoonId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(WEBTOON_NOT_FOUND.getMessage(), webtoonId)));
+        webtoon.delete();
+
+        return webtoon.getIsDeleted();
     }
 
 }

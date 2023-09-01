@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ import java.util.List;
 @Table(name = "Webtoons")
 @Entity
 @Getter
+@Where(clause = "is_deleted IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Webtoon extends BaseEntity {
 
@@ -56,9 +58,6 @@ public class Webtoon extends BaseEntity {
     @Column(name = "thumbnail", nullable = false)
     private String thumbnail;
 
-    @Column(name = "is_deleted", nullable = true)
-    private LocalDateTime isDeleted;
-
     @Column(name = "age_rating", nullable = true)
     @Convert(converter = AgeRatingConverter.class)
     private AgeRating ageRating;
@@ -68,6 +67,9 @@ public class Webtoon extends BaseEntity {
     @Column(name = "publish_days")
     @Enumerated(EnumType.STRING)
     private List<DayOfWeek> publishDays = new ArrayList<>();
+
+    @Column(name = "is_deleted", nullable = true)
+    private LocalDateTime isDeleted;
 
     @Builder
     private Webtoon(String title, String artist, String detail, String genre, String thumbnail, AgeRating ageRating, List<DayOfWeek> publishDays) {
@@ -103,4 +105,8 @@ public class Webtoon extends BaseEntity {
         return false;
     }
 
+    public void delete() {
+        this.isDeleted = LocalDateTime.now();
+    }
+    
 }
