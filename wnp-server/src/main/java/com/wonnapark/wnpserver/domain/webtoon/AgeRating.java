@@ -20,7 +20,7 @@ public enum AgeRating {
         this.ageLimit = ageLimit;
     }
 
-    public static AgeRating of(String ratingName) {
+    public static AgeRating from(String ratingName) {
         return Arrays.stream(AgeRating.values())
                 .filter(v -> v.getRatingName().equals(ratingName))
                 .findAny()

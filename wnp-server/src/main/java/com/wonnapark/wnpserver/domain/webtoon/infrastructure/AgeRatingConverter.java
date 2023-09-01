@@ -18,7 +18,7 @@ public class AgeRatingConverter implements AttributeConverter<AgeRating, String>
     public AgeRating convertToEntityAttribute(String dbData) {
         if (dbData == null) return null;
 
-        return AgeRating.of(dbData);
+        return AgeRating.from(dbData);
     }
 
 }

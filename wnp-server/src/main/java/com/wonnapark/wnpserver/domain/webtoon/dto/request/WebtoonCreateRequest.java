@@ -22,7 +22,7 @@ public record WebtoonCreateRequest(
                 .detail(request.detail())
                 .genre(request.genre())
                 .thumbnail(request.thumbnail())
-                .ageRating(AgeRating.of(request.ageRating()))
+                .ageRating(AgeRating.from(request.ageRating()))
                 .publishDays(request.publishDays())
                 .build();
     }
