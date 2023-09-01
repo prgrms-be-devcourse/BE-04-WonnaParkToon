@@ -17,7 +17,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class AuthorizedArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static final String USER_NOT_FOUND = "%s는 존재하지 않는 유저 ID입니다.";
+    private static final String USER_NOT_FOUND = "%s는 존재하지 않는 유저 ID 입니다. 토큰의 탈취 또는 변조가 의심됩니다.";
 
     private final JwtTokenService jwtTokenService;
     private final UserRepository userRepository;
