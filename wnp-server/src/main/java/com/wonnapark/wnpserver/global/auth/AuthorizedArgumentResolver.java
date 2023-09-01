@@ -1,6 +1,7 @@
 package com.wonnapark.wnpserver.global.auth;
 
 import com.wonnapark.wnpserver.domain.auth.application.JwtTokenService;
+import com.wonnapark.wnpserver.domain.user.exception.UserNotFoundException;
 import com.wonnapark.wnpserver.domain.user.infrastructure.UserRepository;
 import com.wonnapark.wnpserver.global.common.Authorized;
 import com.wonnapark.wnpserver.global.common.UserInfo;
@@ -15,6 +16,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @RequiredArgsConstructor
 public class AuthorizedArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private static final String USER_NOT_FOUND = "%s는 존재하지 않는 유저 ID입니다.";
 
     private final JwtTokenService jwtTokenService;
     private final UserRepository userRepository;
@@ -31,8 +34,10 @@ public class AuthorizedArgumentResolver implements HandlerMethodArgumentResolver
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String accessToken = parseToken(request, HttpHeaders.AUTHORIZATION);
         UserInfo userInfo = jwtTokenService.extractUserInfo(accessToken);
-        // TODO: 2023-09-01 유저 조회 여부 파악
-        return userInfo;
+        if (userRepository.existsById(userInfo.userId())) {
+            return userInfo;
+        }
+        throw new UserNotFoundException(String.format(USER_NOT_FOUND, userInfo.userId()));
     }
 
     private String parseToken(HttpServletRequest request, String headerName) {
