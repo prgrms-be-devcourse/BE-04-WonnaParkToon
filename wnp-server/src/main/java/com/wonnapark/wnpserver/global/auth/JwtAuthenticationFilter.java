@@ -62,18 +62,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isTokenNull(String token, HttpServletResponse response) {
         if (token == null) {
-            response.setStatus(ErrorCode.TOKEN_NOT_FOUND.getValue());
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.TOKEN_NOT_FOUND);
-            try {
-                String json = objectMapper.writeValueAsString(errorResponse);
-                response.getWriter().write(json);
-            } catch (Exception e) {
-                log.warn(e.getMessage(), e);
-            }
+            setErrorResponse(response);
             return true;
         }
         return false;
+    }
+
+    private void setErrorResponse(HttpServletResponse response) { // 메서드 명 마음에 안듬;
+        response.setStatus(ErrorCode.TOKEN_NOT_FOUND.getValue());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.TOKEN_NOT_FOUND);
+        try {
+            String json = objectMapper.writeValueAsString(errorResponse);
+            response.getWriter().write(json);
+        } catch (Exception e) {
+            log.warn(e.getMessage(), e);
+        }
     }
 }
