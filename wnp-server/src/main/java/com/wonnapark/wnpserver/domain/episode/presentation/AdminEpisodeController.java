@@ -33,38 +33,38 @@ public class AdminEpisodeController {
 
     @PostMapping("/{webtoonId}")
     @ResponseStatus(CREATED)
-    public ApiResponse<EpisodeCreationResponse> episodeCreate(
+    public ApiResponse<EpisodeCreationResponse> createEpisode(
             @PathVariable Long webtoonId,
             @RequestBody @Valid EpisodeCreationRequest episodeCreationRequest,
             HttpServletResponse response
     ) {
         Long episodeId = episodeManage.createEpisode(webtoonId, episodeCreationRequest);
 
-        String uri = URI.create(String.format("/episode/%d", episodeId)).toString();
+        String uri = URI.create(String.format("/api/v1/common/episode/detail/%d", episodeId)).toString();
         response.setHeader("Location", uri);
 
         return ApiResponse.from(new EpisodeCreationResponse(episodeId));
     }
 
-    @PatchMapping("/title/{id}")
+    @PatchMapping("{id}/title")
     @ResponseStatus(OK)
     public void updateEpisodeTitle(@PathVariable Long id, @RequestBody @Valid EpisodeTitleUpdateRequest request) {
         episodeManage.updateEpisodeTitle(id, request);
     }
 
-    @PatchMapping("/artist-comment/{id}")
+    @PatchMapping("/{id}/artist-comment")
     @ResponseStatus(OK)
     public void updateEpisodeArtistComment(@PathVariable Long id, @RequestBody @Valid EpisodeArtistCommentUpdateRequest request) {
         episodeManage.updateEpisodeArtistComment(id, request);
     }
 
-    @PatchMapping("/thumbnail/{id}")
+    @PatchMapping("/{id}/thumbnail")
     @ResponseStatus(OK)
     public void updateEpisodeThumbnail(@PathVariable Long id, @RequestBody @Valid EpisodeThumbnailUpdateRequest request) {
         episodeManage.updateEpisodeThumbnail(id, request);
     }
 
-    @PatchMapping("/release-datetime/{id}")
+    @PatchMapping("/{id}/release-datetime")
     @ResponseStatus(OK)
     public void updateEpisodeReleaseDateTime(@PathVariable Long id, @RequestBody @Valid EpisodeReleaseDateTimeUpdateRequest request) {
         episodeManage.updateEpisodeReleaseDateTime(id, request);
