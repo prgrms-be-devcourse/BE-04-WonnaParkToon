@@ -21,7 +21,6 @@ import java.security.Key;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Optional;
 
 @Component
 public class JwtTokenService {
@@ -74,13 +73,9 @@ public class JwtTokenService {
 
     public AuthTokenResponse generateAuthToken(AuthTokenRequest request) {
         AccessTokenResponse accessTokenResponse = generateAccessToken(request);
-        RefreshTokenResponse refreshTokenResponse;
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findById(String.valueOf(request.userId()));
-        if (refreshToken.isPresent()) {
-            refreshTokenResponse = RefreshTokenResponse.from(refreshToken.get());
-        } else {
-            refreshTokenResponse = generateRefreshToken(request);
-        }
+        RefreshTokenResponse refreshTokenResponse = refreshTokenRepository.findById(request.userId())
+                .map(RefreshTokenResponse::from)
+                .orElseGet(() -> generateRefreshToken(request));
         return AuthTokenResponse.builder()
                 .grantType(TokenConstants.BEARER_TYPE)
                 .accessToken(accessTokenResponse.accessToken())
@@ -106,6 +101,10 @@ public class JwtTokenService {
         } catch (IllegalArgumentException illegalArgumentException) {
             throw new JwtInvalidException(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), illegalArgumentException.getCause());
         }
+    }
+
+    public boolean existsRefreshTokenByUserId(Long userId) {
+        return refreshTokenRepository.existsById(userId);
     }
 
     public UserInfo extractUserInfo(String token) {

@@ -31,6 +31,7 @@ public class AuthorizedArgumentResolver implements HandlerMethodArgumentResolver
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String accessToken = parseToken(request, HttpHeaders.AUTHORIZATION);
         UserInfo userInfo = jwtTokenService.extractUserInfo(accessToken);
+        // TODO: 2023-09-01 유저 조회 여부 파악
         return userInfo;
     }
 

@@ -29,8 +29,8 @@ public class OAuthLoginService {
             UserResponse storedUser = userService.findUserByProviderIdAndPlatform(response.getProviderId(), response.getOAuthProvider());
             return new AuthTokenRequest(storedUser.id(), storedUser.age());
         } catch (Exception e) {
-            UserResponse storedUser = userService.create(response);
-            return new AuthTokenRequest(storedUser.id(), storedUser.age());
+            UserResponse createdUser = userService.create(response);
+            return new AuthTokenRequest(createdUser.id(), createdUser.age());
         }
     }
 

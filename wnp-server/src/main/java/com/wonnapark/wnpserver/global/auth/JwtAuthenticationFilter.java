@@ -1,6 +1,7 @@
 package com.wonnapark.wnpserver.global.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wonnapark.wnpserver.domain.auth.TokenConstants;
 import com.wonnapark.wnpserver.global.response.ErrorCode;
 import com.wonnapark.wnpserver.global.response.ErrorResponse;
 import jakarta.servlet.FilterChain;
@@ -22,14 +23,11 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String BEARER_TYPE = "Bearer";
-    private static final String REFRESH_TOKEN = "Refresh-Token";
     private final ObjectMapper objectMapper;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String[] blackList = {
-                "/anonymous",
                 "/api/auth/kakao",
                 "/h2-console"
         };
@@ -41,12 +39,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
         String accessToken = parseToken(request, HttpHeaders.AUTHORIZATION);
-        String refreshToken = parseToken(request, REFRESH_TOKEN);
+        String refreshToken = parseToken(request, TokenConstants.REFRESH_TOKEN);
 
         if (isTokenNull(accessToken, response)) {
             return;
         }
-        if (path.equals("/api/auth/reissue")) {
+        if (path.equals("/api/v1/auth/reissue")) {
             if (isTokenNull(refreshToken, response)) {
                 return;
             }
@@ -72,7 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String json = objectMapper.writeValueAsString(errorResponse);
                 response.getWriter().write(json);
             } catch (Exception e) {
-                log.warn(e.getMessage());
+                log.warn(e.getMessage(), e);
             }
             return true;
         }
