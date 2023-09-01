@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "Webtoons")
+@Table(name = "webtoons")
 @Entity
 @Getter
 @Where(clause = "is_deleted IS NULL")
@@ -63,8 +63,7 @@ public class Webtoon extends BaseEntity {
     private AgeRating ageRating;
 
     @ElementCollection
-    @CollectionTable(name = "publish_day", joinColumns = @JoinColumn(name = "webtoon_id"))
-    @Column(name = "publish_days")
+    @CollectionTable(name = "publish_days", joinColumns = @JoinColumn(name = "webtoon_id"))
     @Enumerated(EnumType.STRING)
     private List<DayOfWeek> publishDays = new ArrayList<>();
 
@@ -108,5 +107,5 @@ public class Webtoon extends BaseEntity {
     public void delete() {
         this.isDeleted = LocalDateTime.now();
     }
-    
+
 }
