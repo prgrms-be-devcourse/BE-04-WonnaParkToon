@@ -4,6 +4,7 @@ import com.wonnapark.wnpserver.domain.webtoon.AgeRating;
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import org.instancio.Instancio;
 
+import java.time.DayOfWeek;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,4 +25,13 @@ public final class WebtoonFixtures {
                 .create();
     }
 
+    /**
+     * @param publishDay 생성할 웹툰들의 연재 요일
+     * @return 인자로 받은 publishDay를 연재 요일로 갖는 웹툰 인스턴스 리스트
+     */
+    public static List<Webtoon> createWebtoonsOnPublishDay(DayOfWeek publishDay) {
+        return Instancio.ofList(Webtoon.class)
+                .set(field(Webtoon::getPublishDays), Arrays.asList(publishDay))
+                .create();
+    }
 }
