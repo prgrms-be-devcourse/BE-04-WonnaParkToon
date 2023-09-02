@@ -21,6 +21,7 @@ import java.security.Key;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class JwtTokenService {
@@ -72,15 +73,22 @@ public class JwtTokenService {
 
     public AuthTokenResponse generateAuthToken(AuthTokenRequest request) {
         AccessTokenResponse accessTokenResponse = generateAccessToken(request);
-        RefreshTokenResponse refreshTokenResponse = refreshTokenRepository.findById(request.userId())
-                .map(RefreshTokenResponse::from)
-                .orElseGet(() -> generateRefreshToken(request));
+        RefreshTokenResponse refreshTokenResponse = generateRefreshToken(request);
         return AuthTokenResponse.builder()
                 .grantType(TokenConstants.BEARER_TYPE)
                 .accessToken(accessTokenResponse.accessToken())
                 .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME / MILLI_SECOND)
                 .refreshToken(refreshTokenResponse.refreshToken())
                 .build();
+    }
+
+    public RefreshTokenResponse findRefreshTokenByUserId(Long userId) {
+        RefreshTokenResponse refreshTokenResponse = refreshTokenRepository.findById(userId)
+                .map(RefreshTokenResponse::from)
+                .orElseThrow(() -> {
+
+                });
+        return refreshTokenResponse;
     }
 
     public boolean isValidToken(String token) {
@@ -91,19 +99,15 @@ public class JwtTokenService {
                     .parseClaimsJws(token)
                     .getBody();
             return true;
-//        } catch (ExpiredJwtException expiredJwtException) {
-//            throw new JwtInvalidException(ErrorCode.EXPIRED_TOKEN.getMessage(), expiredJwtException.getCause());
+        } catch (ExpiredJwtException expiredJwtException) {
+            throw new JwtInvalidException(ErrorCode.EXPIRED_TOKEN, expiredJwtException.getCause());
         } catch (SignatureException signatureException) {
-            throw new JwtInvalidException(ErrorCode.WRONG_SIGNATURE_TOKEN.getMessage(), signatureException.getCause());
+            throw new JwtInvalidException(ErrorCode.WRONG_SIGNATURE_TOKEN, signatureException.getCause());
         } catch (MalformedJwtException | UnsupportedJwtException unsupportedJwtException) {
-            throw new JwtInvalidException(ErrorCode.UNSUPPORTED_TOKEN.getMessage(), unsupportedJwtException.getCause());
+            throw new JwtInvalidException(ErrorCode.UNSUPPORTED_TOKEN, unsupportedJwtException.getCause());
         } catch (IllegalArgumentException illegalArgumentException) {
-            throw new JwtInvalidException(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), illegalArgumentException.getCause());
+            throw new JwtInvalidException(ErrorCode.TOKEN_NOT_FOUND, illegalArgumentException.getCause());
         }
-    }
-
-    public boolean existsRefreshTokenByUserId(Long userId) {
-        return refreshTokenRepository.existsById(userId);
     }
 
     public UserInfo extractUserInfo(String token) {

@@ -2,6 +2,10 @@ package com.wonnapark.wnpserver.global.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonnapark.wnpserver.domain.auth.TokenConstants;
+import com.wonnapark.wnpserver.domain.auth.application.JwtTokenService;
+import com.wonnapark.wnpserver.domain.auth.dto.RefreshTokenResponse;
+import com.wonnapark.wnpserver.domain.auth.exception.JwtInvalidException;
+import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.global.response.ErrorCode;
 import com.wonnapark.wnpserver.global.response.ErrorResponse;
 import jakarta.servlet.FilterChain;
@@ -23,6 +27,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private final JwtTokenService jwtTokenService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -39,17 +44,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
         String accessToken = parseToken(request, HttpHeaders.AUTHORIZATION);
-        String refreshToken = parseToken(request, TokenConstants.REFRESH_TOKEN);
 
-        if (isTokenNull(accessToken, response)) {
-            return;
-        }
-        if (path.equals("/api/v1/auth/reissue")) {
-            if (isTokenNull(refreshToken, response)) {
-                return;
+        try {
+            if (jwtTokenService.isValidToken(accessToken)){
+                if (path.equals("/api/v1/auth/reissue")) {
+                    String refreshToken = parseToken(request, TokenConstants.REFRESH_TOKEN);
+                    UserInfo userInfo = jwtTokenService.extractUserInfo(accessToken);
+                    if (!validateRefreshToken(refreshToken, userInfo.userId())) {
+
+                    }
+                }
+                filterChain.doFilter(request, response);
             }
+        } catch (JwtInvalidException jwtInvalidException) {
+            setErrorResponse(response, jwtInvalidException);
         }
-        filterChain.doFilter(request, response);
+
+//        if (isTokenNull(accessToken, response)) {
+//            return;
+//        }
+//        if (path.equals("/api/v1/auth/reissue")) {
+//            if (isTokenNull(refreshToken, response)) {
+//                return;
+//            }
+//        }
     }
 
     private String parseToken(HttpServletRequest request, String headerName) {
@@ -60,6 +78,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
+    private boolean validateRefreshToken(String refreshToken, Long userId) {
+        if (jwtTokenService.isValidToken(refreshToken)) {
+            RefreshTokenResponse refreshTokenResponse = jwtTokenService.findRefreshTokenByUserId(userId);// 요청 토큰과 저장된 토큰이 같은지 검증해야함
+            if (refreshTokenResponse.refreshToken().equals(refreshToken)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean isTokenNull(String token, HttpServletResponse response) {
         if (token == null) {
             setErrorResponse(response);
@@ -68,11 +96,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return false;
     }
 
-    private void setErrorResponse(HttpServletResponse response) { // 메서드 명 마음에 안듬;
-        response.setStatus(ErrorCode.TOKEN_NOT_FOUND.getValue());
+    private void setErrorResponse(HttpServletResponse response, JwtInvalidException jwtInvalidException) {
+        ErrorCode errorCode = jwtInvalidException.getErrorCode();
+        response.setStatus(errorCode.getValue());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.TOKEN_NOT_FOUND);
+        ErrorResponse errorResponse = ErrorResponse.create(errorCode);
         try {
             String json = objectMapper.writeValueAsString(errorResponse);
             response.getWriter().write(json);
