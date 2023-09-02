@@ -2,8 +2,10 @@ package com.wonnapark.wnpserver.domain.auth.exception;
 
 import com.wonnapark.wnpserver.global.response.ErrorCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public class JwtInvalidException extends RuntimeException {
 
     private final ErrorCode errorCode;

@@ -21,7 +21,6 @@ import java.security.Key;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Optional;
 
 @Component
 public class JwtTokenService {
@@ -83,12 +82,9 @@ public class JwtTokenService {
     }
 
     public RefreshTokenResponse findRefreshTokenByUserId(Long userId) {
-        RefreshTokenResponse refreshTokenResponse = refreshTokenRepository.findById(userId)
+        return refreshTokenRepository.findById(userId)
                 .map(RefreshTokenResponse::from)
-                .orElseThrow(() -> {
-
-                });
-        return refreshTokenResponse;
+                .orElseThrow(() -> new JwtInvalidException(ErrorCode.EXPIRED_TOKEN));
     }
 
     public boolean isValidToken(String token) {
@@ -100,13 +96,13 @@ public class JwtTokenService {
                     .getBody();
             return true;
         } catch (ExpiredJwtException expiredJwtException) {
-            throw new JwtInvalidException(ErrorCode.EXPIRED_TOKEN, expiredJwtException.getCause());
+            throw new JwtInvalidException(ErrorCode.EXPIRED_TOKEN, expiredJwtException);
         } catch (SignatureException signatureException) {
-            throw new JwtInvalidException(ErrorCode.WRONG_SIGNATURE_TOKEN, signatureException.getCause());
+            throw new JwtInvalidException(ErrorCode.WRONG_SIGNATURE_TOKEN, signatureException);
         } catch (MalformedJwtException | UnsupportedJwtException unsupportedJwtException) {
-            throw new JwtInvalidException(ErrorCode.UNSUPPORTED_TOKEN, unsupportedJwtException.getCause());
+            throw new JwtInvalidException(ErrorCode.UNSUPPORTED_TOKEN, unsupportedJwtException);
         } catch (IllegalArgumentException illegalArgumentException) {
-            throw new JwtInvalidException(ErrorCode.TOKEN_NOT_FOUND, illegalArgumentException.getCause());
+            throw new JwtInvalidException(ErrorCode.TOKEN_NOT_FOUND, illegalArgumentException);
         }
     }
 
