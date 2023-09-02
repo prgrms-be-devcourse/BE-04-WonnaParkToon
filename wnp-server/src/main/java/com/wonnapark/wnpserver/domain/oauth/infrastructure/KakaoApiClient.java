@@ -1,6 +1,6 @@
 package com.wonnapark.wnpserver.domain.oauth.infrastructure;
 
-import com.wonnapark.wnpserver.domain.auth.TokenConstants;
+import com.wonnapark.wnpserver.domain.auth.config.TokenConstants;
 import com.wonnapark.wnpserver.domain.oauth.config.OauthProperties;
 import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.KakaoInfoResponse;
@@ -24,15 +24,6 @@ public class KakaoApiClient implements OAuthApiClient {
 
     private final RestTemplate restTemplate;
     private final OauthProperties oauthProperties;
-//
-//    @Value("${oauth.kakao.url.auth}")
-//    private String authUrl;
-//
-//    @Value("${oauth.kakao.url.api}")
-//    private String apiUrl;
-//
-//    @Value("${oauth.kakao.client-id}")
-//    private String clientId;
 
     @Override
     public OAuthProvider getOAuthProvider() {
@@ -52,7 +43,8 @@ public class KakaoApiClient implements OAuthApiClient {
 
         KakaoToken response = restTemplate.postForObject(url, request, KakaoToken.class);
 
-        Assert.notNull(response, "토큰 못 받았어요"); // 커스텀 예외로 ?
+        Assert.notNull(response, "토큰 못 받았어요");
+        // TODO: 2023-09-03 RestClientException 처리 또는 커스텀 예외로?
         return response.accessToken();
     }
 
@@ -65,6 +57,7 @@ public class KakaoApiClient implements OAuthApiClient {
 
         HttpEntity<?> request = new HttpEntity<>(httpHeaders);
         return restTemplate.postForObject(url, request, KakaoInfoResponse.class);
+        // TODO: 2023-09-03 RestClientException 처리 또는 커스텀 예외로?
     }
 
 }

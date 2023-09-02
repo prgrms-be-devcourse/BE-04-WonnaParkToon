@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.domain.auth.application;
 
-import com.wonnapark.wnpserver.domain.auth.TokenConstants;
 import com.wonnapark.wnpserver.domain.auth.config.JwtProperties;
+import com.wonnapark.wnpserver.domain.auth.config.TokenConstants;
 import com.wonnapark.wnpserver.domain.auth.dto.RefreshTokenResponse;
 import com.wonnapark.wnpserver.domain.auth.exception.JwtInvalidException;
 import com.wonnapark.wnpserver.domain.auth.infrastructure.RefreshTokenRepository;

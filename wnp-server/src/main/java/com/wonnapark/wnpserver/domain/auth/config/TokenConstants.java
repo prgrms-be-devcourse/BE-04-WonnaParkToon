@@ -1,4 +1,4 @@
-package com.wonnapark.wnpserver.domain.auth;
+package com.wonnapark.wnpserver.domain.auth.config;
 
 public final class TokenConstants {
 

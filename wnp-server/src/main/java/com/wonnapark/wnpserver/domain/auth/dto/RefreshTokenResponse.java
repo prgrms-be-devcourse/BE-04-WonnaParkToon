@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.domain.auth.dto;
 
 import com.wonnapark.wnpserver.domain.auth.RefreshToken;
-import com.wonnapark.wnpserver.domain.auth.TokenConstants;
+import com.wonnapark.wnpserver.domain.auth.config.TokenConstants;
 
 public record RefreshTokenResponse(
         String grantType,

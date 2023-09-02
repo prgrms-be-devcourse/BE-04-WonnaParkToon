@@ -1,8 +1,8 @@
 package com.wonnapark.wnpserver.domain.auth.application;
 
 import com.wonnapark.wnpserver.domain.auth.RefreshToken;
-import com.wonnapark.wnpserver.domain.auth.TokenConstants;
 import com.wonnapark.wnpserver.domain.auth.config.JwtProperties;
+import com.wonnapark.wnpserver.domain.auth.config.TokenConstants;
 import com.wonnapark.wnpserver.domain.auth.dto.AccessTokenResponse;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
