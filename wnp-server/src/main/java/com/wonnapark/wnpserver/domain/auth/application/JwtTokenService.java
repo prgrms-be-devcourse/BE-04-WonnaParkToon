@@ -2,19 +2,16 @@ package com.wonnapark.wnpserver.domain.auth.application;
 
 import com.wonnapark.wnpserver.domain.auth.RefreshToken;
 import com.wonnapark.wnpserver.domain.auth.TokenConstants;
+import com.wonnapark.wnpserver.domain.auth.config.JwtProperties;
 import com.wonnapark.wnpserver.domain.auth.dto.AccessTokenResponse;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
 import com.wonnapark.wnpserver.domain.auth.dto.RefreshTokenResponse;
-import com.wonnapark.wnpserver.domain.auth.exception.JwtInvalidException;
 import com.wonnapark.wnpserver.domain.auth.infrastructure.RefreshTokenRepository;
-import com.wonnapark.wnpserver.global.common.UserInfo;
-import com.wonnapark.wnpserver.global.response.ErrorCode;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -25,7 +22,6 @@ import java.util.Date;
 @Component
 public class JwtTokenService {
 
-    private static final String DELIMITER = "&";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
     private static final long MILLI_SECOND = 1000L;
@@ -33,18 +29,19 @@ public class JwtTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final Key key;
 
-    public JwtTokenService(@Value("${jwt.secret-key}") String secretKey, RefreshTokenRepository refreshTokenRepository) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+    public JwtTokenService(JwtProperties jwtProperties, RefreshTokenRepository refreshTokenRepository) {
         this.refreshTokenRepository = refreshTokenRepository;
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecretKey());
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public AccessTokenResponse generateAccessToken(AuthTokenRequest request) {
         long now = (new Date()).getTime();
         Date expiredAt = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
-        String subject = request.userId() + DELIMITER + request.age();
         String accessToken = Jwts.builder()
-                .setSubject(subject)
+                .claim(TokenConstants.AGE_CLAIM_NAME, request.age())
+                .claim(TokenConstants.ROLE_CLAIM_NAME, request.role())
+                .setSubject(String.valueOf(request.userId()))
                 .setIssuer(TokenConstants.ISSUER)
                 .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .setExpiration(expiredAt)
@@ -79,46 +76,6 @@ public class JwtTokenService {
                 .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME / MILLI_SECOND)
                 .refreshToken(refreshTokenResponse.refreshToken())
                 .build();
-    }
-
-    public RefreshTokenResponse findRefreshTokenByUserId(Long userId) {
-        return refreshTokenRepository.findById(userId)
-                .map(RefreshTokenResponse::from)
-                .orElseThrow(() -> new JwtInvalidException(ErrorCode.EXPIRED_TOKEN));
-    }
-
-    public boolean isValidToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            return true;
-        } catch (ExpiredJwtException expiredJwtException) {
-            throw new JwtInvalidException(ErrorCode.EXPIRED_TOKEN, expiredJwtException);
-        } catch (SignatureException signatureException) {
-            throw new JwtInvalidException(ErrorCode.WRONG_SIGNATURE_TOKEN, signatureException);
-        } catch (MalformedJwtException | UnsupportedJwtException unsupportedJwtException) {
-            throw new JwtInvalidException(ErrorCode.UNSUPPORTED_TOKEN, unsupportedJwtException);
-        } catch (IllegalArgumentException illegalArgumentException) {
-            throw new JwtInvalidException(ErrorCode.TOKEN_NOT_FOUND, illegalArgumentException);
-        }
-    }
-
-    public UserInfo extractUserInfo(String token) {
-        Claims claims = parseClaims(token);
-        String subject = claims.getSubject();
-        String[] extracted = subject.split(DELIMITER);
-        return UserInfo.from(extracted);
-    }
-
-    private Claims parseClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
     }
 
 }
