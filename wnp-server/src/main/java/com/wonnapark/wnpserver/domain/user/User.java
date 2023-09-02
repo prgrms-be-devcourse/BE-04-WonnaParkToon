@@ -37,15 +37,20 @@ public class User extends BaseEntity {
     @Column(name = "gender", nullable = false)
     private String gender;
 
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Column(name = "is_deleted", nullable = true, columnDefinition = "TIMESTAMP(6)")
     private LocalDateTime isDeleted;
 
     @Builder
-    private User(Long providerId, OAuthProvider platform, String nickname, int age, String gender) {
+    private User(Long providerId, OAuthProvider platform, String nickname, int age, String gender, Role role) {
         this.providerId = providerId;
         this.platform = platform;
         this.nickname = nickname;
         this.age = age;
         this.gender = gender;
+        this.role = role;
     }
 }
