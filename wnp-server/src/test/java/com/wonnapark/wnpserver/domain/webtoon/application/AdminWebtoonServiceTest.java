@@ -1,7 +1,9 @@
 package com.wonnapark.wnpserver.domain.webtoon.application;
 
+import com.wonnapark.wnpserver.domain.webtoon.AgeRating;
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import com.wonnapark.wnpserver.domain.webtoon.dto.request.WebtoonCreateRequest;
+import com.wonnapark.wnpserver.domain.webtoon.dto.request.WebtoonUpdateRequest;
 import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
@@ -45,6 +48,29 @@ class AdminWebtoonServiceTest {
         // then
         assertThat(returnedId).isEqualTo(webtoon.getId());
 
+    }
+
+    @Test
+    @DisplayName("올바른 요청을 통해 웹툰을 수정할 수 있다.")
+    void updateWebtoon() {
+        // given
+        WebtoonUpdateRequest request = Instancio.of(WebtoonUpdateRequest.class)
+                .generate(field(WebtoonUpdateRequest::ageRating), gen -> gen.oneOf(ageRatingNames))
+                .create();
+        Webtoon webtoon = WebtoonFixtures.createWebtoon();
+        given(webtoonRepository.findById(any(Long.class))).willReturn(Optional.of(webtoon));
+
+        // when
+        adminWebtoonService.updateWebtoon(request, webtoon.getId());
+
+        // then
+        assertThat(webtoon.getTitle()).isEqualTo(request.title());
+        assertThat(webtoon.getArtist()).isEqualTo(request.artist());
+        assertThat(webtoon.getDetail()).isEqualTo(request.detail());
+        assertThat(webtoon.getGenre()).isEqualTo(request.genre());
+        assertThat(webtoon.getThumbnail()).isEqualTo(request.thumbnail());
+        assertThat(webtoon.getPublishDays()).isEqualTo(request.publishDays());
+        assertThat(webtoon.getAgeRating()).isEqualTo(AgeRating.from(request.ageRating()));
     }
 
 }
