@@ -3,7 +3,6 @@ package com.wonnapark.wnpserver.domain.oauth.dto.response;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.wonnapark.wnpserver.domain.user.OAuthProvider;
-import com.wonnapark.wnpserver.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +14,6 @@ import java.time.LocalDateTime;
 public class KakaoInfoResponse implements OAuthInfoResponse {
 
     private Long id;
-
     private KakaoAccount kakaoAccount;
 
     @Getter
@@ -50,24 +48,13 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     }
 
     @Override
-    public String getBirthYear() {
-        return kakaoAccount.birthyear;
+    public int getAge() {
+        return getAgeFromBirthYear(kakaoAccount.birthyear);
     }
 
     @Override
     public String getGender() {
         return kakaoAccount.gender;
-    }
-
-    @Override
-    public User toEntity() {
-        return User.builder()
-                .providerId(getId())
-                .platform(getOAuthProvider())
-                .nickname(getNickname())
-                .age(getAgeFromBirthYear(getBirthYear()))
-                .gender(getGender())
-                .build();
     }
 
     private int getAgeFromBirthYear(String birthYear) {

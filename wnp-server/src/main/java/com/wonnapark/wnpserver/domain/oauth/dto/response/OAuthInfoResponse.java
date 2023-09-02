@@ -1,7 +1,6 @@
 package com.wonnapark.wnpserver.domain.oauth.dto.response;
 
 import com.wonnapark.wnpserver.domain.user.OAuthProvider;
-import com.wonnapark.wnpserver.domain.user.User;
 
 public interface OAuthInfoResponse {
 
@@ -11,9 +10,7 @@ public interface OAuthInfoResponse {
 
     OAuthProvider getOAuthProvider();
 
-    String getBirthYear();
+    int getAge();
 
     String getGender();
-
-    User toEntity();
 }

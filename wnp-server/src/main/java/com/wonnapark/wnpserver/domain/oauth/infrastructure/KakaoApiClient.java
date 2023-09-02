@@ -41,7 +41,7 @@ public class KakaoApiClient implements OAuthApiClient {
 
     @Override
     public String requestAccessToken(OAuthLoginRequest params) {
-        String url = oauthProperties.getKakao().getUrl().getAuthUrl()+ OauthProperties.KAKAO_REQUEST_TOKEN_URI;
+        String url = oauthProperties.getKakao().getUrl().getAuthUrl() + OauthProperties.KAKAO_REQUEST_TOKEN_URI;
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
