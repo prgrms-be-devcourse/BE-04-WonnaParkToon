@@ -7,10 +7,8 @@ import com.wonnapark.wnpserver.domain.oauth.dto.response.KakaoInfoResponse;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.KakaoToken;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
 import com.wonnapark.wnpserver.domain.user.OAuthProvider;
-import com.wonnapark.wnpserver.global.config.OauthConfig;
 import io.jsonwebtoken.lang.Assert;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
-public class KakaoApiClient extends OAuthApiClient {
+public class KakaoApiClient implements OAuthApiClient {
     private static final String GRANT_TYPE = "authorization_code";
     private static final String EMPTY_SPACE = " ";
 
@@ -50,7 +48,6 @@ public class KakaoApiClient extends OAuthApiClient {
         MultiValueMap<String, String> body = params.makeBody();
         body.add("grant_type", GRANT_TYPE);
         body.add("client_id", oauthProperties.getKakao().getClientId());
-
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
         KakaoToken response = restTemplate.postForObject(url, request, KakaoToken.class);
