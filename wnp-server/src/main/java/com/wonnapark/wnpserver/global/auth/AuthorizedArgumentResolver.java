@@ -27,12 +27,10 @@ public class AuthorizedArgumentResolver implements HandlerMethodArgumentResolver
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-
         Authentication authentication = AuthenticationContextHolder.getAuthentication();
         UserInfo userInfo = UserInfo.from(authentication);
         if (userRepository.existsById(userInfo.userId()))
             return userInfo;
-
         throw new JwtInvalidException(ErrorCode.UNSUPPORTED_TOKEN);
     }
 
