@@ -27,10 +27,10 @@ public class OAuthLoginService {
     private AuthTokenRequest findOrCreateUser(OAuthInfoResponse response) {
         try {
             UserResponse storedUser = userService.findUserByProviderIdAndPlatform(response.getProviderId(), response.getOAuthProvider());
-            return new AuthTokenRequest(storedUser.id(), storedUser.age());
+            return new AuthTokenRequest(storedUser.id(), storedUser.age(), storedUser.role());
         } catch (Exception e) {
             UserResponse createdUser = userService.create(response);
-            return new AuthTokenRequest(createdUser.id(), createdUser.age());
+            return new AuthTokenRequest(createdUser.id(), createdUser.age(), createdUser.role());
         }
     }
 

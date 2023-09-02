@@ -1,4 +1,4 @@
-package com.wonnapark.wnpserver.global.common;
+package com.wonnapark.wnpserver.global.auth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
