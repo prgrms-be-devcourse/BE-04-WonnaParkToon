@@ -1,9 +1,10 @@
 package com.wonnapark.wnpserver.domain.auth.presentation;
 
 import com.wonnapark.wnpserver.domain.auth.application.JwtTokenService;
-import com.wonnapark.wnpserver.domain.user.infrastructure.UserRepository;
-import com.wonnapark.wnpserver.global.common.Authorized;
-import com.wonnapark.wnpserver.global.common.UserInfo;
+import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenRequest;
+import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
+import com.wonnapark.wnpserver.global.auth.Authentication;
+import com.wonnapark.wnpserver.global.auth.AuthenticationContextHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final JwtTokenService jwtTokenService;
-    private final UserRepository userRepository;
 
-    @GetMapping("/reissue-all")
-    public void 재발급(@Authorized UserInfo userInfo) {
-        jwtTokenService.generateAuthToken()
+    @GetMapping("reissue")
+    public AuthTokenResponse reissueAuthToken() {
+        Authentication authentication = AuthenticationContextHolder.getAuthentication();
+        return jwtTokenService.generateAuthToken(AuthTokenRequest.from(authentication));
     }
 
 }
