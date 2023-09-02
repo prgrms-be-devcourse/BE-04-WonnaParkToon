@@ -21,6 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.atMostOnce;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class AdminWebtoonServiceTest {
@@ -73,4 +76,17 @@ class AdminWebtoonServiceTest {
         assertThat(webtoon.getAgeRating()).isEqualTo(AgeRating.from(request.ageRating()));
     }
 
+    @Test
+    @DisplayName("웹툰을 삭제할 수 있다.")
+    void deleteWebtoon() {
+        // given
+        Webtoon webtoon = mock(Webtoon.class);
+        given(webtoonRepository.findById(any(Long.class))).willReturn(Optional.of(webtoon));
+
+        // when
+        adminWebtoonService.deleteWebtoon(webtoon.getId());
+
+        // then
+        then(webtoon).should(atMostOnce()).delete();
+    }
 }
