@@ -28,16 +28,16 @@ public class ErrorResponse {
         this.errors = errors;
     }
 
-    public static ErrorResponse create(ErrorCode detail) {
-        return new ErrorResponse(detail.getValue(),
-                detail.getCode(),
-                detail.getMessage());
+    public static ErrorResponse create(ErrorCode errorCode) {
+        return new ErrorResponse(errorCode.getValue(),
+                errorCode.getCode(),
+                errorCode.getMessage());
     }
 
-    public static ErrorResponse create(ErrorCode detail, BindingResult bindingResult) {
-        return new ErrorResponse(detail.getValue(),
-                detail.getCode(),
-                detail.getMessage(),
+    public static ErrorResponse create(ErrorCode errorCode, BindingResult bindingResult) {
+        return new ErrorResponse(errorCode.getValue(),
+                errorCode.getCode(),
+                errorCode.getMessage(),
                 FieldErrorInfo.create(bindingResult));
     }
 
