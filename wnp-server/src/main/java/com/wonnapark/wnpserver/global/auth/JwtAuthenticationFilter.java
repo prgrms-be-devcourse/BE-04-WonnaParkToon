@@ -44,30 +44,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
         String accessToken = parseToken(request, HttpHeaders.AUTHORIZATION);
-
         try {
             if (jwtTokenService.isValidToken(accessToken)){
                 if (path.equals("/api/v1/auth/reissue")) {
                     String refreshToken = parseToken(request, TokenConstants.REFRESH_TOKEN);
                     UserInfo userInfo = jwtTokenService.extractUserInfo(accessToken);
                     if (!validateRefreshToken(refreshToken, userInfo.userId())) {
-
+                        setErrorResponse(response, ErrorCode.BAD_REQUEST);
+                        log.warn("토큰 예외 정보 : {}", response);
+                        return;
                     }
                 }
                 filterChain.doFilter(request, response);
             }
         } catch (JwtInvalidException jwtInvalidException) {
-            setErrorResponse(response, jwtInvalidException);
+            setErrorResponse(response, jwtInvalidException.getErrorCode());
+            log.warn("토큰 예외 정보 : {}", response);
         }
-
-//        if (isTokenNull(accessToken, response)) {
-//            return;
-//        }
-//        if (path.equals("/api/v1/auth/reissue")) {
-//            if (isTokenNull(refreshToken, response)) {
-//                return;
-//            }
-//        }
     }
 
     private String parseToken(HttpServletRequest request, String headerName) {
@@ -88,16 +81,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return false;
     }
 
-    private boolean isTokenNull(String token, HttpServletResponse response) {
-        if (token == null) {
-            setErrorResponse(response);
-            return true;
-        }
-        return false;
-    }
-
-    private void setErrorResponse(HttpServletResponse response, JwtInvalidException jwtInvalidException) {
-        ErrorCode errorCode = jwtInvalidException.getErrorCode();
+    private void setErrorResponse(HttpServletResponse response, ErrorCode errorCode) {
         response.setStatus(errorCode.getValue());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

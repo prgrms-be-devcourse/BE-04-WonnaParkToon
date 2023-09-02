@@ -15,15 +15,15 @@ public class OauthProperties {
 
     @Getter
     @RequiredArgsConstructor
-    public static class Kakao{
+    public static class Kakao {
         private final String clientId;
         private final Url url;
 
         @Getter
         @RequiredArgsConstructor
-        public final static class Url{
+        public final static class Url {
             private final String authUrl;
             private final String apiUrl;
-            }
         }
+    }
 }
