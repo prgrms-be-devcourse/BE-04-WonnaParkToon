@@ -2,10 +2,9 @@ package com.wonnapark.wnpserver.global.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonnapark.wnpserver.domain.auth.TokenConstants;
-import com.wonnapark.wnpserver.domain.auth.application.JwtTokenService;
+import com.wonnapark.wnpserver.domain.auth.application.AuthenticationResolver;
 import com.wonnapark.wnpserver.domain.auth.dto.RefreshTokenResponse;
 import com.wonnapark.wnpserver.domain.auth.exception.JwtInvalidException;
-import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.global.response.ErrorCode;
 import com.wonnapark.wnpserver.global.response.ErrorResponse;
 import jakarta.servlet.FilterChain;
@@ -25,15 +24,15 @@ import java.util.Arrays;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenService jwtTokenService;
+    private final AuthenticationResolver authenticationResolver;
     private final ObjectMapper objectMapper;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String[] blackList = {
-                "/api/auth/kakao",
+                "/api/v1/auth/kakao",
                 "/h2-console"
         };
         String path = request.getRequestURI();
@@ -43,19 +42,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
-        String accessToken = parseToken(request, HttpHeaders.AUTHORIZATION);
+        String accessToken = extractTokenFromHeader(request, HttpHeaders.AUTHORIZATION);
         try {
-            if (jwtTokenService.isValidToken(accessToken)){
+            if (authenticationResolver.isValidToken(accessToken)) {
+                Authentication authentication = authenticationResolver.extractAuthentication(accessToken);
+                AuthenticationContextHolder.setAuthenticationHolder(authentication);
                 if (path.equals("/api/v1/auth/reissue")) {
-                    String refreshToken = parseToken(request, TokenConstants.REFRESH_TOKEN);
-                    UserInfo userInfo = jwtTokenService.extractUserInfo(accessToken);
-                    if (!validateRefreshToken(refreshToken, userInfo.userId())) {
+                    String refreshToken = extractTokenFromHeader(request, TokenConstants.REFRESH_TOKEN);
+                    if (!validateRefreshToken(refreshToken, authentication.userId())) {
                         setErrorResponse(response, ErrorCode.BAD_REQUEST);
                         log.warn("토큰 예외 정보 : {}", response);
+                        AuthenticationContextHolder.clearContext();
                         return;
                     }
                 }
                 filterChain.doFilter(request, response);
+                AuthenticationContextHolder.clearContext();
             }
         } catch (JwtInvalidException jwtInvalidException) {
             setErrorResponse(response, jwtInvalidException.getErrorCode());
@@ -63,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    private String parseToken(HttpServletRequest request, String headerName) {
+    public String extractTokenFromHeader(HttpServletRequest request, String headerName) {
         String token = request.getHeader(headerName);
         if (StringUtils.hasText(token)) {
             return token;
@@ -72,11 +74,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean validateRefreshToken(String refreshToken, Long userId) {
-        if (jwtTokenService.isValidToken(refreshToken)) {
-            RefreshTokenResponse refreshTokenResponse = jwtTokenService.findRefreshTokenByUserId(userId);// 요청 토큰과 저장된 토큰이 같은지 검증해야함
-            if (refreshTokenResponse.refreshToken().equals(refreshToken)) {
+        if (authenticationResolver.isValidToken(refreshToken)) {
+            RefreshTokenResponse refreshTokenResponse = authenticationResolver.findRefreshTokenByUserId(userId);
+            if (refreshTokenResponse.refreshToken().equals(refreshToken))
                 return true;
-            }
         }
         return false;
     }
