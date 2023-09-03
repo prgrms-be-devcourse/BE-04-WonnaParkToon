@@ -29,12 +29,12 @@ public class AdminWebtoonController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<Long> createWebtoon(@RequestBody WebtoonCreateRequest request, HttpServletResponse response) {
-        Long webtoonId = adminWebtoonService.createWebtoon(request);
-        String uri = URI.create(String.format("/api/v1/webtoons/%d", webtoonId)).toString();
+    public ApiResponse<WebtoonDetailResponse> createWebtoon(@RequestBody WebtoonCreateRequest request, HttpServletResponse response) {
+        WebtoonDetailResponse data = adminWebtoonService.createWebtoon(request);
+        String uri = URI.create(String.format("/api/v1/webtoons/%d", data.id())).toString();
         response.setHeader("Location", uri);
 
-        return ApiResponse.from(webtoonId);
+        return ApiResponse.from(data);
     }
 
     @PutMapping("/{webtoonId}")
@@ -48,7 +48,7 @@ public class AdminWebtoonController {
     @PatchMapping("/{webtoonId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<LocalDateTime> deleteWebtoon(@PathVariable Long webtoonId) {
-        LocalDateTime deletedDateTime = adminWebtoonService.delete(webtoonId);
+        LocalDateTime deletedDateTime = adminWebtoonService.deleteWebtoon(webtoonId);
 
         return ApiResponse.from(deletedDateTime);
     }

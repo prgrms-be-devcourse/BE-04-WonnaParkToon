@@ -22,9 +22,9 @@ public class AdminWebtoonService {
     private final WebtoonRepository webtoonRepository;
 
     @Transactional
-    public Long createWebtoon(WebtoonCreateRequest request) {
+    public WebtoonDetailResponse createWebtoon(WebtoonCreateRequest request) {
         Webtoon webtoon = WebtoonCreateRequest.toEntity(request);
-        return webtoonRepository.save(webtoon).getId();
+        return WebtoonDetailResponse.from(webtoonRepository.save(webtoon));
     }
 
     @Transactional
@@ -45,7 +45,7 @@ public class AdminWebtoonService {
     }
 
     @Transactional
-    public LocalDateTime delete(Long webtoonId) {
+    public LocalDateTime deleteWebtoon(Long webtoonId) {
         Webtoon webtoon = webtoonRepository.findById(webtoonId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(WEBTOON_NOT_FOUND.getMessage(), webtoonId)));
         webtoon.delete();
