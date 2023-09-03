@@ -54,7 +54,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     String refreshToken = extractTokenFromHeader(request, TokenConstants.REFRESH_TOKEN);
                     if (!validateRefreshToken(refreshToken, authentication.userId())) {
                         setErrorResponse(response, ErrorCode.BAD_REQUEST, RE_LOGIN_URI);
-                        log.warn("리프레시 토큰 예외 정보 : {}", response);
                         AuthenticationContextHolder.clearContext();
                         return;
                     }
@@ -64,7 +63,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
         } catch (JwtInvalidException jwtInvalidException) {
             setErrorResponse(response, jwtInvalidException.getErrorCode(), REISSUE_URI);
-            log.warn("토큰 예외 정보 : {}", response);
             // TODO: 2023-09-03 response 내부 출력하는 방법 찾아보기
         }
     }
@@ -79,7 +77,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private boolean validateRefreshToken(String refreshToken, Long userId) {
         if (authenticationResolver.isValidToken(refreshToken)) {
-            RefreshTokenResponse refreshTokenResponse = authenticationResolver.findRefreshTokenByUserId(userId);
+            RefreshTokenResponse refreshTokenResponse = authenticationResolver.checkExpiredRefreshToken(userId);
             if (refreshTokenResponse.refreshToken().equals(refreshToken))
                 return true;
         }
@@ -96,6 +94,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         try {
             String json = objectMapper.writeValueAsString(errorResponse);
             response.getWriter().write(json);
+            log.warn("토큰 예외 정보 : {}", errorResponse);
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
         }
