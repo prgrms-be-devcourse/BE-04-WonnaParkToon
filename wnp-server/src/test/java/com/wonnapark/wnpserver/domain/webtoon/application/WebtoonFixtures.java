@@ -25,6 +25,12 @@ public final class WebtoonFixtures {
                 .create();
     }
 
+    public static List<Webtoon> createWebtoons() {
+        return Instancio.ofList(Webtoon.class)
+                .generate(field(Webtoon::getAgeRating), gen -> gen.enumOf(AgeRating.class))
+                .create();
+    }
+
     /**
      * @param publishDay 생성할 웹툰들의 연재 요일
      * @return 인자로 받은 publishDay를 연재 요일로 갖는 웹툰 인스턴스 리스트

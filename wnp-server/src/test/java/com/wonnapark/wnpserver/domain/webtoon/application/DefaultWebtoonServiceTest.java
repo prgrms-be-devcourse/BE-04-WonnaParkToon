@@ -3,11 +3,17 @@ package com.wonnapark.wnpserver.domain.webtoon.application;
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonSimpleResponse;
 import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.DayOfWeek;
 import java.util.HashMap;
@@ -27,11 +33,23 @@ class DefaultWebtoonServiceTest {
     private WebtoonRepository webtoonRepository;
 
     @Test
+    @DisplayName("전체 웹툰을 페이지 조회할 수 있다.")
     void findAllWebtoonsWithPaging() {
+        // given
+        Pageable pageable = PageRequest.of(0, 20, Sort.by("title").ascending());
+        List<Webtoon> webtoons = WebtoonFixtures.createWebtoons();
+        Page<Webtoon> page = new PageImpl<>(webtoons, pageable, webtoons.size());
+        given(webtoonRepository.findAll(pageable)).willReturn(page);
 
+        // when
+        Page<WebtoonSimpleResponse> response = defaultWebtoonService.findAllWebtoonsWithPaging(pageable);
+
+        // then
+        assertThat(response.getTotalElements()).isEqualTo(Math.min(webtoons.size(), pageable.getPageSize()));
     }
 
     @Test
+    @DisplayName("요일별 웹툰 목록을 조회할 수 있다.")
     void findWebtoonsByPublishDay() {
         // given
         Map<DayOfWeek, List<Webtoon>> webtoonsOnDayOfWeek = new HashMap<>();
@@ -54,4 +72,7 @@ class DefaultWebtoonServiceTest {
             );
         }
     }
+
+    // TODO: 2023-09-03 findAllWebtoonsOnEachPublishDay 테스트 코드 추가
+
 }
