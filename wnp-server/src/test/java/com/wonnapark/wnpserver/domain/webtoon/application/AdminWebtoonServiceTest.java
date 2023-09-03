@@ -13,8 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +26,6 @@ import static org.mockito.Mockito.mock;
 @ExtendWith(MockitoExtension.class)
 class AdminWebtoonServiceTest {
 
-    private final List<String> ageRatingNames = Arrays.asList("전체이용가", "12세이용가", "15세이용가", "18세이용가");
     @InjectMocks
     private AdminWebtoonService adminWebtoonService;
     @Mock
@@ -39,7 +36,7 @@ class AdminWebtoonServiceTest {
     void createWebtoon() {
         // given
         WebtoonCreateRequest request = Instancio.of(WebtoonCreateRequest.class)
-                .generate(field(WebtoonCreateRequest::ageRating), gen -> gen.oneOf(ageRatingNames))
+                .generate(field(WebtoonCreateRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
                 .create();
 
         Webtoon webtoon = WebtoonCreateRequest.toEntity(request);
@@ -58,7 +55,7 @@ class AdminWebtoonServiceTest {
     void updateWebtoon() {
         // given
         WebtoonUpdateRequest request = Instancio.of(WebtoonUpdateRequest.class)
-                .generate(field(WebtoonUpdateRequest::ageRating), gen -> gen.oneOf(ageRatingNames))
+                .generate(field(WebtoonUpdateRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
                 .create();
         Webtoon webtoon = WebtoonFixtures.createWebtoon();
         given(webtoonRepository.findById(any(Long.class))).willReturn(Optional.of(webtoon));
