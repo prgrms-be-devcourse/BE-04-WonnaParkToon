@@ -41,4 +41,13 @@ public class ErrorResponse {
                 FieldErrorInfo.create(bindingResult));
     }
 
+    @Override
+    public String toString() {
+        return "ErrorResponse{" +
+                "status=" + status +
+                ", code='" + code + '\'' +
+                ", message='" + message + '\'' +
+                ", errors=" + errors +
+                '}';
+    }
 }

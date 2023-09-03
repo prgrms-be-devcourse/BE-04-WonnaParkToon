@@ -27,4 +27,13 @@ public class FieldErrorInfo {
                         error.getDefaultMessage()))
                 .toList();
     }
+
+    @Override
+    public String toString() {
+        return "FieldErrorInfo{" +
+                "field='" + field + '\'' +
+                ", value='" + value + '\'' +
+                ", reason='" + reason + '\'' +
+                '}';
+    }
 }
