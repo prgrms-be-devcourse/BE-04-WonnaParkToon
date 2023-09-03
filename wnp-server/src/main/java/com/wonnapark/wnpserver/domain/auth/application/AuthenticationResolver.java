@@ -28,7 +28,7 @@ public class AuthenticationResolver {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public RefreshTokenResponse findRefreshTokenByUserId(Long userId) {
+    public RefreshTokenResponse checkExpiredRefreshToken(Long userId) {
         return refreshTokenRepository.findById(userId)
                 .map(RefreshTokenResponse::from)
                 .orElseThrow(() -> new JwtInvalidException(ErrorCode.EXPIRED_TOKEN));
