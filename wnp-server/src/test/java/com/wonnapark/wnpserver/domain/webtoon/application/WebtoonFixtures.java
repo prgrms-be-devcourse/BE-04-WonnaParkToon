@@ -25,6 +25,30 @@ public final class WebtoonFixtures {
                 .create();
     }
 
+    /**
+     * 18세 이용가가 아닌 웹툰을 생성하는 메서드
+     *
+     * @return ageRating이 OVER_18이 아닌 Webtoon 인스턴스
+     */
+    public static Webtoon createWebtoonUnder18() {
+        return Instancio.of(Webtoon.class)
+                .ignore(field(Webtoon::getIsDeleted))
+                .generate(field(Webtoon::getAgeRating), gen -> gen.enumOf(AgeRating.class).excluding(AgeRating.OVER_18))
+                .create();
+    }
+
+    /**
+     * 18세 이용가 웹툰을 생성하는 메서드
+     *
+     * @return ageRating이 OVER_18인 Webtoon 인스턴스
+     */
+    public static Webtoon createWebtoonOver18() {
+        return Instancio.of(Webtoon.class)
+                .ignore(field(Webtoon::getIsDeleted))
+                .set(field(Webtoon::getAgeRating), AgeRating.OVER_18)
+                .create();
+    }
+
     public static List<Webtoon> createWebtoons() {
         return Instancio.ofList(Webtoon.class)
                 .generate(field(Webtoon::getAgeRating), gen -> gen.enumOf(AgeRating.class))
@@ -40,4 +64,5 @@ public final class WebtoonFixtures {
                 .set(field(Webtoon::getPublishDays), Arrays.asList(publishDay))
                 .create();
     }
+
 }
