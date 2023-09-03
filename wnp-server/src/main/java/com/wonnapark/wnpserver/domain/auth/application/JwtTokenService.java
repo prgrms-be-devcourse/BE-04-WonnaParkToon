@@ -22,22 +22,21 @@ import java.util.Date;
 @Component
 public class JwtTokenService {
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
-    private static final long MILLI_SECOND = 1000L;
 
+    private final JwtProperties jwtProperties;
     private final RefreshTokenRepository refreshTokenRepository;
     private final Key key;
 
     public JwtTokenService(JwtProperties jwtProperties, RefreshTokenRepository refreshTokenRepository) {
+        this.jwtProperties = jwtProperties;
         this.refreshTokenRepository = refreshTokenRepository;
-        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecretKey());
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.secretKey());
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public AccessTokenResponse generateAccessToken(AuthTokenRequest request) {
         long now = (new Date()).getTime();
-        Date expiredAt = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        Date expiredAt = new Date(now + jwtProperties.accessTokenExpireTime());
         String accessToken = Jwts.builder()
                 .claim(TokenConstants.AGE_CLAIM_NAME, request.age())
                 .claim(TokenConstants.ROLE_CLAIM_NAME, request.role())
@@ -47,12 +46,12 @@ public class JwtTokenService {
                 .setExpiration(expiredAt)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
-        return new AccessTokenResponse(TokenConstants.BEARER_TYPE, accessToken, ACCESS_TOKEN_EXPIRE_TIME / MILLI_SECOND);
+        return new AccessTokenResponse(TokenConstants.BEARER_TYPE, accessToken, jwtProperties.accessTokenExpireTime() / TokenConstants.MILLI_SECOND);
     }
 
     public RefreshTokenResponse generateRefreshToken(AuthTokenRequest request) {
         long now = (new Date()).getTime();
-        Date expiredAt = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
+        Date expiredAt = new Date(now + jwtProperties.refreshTokenExpireTime());
         String refreshToken = Jwts.builder()
                 .setIssuer(TokenConstants.ISSUER)
                 .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
@@ -73,7 +72,7 @@ public class JwtTokenService {
         return AuthTokenResponse.builder()
                 .grantType(TokenConstants.BEARER_TYPE)
                 .accessToken(accessTokenResponse.accessToken())
-                .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME / MILLI_SECOND)
+                .accessTokenExpiresIn(jwtProperties.accessTokenExpireTime() / TokenConstants.MILLI_SECOND)
                 .refreshToken(refreshTokenResponse.refreshToken())
                 .build();
     }

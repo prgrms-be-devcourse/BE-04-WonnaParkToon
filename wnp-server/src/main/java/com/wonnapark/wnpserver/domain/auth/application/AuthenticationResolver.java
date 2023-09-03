@@ -24,7 +24,7 @@ public class AuthenticationResolver {
 
     public AuthenticationResolver(JwtProperties jwtProperties, RefreshTokenRepository refreshTokenRepository) {
         this.refreshTokenRepository = refreshTokenRepository;
-        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecretKey());
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.secretKey());
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
