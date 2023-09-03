@@ -58,7 +58,7 @@ public class Webtoon extends BaseEntity {
     @Column(name = "thumbnail", nullable = false)
     private String thumbnail;
 
-    @Column(name = "age_rating", nullable = true)
+    @Column(name = "age_rating", nullable = false)
     @Convert(converter = AgeRatingConverter.class)
     private AgeRating ageRating;
 
