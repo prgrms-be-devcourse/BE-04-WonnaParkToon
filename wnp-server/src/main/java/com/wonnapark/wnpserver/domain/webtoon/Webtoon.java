@@ -13,7 +13,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -54,7 +53,6 @@ public class Webtoon extends BaseEntity {
     @Column(name = "genre", nullable = false, length = MAX_GENRE_LENGTH)
     private String genre;
 
-    @Lob
     @Column(name = "thumbnail", nullable = false)
     private String thumbnail;
 
