@@ -1,19 +1,19 @@
-package com.wonnapark.wnpserver.domain.oauth.dto;
+package com.wonnapark.wnpserver.domain.oauth.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.wonnapark.wnpserver.domain.user.OAuthProvider;
-import com.wonnapark.wnpserver.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class KakaoInfoResponse implements OAuthInfoResponse {
 
-    private String id;
-
+    private Long id;
     private KakaoAccount kakaoAccount;
 
     @Getter
@@ -21,8 +21,7 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     private static class KakaoAccount {
         private Profile profile;
-        private String email;
-        private String ageRange;
+        private String birthyear;
         private String gender;
 
         @Getter
@@ -34,7 +33,7 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     }
 
     @Override
-    public String getProviderId() {
+    public Long getProviderId() {
         return id;
     }
 
@@ -49,8 +48,8 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
     }
 
     @Override
-    public String getAgeRange() {
-        return kakaoAccount.ageRange;
+    public int getAge() {
+        return getAgeFromBirthYear(kakaoAccount.birthyear);
     }
 
     @Override
@@ -58,14 +57,9 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
         return kakaoAccount.gender;
     }
 
-    @Override
-    public User toEntity() {
-        return User.builder()
-                .providerId(getId())
-                .platform(getOAuthProvider())
-                .nickname(getNickname())
-                .ageRange(getAgeRange())
-                .gender(getGender())
-                .build();
+    private int getAgeFromBirthYear(String birthYear) {
+        int currentYear = LocalDateTime.now().getYear();
+        int userBirthYear = Integer.parseInt(birthYear);
+        return currentYear - userBirthYear;
     }
 }

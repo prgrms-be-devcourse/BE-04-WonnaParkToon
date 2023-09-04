@@ -1,14 +1,14 @@
 package com.wonnapark.wnpserver.domain.oauth.infrastructure;
 
-import com.wonnapark.wnpserver.domain.oauth.dto.OAuthInfoResponse;
-import com.wonnapark.wnpserver.domain.oauth.dto.OAuthLoginRequest;
+import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
+import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
 import com.wonnapark.wnpserver.domain.user.OAuthProvider;
 
-public abstract class OAuthApiClient {
+public interface OAuthApiClient {
 
-    public abstract OAuthProvider getOAuthProvider();
+    OAuthProvider getOAuthProvider();
 
-    public abstract String requestAccessToken(OAuthLoginRequest request);
+    String requestAccessToken(OAuthLoginRequest request);
 
-    public abstract OAuthInfoResponse requestOauthInfo(String accessToken);
+    OAuthInfoResponse requestOauthInfo(String accessToken);
 }

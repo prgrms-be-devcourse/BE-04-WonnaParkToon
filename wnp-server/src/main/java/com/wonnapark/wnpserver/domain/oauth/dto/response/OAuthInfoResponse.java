@@ -1,19 +1,16 @@
-package com.wonnapark.wnpserver.domain.oauth.dto;
+package com.wonnapark.wnpserver.domain.oauth.dto.response;
 
 import com.wonnapark.wnpserver.domain.user.OAuthProvider;
-import com.wonnapark.wnpserver.domain.user.User;
 
 public interface OAuthInfoResponse {
 
-    String getProviderId();
+    Long getProviderId();
 
     String getNickname();
 
     OAuthProvider getOAuthProvider();
 
-    String getAgeRange();
+    int getAge();
 
     String getGender();
-
-    User toEntity();
 }
