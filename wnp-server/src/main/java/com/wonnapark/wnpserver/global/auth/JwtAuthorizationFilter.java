@@ -3,7 +3,6 @@ package com.wonnapark.wnpserver.global.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonnapark.wnpserver.domain.auth.application.AuthenticationResolver;
 import com.wonnapark.wnpserver.domain.auth.config.TokenConstants;
-import com.wonnapark.wnpserver.domain.auth.dto.RefreshTokenResponse;
 import com.wonnapark.wnpserver.domain.auth.exception.JwtInvalidException;
 import com.wonnapark.wnpserver.global.response.ErrorCode;
 import com.wonnapark.wnpserver.global.response.ErrorResponse;
@@ -52,8 +51,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 AuthenticationContextHolder.setAuthenticationHolder(authentication);
                 if (path.equals(REISSUE_URI)) {
                     String refreshToken = extractTokenFromHeader(request, TokenConstants.REFRESH_TOKEN);
-                    if (!validateRefreshToken(refreshToken, authentication.userId())) {
-                        setErrorResponse(response, ErrorCode.BAD_REQUEST, RE_LOGIN_URI);
+                    if (!authenticationResolver.isValidRefreshToken(refreshToken, authentication.userId())) {
+                        setErrorResponse(response, ErrorCode.UNSUPPORTED_TOKEN, RE_LOGIN_URI);
                         AuthenticationContextHolder.clearContext();
                         return;
                     }
@@ -73,15 +72,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return token;
         }
         return null;
-    }
-
-    private boolean validateRefreshToken(String refreshToken, Long userId) {
-        if (authenticationResolver.isValidToken(refreshToken)) {
-            RefreshTokenResponse refreshTokenResponse = authenticationResolver.checkExpiredRefreshToken(userId);
-            if (refreshTokenResponse.refreshToken().equals(refreshToken))
-                return true;
-        }
-        return false;
     }
 
     private void setErrorResponse(HttpServletResponse response, ErrorCode errorCode, String redirectUri) throws IOException {

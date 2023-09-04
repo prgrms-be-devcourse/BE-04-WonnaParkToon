@@ -1,8 +1,8 @@
 package com.wonnapark.wnpserver.domain.auth.application;
 
+import com.wonnapark.wnpserver.domain.auth.RefreshToken;
 import com.wonnapark.wnpserver.domain.auth.config.JwtProperties;
 import com.wonnapark.wnpserver.domain.auth.config.TokenConstants;
-import com.wonnapark.wnpserver.domain.auth.dto.RefreshTokenResponse;
 import com.wonnapark.wnpserver.domain.auth.exception.JwtInvalidException;
 import com.wonnapark.wnpserver.domain.auth.infrastructure.RefreshTokenRepository;
 import com.wonnapark.wnpserver.domain.user.Role;
@@ -28,10 +28,13 @@ public class AuthenticationResolver {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public RefreshTokenResponse checkExpiredRefreshToken(Long userId) {
-        return refreshTokenRepository.findById(userId)
-                .map(RefreshTokenResponse::from)
-                .orElseThrow(() -> new JwtInvalidException(ErrorCode.EXPIRED_TOKEN));
+    public boolean isValidRefreshToken(String token, Long userId) {
+        if (isValidToken(token)) {
+            RefreshToken refreshToken = refreshTokenRepository.findById(userId).orElseThrow(() -> new JwtInvalidException(ErrorCode.EXPIRED_TOKEN));
+            if (refreshToken.getRefreshToken().equals(token))
+                return true;
+        }
+        return false;
     }
 
     public boolean isValidToken(String token) {
