@@ -36,7 +36,9 @@ public class JwtTokenService {
 
     public AccessTokenResponse generateAccessToken(AuthTokenRequest request) {
         long now = (new Date()).getTime();
-        Date expiredAt = new Date(now + jwtProperties.accessTokenExpireTime());
+        long preventDuplicateNumber = (long) (Math.random() * 1000) + 500;
+        Date expiredAt = new Date(now + jwtProperties.refreshTokenExpireTime() + preventDuplicateNumber);
+
         String accessToken = Jwts.builder()
                 .claim(TokenConstants.AGE_CLAIM_NAME, request.age())
                 .claim(TokenConstants.ROLE_CLAIM_NAME, request.role())
@@ -46,29 +48,35 @@ public class JwtTokenService {
                 .setExpiration(expiredAt)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
+
         return new AccessTokenResponse(TokenConstants.BEARER_TYPE, accessToken, jwtProperties.accessTokenExpireTime() / TokenConstants.MILLI_SECOND);
     }
 
     public RefreshTokenResponse generateRefreshToken(AuthTokenRequest request) {
         long now = (new Date()).getTime();
-        Date expiredAt = new Date(now + jwtProperties.refreshTokenExpireTime());
+        long preventDuplicateNumber = (long) (Math.random() * 1000) + 500;
+        Date expiredAt = new Date(now + jwtProperties.refreshTokenExpireTime() + preventDuplicateNumber);
+
         String refreshToken = Jwts.builder()
                 .setIssuer(TokenConstants.ISSUER)
                 .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .setExpiration(expiredAt)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
+
         RefreshToken refreshTokenEntity = RefreshToken.builder()
                 .refreshToken(refreshToken)
                 .userId(request.userId())
                 .build();
         refreshTokenRepository.save(refreshTokenEntity);
+
         return new RefreshTokenResponse(TokenConstants.BEARER_TYPE, refreshToken);
     }
 
     public AuthTokenResponse generateAuthToken(AuthTokenRequest request) {
         AccessTokenResponse accessTokenResponse = generateAccessToken(request);
         RefreshTokenResponse refreshTokenResponse = generateRefreshToken(request);
+
         return AuthTokenResponse.builder()
                 .grantType(TokenConstants.BEARER_TYPE)
                 .accessToken(accessTokenResponse.accessToken())
