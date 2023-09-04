@@ -34,6 +34,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String[] blackList = {
+                "/api/v1/guest/",
                 "/api/v1/auth/kakao",
                 "/h2-console"
         };
@@ -62,7 +63,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
         } catch (JwtInvalidException jwtInvalidException) {
             setErrorResponse(response, jwtInvalidException.getErrorCode(), REISSUE_URI);
-            // TODO: 2023-09-03 response 내부 출력하는 방법 찾아보기
         }
     }
 
@@ -78,8 +78,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         response.setStatus(errorCode.getValue());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-//        response.sendRedirect(redirectUri);
-//        프론트가 없어서 백엔드로 다시 요청이 계속 돌아오기 때문에 주석 처리함
+        response.setHeader(HttpHeaders.LOCATION, redirectUri);
         ErrorResponse errorResponse = ErrorResponse.create(errorCode);
         try {
             String json = objectMapper.writeValueAsString(errorResponse);
