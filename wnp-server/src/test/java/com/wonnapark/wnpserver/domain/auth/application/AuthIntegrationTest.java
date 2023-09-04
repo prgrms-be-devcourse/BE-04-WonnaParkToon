@@ -125,17 +125,15 @@ class AuthIntegrationTest {
 
         @Test
         @DisplayName("RefreshToken은 유효하지만 저장소와 일치하지 않는 경우 에러를 반환")
-        void validateNotEqualRefreshToken() throws InterruptedException {
+        void validateNotEqualRefreshToken() {
             // given
             AuthTokenRequest authTokenRequest = Instancio.create(AuthTokenRequest.class);
             AuthTokenResponse authTokenResponse = jwtTokenService.generateAuthToken(authTokenRequest);
             String accessToken = authTokenResponse.accessToken();
             String wrongToken = authTokenResponse.refreshToken();
-            System.out.println("wrongToken = " + wrongToken);
 
             // when
-            RefreshTokenResponse refreshTokenResponse = jwtTokenService.generateRefreshToken(authTokenRequest);
-            System.out.println("refreshTokenResponse = " + refreshTokenResponse.refreshToken());
+            jwtTokenService.generateRefreshToken(authTokenRequest);
             Authentication authentication = authenticationResolver.extractAuthentication(accessToken);
 
             // then
