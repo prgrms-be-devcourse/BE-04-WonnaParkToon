@@ -25,6 +25,4 @@ public class AuthController {
         return ApiResponse.from(authTokenResponse);
     }
 
-    // TODO: 2023-09-04 로그아웃 구현 토큰 삭제 및 블랙리스트 처리
-
 }
