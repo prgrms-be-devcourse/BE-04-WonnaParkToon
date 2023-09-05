@@ -2,6 +2,7 @@ package com.wonnapark.wnpserver.domain.episode.dto.request;
 
 import com.wonnapark.wnpserver.domain.episode.Episode;
 import com.wonnapark.wnpserver.domain.episode.EpisodeUrl;
+import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,12 +28,13 @@ public record EpisodeCreationRequest(
         List<EpisodeUrlCreationRequest> episodeUrlCreationRequests
 ) {
 
-    public Episode toEntity() {
+    public Episode toEntity(Webtoon webtoon) {
         Episode episode = Episode.builder()
                 .title(this.title)
                 .releaseDateTime(this.releaseDateTime)
                 .thumbnail(this.thumbnail)
                 .artistComment(this.artistComment)
+                .webtoon(webtoon)
                 .build();
         List<EpisodeUrl> episodeUrls = this.episodeUrlCreationRequests.stream().map(EpisodeUrlCreationRequest::toEntity).toList();
         episode.setEpisodeUrls(episodeUrls);

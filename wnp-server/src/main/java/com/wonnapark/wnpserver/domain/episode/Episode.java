@@ -61,12 +61,12 @@ public class Episode extends BaseEntity {
     private boolean isDeleted = false;
 
     @Builder
-    private Episode(String title, LocalDateTime releaseDateTime, String thumbnail, String artistComment) {
+    private Episode(String title, LocalDateTime releaseDateTime, String thumbnail, String artistComment, Webtoon webtoon) {
         this.title = title;
         this.releaseDateTime = releaseDateTime;
         this.thumbnail = thumbnail;
         this.artistComment = artistComment;
-        isDeleted = false;
+        this.webtoon = webtoon;
     }
 
     public void changeTitle(String title) {
@@ -96,10 +96,6 @@ public class Episode extends BaseEntity {
 
     public void setEpisodeUrls(List<EpisodeUrl> episodeUrls) {
         episodeUrls.forEach(episodeUrl -> episodeUrl.setEpisode(this));
-    }
-
-    public void setWebtoon(Webtoon webtoon) {
-        this.webtoon = webtoon;
     }
 
 }

@@ -36,8 +36,7 @@ public class EpisodeManageService implements EpisodeManageUseCase {
         }
         Webtoon webtoon = webtoonRepository.findById(webtoonId)
                 .orElseThrow(() -> new EntityNotFoundException(WEBTOON_NOT_FOUND.getMessage(webtoonId)));
-        Episode newEpisode = request.toEntity();
-        newEpisode.setWebtoon(webtoon);
+        Episode newEpisode = request.toEntity(webtoon);
         return episodeRepository.save(newEpisode).getId();
     }
 
