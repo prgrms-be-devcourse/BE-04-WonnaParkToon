@@ -23,7 +23,7 @@ public class ViewHistory {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @EqualsAndHashCode
-    private static class ViewHistoryId implements Serializable {
+    public static class ViewHistoryId implements Serializable {
 
         @Column(name = "user_id", nullable = false)
         private Long userId;
