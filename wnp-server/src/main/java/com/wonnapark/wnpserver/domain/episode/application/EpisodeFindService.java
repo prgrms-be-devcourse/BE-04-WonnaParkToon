@@ -1,17 +1,14 @@
 package com.wonnapark.wnpserver.domain.episode.application;
 
 import com.wonnapark.wnpserver.domain.episode.Episode;
-import com.wonnapark.wnpserver.domain.episode.ViewHistory;
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeDetailFormResponse;
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.domain.episode.infrastructure.EpisodeRepository;
-import com.wonnapark.wnpserver.domain.episode.infrastructure.ViewHistoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
@@ -26,7 +23,7 @@ import static com.wonnapark.wnpserver.domain.episode.application.EpisodeErrorMes
 public class EpisodeFindService implements EpisodeFindUseCase {
 
     private final EpisodeRepository episodeRepository;
-    private final ViewHistoryRepository viewHistoryRepository;
+    private final ViewHistoryService viewHistoryService;
 
     @Override
     public Page<EpisodeListFormResponse> findEpisodeListForm(Long webtoonId, Pageable pageable) {
@@ -42,7 +39,7 @@ public class EpisodeFindService implements EpisodeFindUseCase {
                 .toList();
 
         Set<Long> viewedEpisodeIds = new HashSet<>(
-                viewHistoryRepository.findEpisodeIdsInGivenEpisodeIdsByUserId(userId, episodeIds)
+                viewHistoryService.findViewedEpisodeIdsForUser(userId, episodeIds)
         );
         return episodes.map(episode -> {
             boolean isViewed = viewedEpisodeIds.contains(episode.getId());
@@ -65,23 +62,11 @@ public class EpisodeFindService implements EpisodeFindUseCase {
         Episode episode = episodeRepository.findById(episodeId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
 
-        saveViewHistory(userId, episodeId);
+        viewHistoryService.saveViewHistory(userId, episodeId);
 
         // TODO: 조회수 처리
 
         return EpisodeDetailFormResponse.from(episode);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void saveViewHistory(Long userId, Long episodeId) {
-        if (viewHistoryRepository.existsByUserIdAndEpisodeId(userId, episodeId)) {
-            return;
-        }
-        ViewHistory viewHistory = ViewHistory.builder()
-                .userId(userId)
-                .episodeId(episodeId)
-                .build();
-        viewHistoryRepository.save(viewHistory);
     }
 
 }
