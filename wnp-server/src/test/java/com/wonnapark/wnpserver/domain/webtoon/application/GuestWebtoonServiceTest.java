@@ -1,6 +1,7 @@
 package com.wonnapark.wnpserver.domain.webtoon.application;
 
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonDetailResponse;
 import com.wonnapark.wnpserver.domain.webtoon.exception.UnderageAccessDeniedException;
 import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;

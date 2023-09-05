@@ -1,6 +1,7 @@
 package com.wonnapark.wnpserver.domain.webtoon.application;
 
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonDetailResponse;
 import com.wonnapark.wnpserver.domain.webtoon.exception.UnderageAccessDeniedException;
 import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;
@@ -17,7 +18,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Select.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -33,9 +33,7 @@ class UserWebtoonServiceTest {
     @DisplayName("18세 이상인 유저는 18세 이용가 웹툰을 단일 조회할 수 있다.")
     void findWebtoonOver18ByAdult() {
         // given
-        UserInfo userInfo = Instancio.of(UserInfo.class)
-                .generate(field(UserInfo::age), gen -> gen.ints().range(18, 100))
-                .create();
+        UserInfo userInfo = WebtoonFixtures.createUserInfoOver18();
 
         Webtoon webtoonOver18 = WebtoonFixtures.createWebtoonOver18();
         given(webtoonRepository.findById(any(Long.class))).willReturn(Optional.of(webtoonOver18));
@@ -51,9 +49,7 @@ class UserWebtoonServiceTest {
     @DisplayName("18세 미만인 유저는 18세 이용가 웹툰을 단일 조회할 수 없다.")
     void findWebtoonOver18ByUnderage() {
         // given
-        UserInfo userInfo = Instancio.of(UserInfo.class)
-                .generate(field(UserInfo::age), gen -> gen.ints().range(0, 18))
-                .create();
+        UserInfo userInfo = WebtoonFixtures.createUserInfoUnder18();
         Webtoon webtoonOver18 = WebtoonFixtures.createWebtoonOver18();
         given(webtoonRepository.findById(any(Long.class))).willReturn(Optional.of(webtoonOver18));
 

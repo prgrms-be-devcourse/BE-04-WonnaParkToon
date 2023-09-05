@@ -1,9 +1,10 @@
 package com.wonnapark.wnpserver.domain.webtoon.presentation;
 
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.domain.webtoon.application.DefaultWebtoonService;
 import com.wonnapark.wnpserver.domain.webtoon.application.UserWebtoonService;
-import com.wonnapark.wnpserver.domain.webtoon.application.WebtoonFixtures;
+import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonDetailResponse;
 import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonSimpleResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
