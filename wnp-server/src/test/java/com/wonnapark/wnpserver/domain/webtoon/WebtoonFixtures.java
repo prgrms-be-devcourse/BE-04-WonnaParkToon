@@ -11,7 +11,7 @@ import static org.instancio.Select.field;
 
 public final class WebtoonFixtures {
 
-    static final List<String> ageRatingNames = Arrays.stream(AgeRating.values())
+    public static final List<String> ageRatingNames = Arrays.stream(AgeRating.values())
             .map(AgeRating::getRatingName).toList();
 
     private WebtoonFixtures() {
