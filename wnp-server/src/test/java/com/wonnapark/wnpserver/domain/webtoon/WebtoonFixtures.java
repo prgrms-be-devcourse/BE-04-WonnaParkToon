@@ -91,7 +91,7 @@ public final class WebtoonFixtures {
      */
     public static UserInfo createUserInfoUnder18() {
         return Instancio.of(UserInfo.class)
-                .generate(field(UserInfo::age), gen -> gen.ints().range(18, 100))
+                .generate(field(UserInfo::age), gen -> gen.ints().range(0, 18))
                 .create();
     }
 
