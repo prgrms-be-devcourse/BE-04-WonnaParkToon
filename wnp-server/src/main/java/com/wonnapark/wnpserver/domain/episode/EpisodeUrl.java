@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,8 +31,7 @@ public class EpisodeUrl {
     @Column(name = "url", nullable = false)
     private String url;
 
-    @Builder
-    private EpisodeUrl(String url) {
+    public EpisodeUrl(String url) {
         this.url = url;
     }
 

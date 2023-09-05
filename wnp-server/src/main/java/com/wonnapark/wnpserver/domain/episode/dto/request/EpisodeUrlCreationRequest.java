@@ -11,9 +11,7 @@ public record EpisodeUrlCreationRequest(
 ) {
 
     public EpisodeUrl toEntity() {
-        return EpisodeUrl.builder()
-                .url(this.episodeUrl)
-                .build();
+        return new EpisodeUrl(episodeUrl);
     }
 
 }

@@ -10,11 +10,7 @@ public record EpisodeUrlsUpdateRequest(
 
     public List<EpisodeUrl> toEntityList() {
         return urls.stream()
-                .map(url -> EpisodeUrl.builder()
-                        .url(url)
-                        .build()
-                )
-                .toList();
+                .map(EpisodeUrl::new).toList();
     }
 
 }
