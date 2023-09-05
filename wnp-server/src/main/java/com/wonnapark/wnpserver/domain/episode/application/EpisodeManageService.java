@@ -23,14 +23,13 @@ import static com.wonnapark.wnpserver.domain.episode.application.EpisodeErrorMes
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class EpisodeManageService implements EpisodeManageUseCase {
 
     private final EpisodeRepository episodeRepository;
     private final WebtoonRepository webtoonRepository;
 
     @Override
-    @Transactional
     public Long createEpisode(Long webtoonId, EpisodeCreationRequest request) {
         if (episodeRepository.existsByTitle(request.title())) {
             throw new EntityExistsException(String.format(DUPLICATED_EPISODE.getMessage(), request.title()));
@@ -43,7 +42,6 @@ public class EpisodeManageService implements EpisodeManageUseCase {
     }
 
     @Override
-    @Transactional
     public void updateEpisodeTitle(Long episodeId, EpisodeTitleUpdateRequest request) {
         Episode episode = episodeRepository.findById(episodeId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
@@ -51,7 +49,6 @@ public class EpisodeManageService implements EpisodeManageUseCase {
     }
 
     @Override
-    @Transactional
     public void updateEpisodeArtistComment(Long episodeId, EpisodeArtistCommentUpdateRequest request) {
         Episode episode = episodeRepository.findById(episodeId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
@@ -59,7 +56,6 @@ public class EpisodeManageService implements EpisodeManageUseCase {
     }
 
     @Override
-    @Transactional
     public void updateEpisodeThumbnail(Long episodeId, EpisodeThumbnailUpdateRequest request) {
         Episode episode = episodeRepository.findById(episodeId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
@@ -67,7 +63,6 @@ public class EpisodeManageService implements EpisodeManageUseCase {
     }
 
     @Override
-    @Transactional
     public void updateEpisodeReleaseDateTime(Long episodeId, EpisodeReleaseDateTimeUpdateRequest request) {
         Episode episode = episodeRepository.findById(episodeId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
@@ -75,7 +70,6 @@ public class EpisodeManageService implements EpisodeManageUseCase {
     }
 
     @Override
-    @Transactional
     public void updateEpisodeUrls(Long episodeId, EpisodeUrlsUpdateRequest request) {
         Episode episode = episodeRepository.findById(episodeId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
@@ -83,7 +77,6 @@ public class EpisodeManageService implements EpisodeManageUseCase {
     }
 
     @Override
-    @Transactional
     public void deleteEpisode(Long episodeId) {
         Episode episode = episodeRepository.findById(episodeId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(EPISODE_NOT_FOUND.getMessage(), episodeId)));
