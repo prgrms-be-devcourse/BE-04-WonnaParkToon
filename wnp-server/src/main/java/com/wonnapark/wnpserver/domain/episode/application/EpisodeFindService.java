@@ -13,7 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.wonnapark.wnpserver.domain.episode.application.EpisodeErrorMessage.EPISODE_NOT_FOUND;
 
@@ -37,8 +40,10 @@ public class EpisodeFindService implements EpisodeFindUseCase {
         List<Long> episodeIds = episodes.getContent().stream()
                 .map(Episode::getId)
                 .toList();
-        List<Long> viewedEpisodeIds = viewHistoryRepository.findEpisodeIdsInGivenEpisodeIdsByUserId(userId, episodeIds);
 
+        Set<Long> viewedEpisodeIds = new HashSet<>(
+                viewHistoryRepository.findEpisodeIdsInGivenEpisodeIdsByUserId(userId, episodeIds)
+        );
         return episodes.map(episode -> {
             boolean isViewed = viewedEpisodeIds.contains(episode.getId());
             return EpisodeListFormResponse.from(episode, isViewed);
