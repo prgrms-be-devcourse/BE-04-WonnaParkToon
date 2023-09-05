@@ -43,44 +43,43 @@ public class EpisodeManageService implements EpisodeManageUseCase {
 
     @Override
     public void updateEpisodeTitle(Long episodeId, EpisodeTitleUpdateRequest request) {
-        Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(EPISODE_NOT_FOUND.getMessage(episodeId)));
+        Episode episode = findEpisodeById(episodeId);
         episode.changeTitle(request.title());
     }
 
     @Override
     public void updateEpisodeArtistComment(Long episodeId, EpisodeArtistCommentUpdateRequest request) {
-        Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(EPISODE_NOT_FOUND.getMessage(episodeId)));
+        Episode episode = findEpisodeById(episodeId);
         episode.changeArtistComment(request.artistComment());
     }
 
     @Override
     public void updateEpisodeThumbnail(Long episodeId, EpisodeThumbnailUpdateRequest request) {
-        Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(EPISODE_NOT_FOUND.getMessage(episodeId)));
+        Episode episode = findEpisodeById(episodeId);
         episode.changeThumbnail(request.thumbnail());
     }
 
     @Override
     public void updateEpisodeReleaseDateTime(Long episodeId, EpisodeReleaseDateTimeUpdateRequest request) {
-        Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(EPISODE_NOT_FOUND.getMessage(episodeId)));
+        Episode episode = findEpisodeById(episodeId);
         episode.changeReleaseDateTime(request.releaseDateTime());
     }
 
     @Override
     public void updateEpisodeUrls(Long episodeId, EpisodeUrlsUpdateRequest request) {
-        Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(EPISODE_NOT_FOUND.getMessage(episodeId)));
+        Episode episode = findEpisodeById(episodeId);
         episode.changeEpisodeUrls(request.toEntityList());
     }
 
     @Override
     public void deleteEpisode(Long episodeId) {
-        Episode episode = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new EntityNotFoundException(EPISODE_NOT_FOUND.getMessage(episodeId)));
+        Episode episode = findEpisodeById(episodeId);
         episode.delete();
+    }
+
+    private Episode findEpisodeById(Long episodeId) {
+        return episodeRepository.findById(episodeId)
+                .orElseThrow(() -> new EntityNotFoundException(EPISODE_NOT_FOUND.getMessage(episodeId)));
     }
 
 }
