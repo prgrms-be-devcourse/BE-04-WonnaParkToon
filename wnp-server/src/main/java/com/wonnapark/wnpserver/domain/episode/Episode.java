@@ -38,7 +38,7 @@ public class Episode extends BaseEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "title", nullable = false, length = MAX_TITLE_LENGTH, unique = true)
+    @Column(name = "title", nullable = false, length = MAX_TITLE_LENGTH)
     private String title;
 
     @Column(name = "release_date", nullable = false, columnDefinition = "TIMESTAMP(6)")
