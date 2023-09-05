@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.domain.episode.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wonnapark.wnpserver.domain.episode.application.EpisodeManage;
+import com.wonnapark.wnpserver.domain.episode.application.EpisodeManageUseCase;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeArtistCommentUpdateRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeCreationRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeReleaseDateTimeUpdateRequest;
@@ -50,7 +50,7 @@ class AdminEpisodeControllerTest {
     @Autowired
     ObjectMapper objectMapper;
     @MockBean
-    EpisodeManage episodeManage;
+    EpisodeManageUseCase episodeManageUseCase;
 
     @Test
     @DisplayName("새로운 에피소드를 생성하고 Location 헤더와 에피소드 ID를 반환 할 수 있다.")
@@ -59,7 +59,7 @@ class AdminEpisodeControllerTest {
         Webtoon webtoon = createWebtoon();
         EpisodeCreationRequest episodeCreationRequest = createEpisodeCreationRequest();
         Long createdEpisodeId = Instancio.create(Long.class);
-        given(episodeManage.createEpisode(webtoon.getId(), episodeCreationRequest)).willReturn(createdEpisodeId);
+        given(episodeManageUseCase.createEpisode(webtoon.getId(), episodeCreationRequest)).willReturn(createdEpisodeId);
         // when // then
         mockMvc.perform(post("/api/v1/admin/episode/{webtoonId}", webtoon.getId())
                         .contentType(MediaType.APPLICATION_JSON)

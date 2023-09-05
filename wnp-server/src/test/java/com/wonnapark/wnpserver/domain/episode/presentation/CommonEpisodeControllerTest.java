@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.domain.episode.presentation;
 
 import com.wonnapark.wnpserver.domain.episode.Episode;
-import com.wonnapark.wnpserver.domain.episode.application.EpisodeFind;
+import com.wonnapark.wnpserver.domain.episode.application.EpisodeFindUseCase;
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeDetailFormResponse;
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
@@ -48,7 +48,7 @@ class CommonEpisodeControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private EpisodeFind episodeFind;
+    private EpisodeFindUseCase episodeFindUseCase;
 
     @Test
     @DisplayName("에피소드 ID로 에피소드 상세 정보를 정상적으로 가져올 수 있다.")
@@ -56,7 +56,7 @@ class CommonEpisodeControllerTest {
         // given
         Webtoon webtoon = createWebtoon();
         Episode episode = createEpisode(webtoon);
-        given(episodeFind.findEpisodeDetailForm(episode.getId())).willReturn(EpisodeDetailFormResponse.from(episode));
+        given(episodeFindUseCase.findEpisodeDetailForm(episode.getId())).willReturn(EpisodeDetailFormResponse.from(episode));
         // when // then
         this.mockMvc.perform(get("/api/v1/common/episode/detail/{id}", episode.getId())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -83,7 +83,7 @@ class CommonEpisodeControllerTest {
         Pageable pageable = createPageable();
         Webtoon webtoon = createWebtoon();
         List<Episode> episodes = createEpisodes(webtoon);
-        given(episodeFind.findEpisodeListForm(webtoon.getId(), pageable))
+        given(episodeFindUseCase.findEpisodeListForm(webtoon.getId(), pageable))
                 .willReturn(new PageImpl<>(episodes, pageable, episodes.size()).map(EpisodeListFormResponse::from));
         // when // then
         mockMvc.perform(get("/api/v1/common/episode/{webtoonId}/list", webtoon.getId())

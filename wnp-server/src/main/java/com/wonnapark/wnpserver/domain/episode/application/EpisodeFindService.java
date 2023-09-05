@@ -20,7 +20,7 @@ import static com.wonnapark.wnpserver.domain.episode.application.EpisodeErrorMes
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EpisodeFindService implements EpisodeFind {
+public class EpisodeFindService implements EpisodeFindUseCase {
 
     private final EpisodeRepository episodeRepository;
     private final ViewHistoryRepository viewHistoryRepository;

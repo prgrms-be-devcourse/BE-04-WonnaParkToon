@@ -1,6 +1,6 @@
 package com.wonnapark.wnpserver.domain.episode.presentation;
 
-import com.wonnapark.wnpserver.domain.episode.application.EpisodeManage;
+import com.wonnapark.wnpserver.domain.episode.application.EpisodeManageUseCase;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeArtistCommentUpdateRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeCreationRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeReleaseDateTimeUpdateRequest;
@@ -29,7 +29,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class AdminEpisodeController {
 
-    private final EpisodeManage episodeManage;
+    private final EpisodeManageUseCase episodeManageUseCase;
 
     @PostMapping("/{webtoonId}")
     @ResponseStatus(CREATED)
@@ -38,7 +38,7 @@ public class AdminEpisodeController {
             @RequestBody @Valid EpisodeCreationRequest episodeCreationRequest,
             HttpServletResponse response
     ) {
-        Long episodeId = episodeManage.createEpisode(webtoonId, episodeCreationRequest);
+        Long episodeId = episodeManageUseCase.createEpisode(webtoonId, episodeCreationRequest);
 
         String uri = URI.create(String.format("/api/v1/common/episode/detail/%d", episodeId)).toString();
         response.setHeader("Location", uri);
@@ -49,25 +49,25 @@ public class AdminEpisodeController {
     @PatchMapping("{id}/title")
     @ResponseStatus(OK)
     public void updateEpisodeTitle(@PathVariable Long id, @RequestBody @Valid EpisodeTitleUpdateRequest request) {
-        episodeManage.updateEpisodeTitle(id, request);
+        episodeManageUseCase.updateEpisodeTitle(id, request);
     }
 
     @PatchMapping("/{id}/artist-comment")
     @ResponseStatus(OK)
     public void updateEpisodeArtistComment(@PathVariable Long id, @RequestBody @Valid EpisodeArtistCommentUpdateRequest request) {
-        episodeManage.updateEpisodeArtistComment(id, request);
+        episodeManageUseCase.updateEpisodeArtistComment(id, request);
     }
 
     @PatchMapping("/{id}/thumbnail")
     @ResponseStatus(OK)
     public void updateEpisodeThumbnail(@PathVariable Long id, @RequestBody @Valid EpisodeThumbnailUpdateRequest request) {
-        episodeManage.updateEpisodeThumbnail(id, request);
+        episodeManageUseCase.updateEpisodeThumbnail(id, request);
     }
 
     @PatchMapping("/{id}/release-datetime")
     @ResponseStatus(OK)
     public void updateEpisodeReleaseDateTime(@PathVariable Long id, @RequestBody @Valid EpisodeReleaseDateTimeUpdateRequest request) {
-        episodeManage.updateEpisodeReleaseDateTime(id, request);
+        episodeManageUseCase.updateEpisodeReleaseDateTime(id, request);
     }
 
 }

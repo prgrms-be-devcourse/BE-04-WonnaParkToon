@@ -5,7 +5,7 @@ import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormRespon
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface EpisodeFind {
+public interface EpisodeFindUseCase {
 
     Page<EpisodeListFormResponse> findEpisodeListForm(Long webtoonId, Pageable pageable);
 

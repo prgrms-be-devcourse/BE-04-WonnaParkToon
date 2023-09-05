@@ -1,6 +1,6 @@
 package com.wonnapark.wnpserver.domain.episode.presentation;
 
-import com.wonnapark.wnpserver.domain.episode.application.EpisodeFind;
+import com.wonnapark.wnpserver.domain.episode.application.EpisodeFindUseCase;
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeDetailFormResponse;
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.global.response.ApiResponse;
@@ -22,12 +22,12 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class CommonEpisodeController {
 
-    private final EpisodeFind episodeFind;
+    private final EpisodeFindUseCase episodeFindUseCase;
 
     @GetMapping("/detail/{id}")
     @ResponseStatus(OK)
     ApiResponse<EpisodeDetailFormResponse> findEpisodeDetailForm(@PathVariable Long id) {
-        EpisodeDetailFormResponse episodeDetailForm = episodeFind.findEpisodeDetailForm(id);
+        EpisodeDetailFormResponse episodeDetailForm = episodeFindUseCase.findEpisodeDetailForm(id);
         return ApiResponse.from(episodeDetailForm);
     }
 
@@ -37,7 +37,7 @@ public class CommonEpisodeController {
             @PathVariable Long webtoonId,
             @PageableDefault(size = 20, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<EpisodeListFormResponse> episodeListForms = episodeFind.findEpisodeListForm(webtoonId, pageable);
+        Page<EpisodeListFormResponse> episodeListForms = episodeFindUseCase.findEpisodeListForm(webtoonId, pageable);
         return ApiResponse.from(episodeListForms);
     }
 

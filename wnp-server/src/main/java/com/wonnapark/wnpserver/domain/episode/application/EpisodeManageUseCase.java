@@ -7,7 +7,7 @@ import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeThumbnailUpdate
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeTitleUpdateRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeUrlsUpdateRequest;
 
-public interface EpisodeManage {
+public interface EpisodeManageUseCase {
 
     Long createEpisode(Long webtoonId, EpisodeCreationRequest request);
 

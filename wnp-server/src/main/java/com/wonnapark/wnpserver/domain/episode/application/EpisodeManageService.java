@@ -24,7 +24,7 @@ import static com.wonnapark.wnpserver.domain.episode.application.EpisodeErrorMes
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EpisodeManageService implements EpisodeManage {
+public class EpisodeManageService implements EpisodeManageUseCase {
 
     private final EpisodeRepository episodeRepository;
     private final WebtoonRepository webtoonRepository;
