@@ -8,6 +8,6 @@ public record RefreshTokenResponse(
         String refreshToken
 ) {
     public static RefreshTokenResponse from(RefreshToken refreshToken) {
-        return new RefreshTokenResponse(TokenConstants.BEARER_TYPE, refreshToken.getRefreshToken());
+        return new RefreshTokenResponse(TokenConstants.BEARER_TYPE, refreshToken.getValue());
     }
 }
