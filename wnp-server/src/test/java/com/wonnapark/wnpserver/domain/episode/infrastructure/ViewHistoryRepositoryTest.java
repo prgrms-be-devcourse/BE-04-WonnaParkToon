@@ -52,7 +52,7 @@ class ViewHistoryRepositoryTest {
         ViewHistory viewHistory = viewHistoryRepository.save(createViewHistory(user.getId(), episode.getId()));
 
         // when
-        boolean hasData = viewHistoryRepository.existsByUserIdAndEpisodeId(user.getId(), episode.getId());
+        boolean hasData = viewHistoryRepository.existsById_UserIdAndId_EpisodeId(user.getId(), episode.getId());
         // then
         assertThat(hasData).isTrue();
     }
@@ -64,7 +64,7 @@ class ViewHistoryRepositoryTest {
         Long fakeUserId = Instancio.create(Long.class);
         Long fakeEpisodeId = Instancio.create(Long.class);
         // when
-        boolean hasData = viewHistoryRepository.existsByUserIdAndEpisodeId(fakeUserId, fakeEpisodeId);
+        boolean hasData = viewHistoryRepository.existsById_UserIdAndId_EpisodeId(fakeUserId, fakeEpisodeId);
         // then
         assertThat(hasData).isFalse();
     }
