@@ -73,6 +73,6 @@ class DefaultWebtoonServiceTest {
         }
     }
 
-    // TODO: 2023-09-03 findAllWebtoonsOnEachPublishDay 테스트 코드 추가
+    // TODO: 2023-09-03 findAllWebtoonsForEachDayOfWeek 테스트 코드 추가
 
 }
