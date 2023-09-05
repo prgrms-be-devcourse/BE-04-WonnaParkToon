@@ -11,12 +11,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.wonnapark.wnpserver.domain.episode.application.EpisodeErrorMessage.EPISODE_NOT_FOUND;
 
@@ -72,7 +72,7 @@ public class EpisodeFindService implements EpisodeFindUseCase {
         return EpisodeDetailFormResponse.from(episode);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveViewHistory(Long userId, Long episodeId) {
         if (viewHistoryRepository.existsByUserIdAndEpisodeId(userId, episodeId)) {
             return;
