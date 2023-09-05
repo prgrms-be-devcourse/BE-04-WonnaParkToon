@@ -9,6 +9,6 @@ public interface EpisodeRepository extends JpaRepository<Episode, Long> {
 
     Page<Episode> findAllByWebtoonId(Long webtoonId, Pageable pageable);
 
-    boolean existsByTitle(String title);
+    boolean existsByWebtoonIdAndTitle(Long webtoonId, String title);
 
 }
