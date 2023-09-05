@@ -1,8 +1,10 @@
 package com.wonnapark.wnpserver.domain.episode.application;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 enum EpisodeErrorMessage {
 
     EPISODE_NOT_FOUND("해당 ID의 에피소드를 찾을 수 없습니다: %s"),
@@ -10,9 +12,4 @@ enum EpisodeErrorMessage {
     DUPLICATED_EPISODE("해당 TITLE의 에피소드가 이미 존재합니다. %s");
 
     private final String message;
-
-    EpisodeErrorMessage(String message) {
-        this.message = message;
-    }
-
 }
