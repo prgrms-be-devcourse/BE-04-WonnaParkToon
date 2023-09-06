@@ -12,6 +12,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,10 +33,10 @@ public class UserEpisodeController {
         return ApiResponse.from(episodeDetailForm);
     }
 
-    @GetMapping("/{webtoonId}/list")
+    @GetMapping("/list")
     @ResponseStatus(OK)
     ApiResponse<Page<EpisodeListFormResponse>> findEpisodeListForm(
-            @PathVariable Long webtoonId,
+            @RequestParam Long webtoonId,
             @PageableDefault(size = 20, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Long userId = 1L; // TODO: parameter에 UserInfo 추가하고 삭제
