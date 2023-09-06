@@ -21,6 +21,8 @@ public class OAuthController {
     private final OAuthLoginService oauthLoginService;
     private final OAuthLogoutService oAuthLogoutService;
 
+    @GetMapping("/")
+
     @GetMapping("/kakao")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<AuthTokenResponse> loginWithKakao(@ModelAttribute KakaoLoginRequest request) {

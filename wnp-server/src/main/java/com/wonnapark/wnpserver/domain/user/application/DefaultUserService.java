@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.domain.user.application;
 
+import com.wonnapark.wnpserver.domain.oauth.OAuthProvider;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
-import com.wonnapark.wnpserver.domain.user.OAuthProvider;
 import com.wonnapark.wnpserver.domain.user.Role;
 import com.wonnapark.wnpserver.domain.user.User;
 import com.wonnapark.wnpserver.domain.user.dto.UserResponse;

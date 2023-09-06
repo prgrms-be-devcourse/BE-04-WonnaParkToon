@@ -2,7 +2,7 @@ package com.wonnapark.wnpserver.domain.oauth.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.wonnapark.wnpserver.domain.user.OAuthProvider;
+import com.wonnapark.wnpserver.domain.oauth.OAuthProvider;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -1,12 +1,12 @@
 package com.wonnapark.wnpserver.domain.oauth.infrastructure;
 
 import com.wonnapark.wnpserver.domain.auth.config.TokenConstants;
+import com.wonnapark.wnpserver.domain.oauth.OAuthProvider;
 import com.wonnapark.wnpserver.domain.oauth.config.OauthProperties;
 import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.KakaoInfoResponse;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.KakaoToken;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
-import com.wonnapark.wnpserver.domain.user.OAuthProvider;
 import io.jsonwebtoken.lang.Assert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;

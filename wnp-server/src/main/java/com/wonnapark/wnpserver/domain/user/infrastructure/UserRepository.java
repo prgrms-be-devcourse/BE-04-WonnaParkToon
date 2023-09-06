@@ -1,6 +1,6 @@
 package com.wonnapark.wnpserver.domain.user.infrastructure;
 
-import com.wonnapark.wnpserver.domain.user.OAuthProvider;
+import com.wonnapark.wnpserver.domain.oauth.OAuthProvider;
 import com.wonnapark.wnpserver.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

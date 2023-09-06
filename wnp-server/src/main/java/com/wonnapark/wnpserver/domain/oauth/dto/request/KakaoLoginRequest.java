@@ -1,6 +1,6 @@
 package com.wonnapark.wnpserver.domain.oauth.dto.request;
 
-import com.wonnapark.wnpserver.domain.user.OAuthProvider;
+import com.wonnapark.wnpserver.domain.oauth.OAuthProvider;
 import lombok.Getter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
