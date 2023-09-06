@@ -4,10 +4,8 @@ import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.domain.webtoon.application.DefaultWebtoonService;
 import com.wonnapark.wnpserver.domain.webtoon.application.UserWebtoonService;
-import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonDetailResponse;
 import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonSimpleResponse;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +45,8 @@ class DefaultWebtoonControllerTest {
     @MockBean
     private UserWebtoonService userWebtoonService;
 
-    @Test
-    @DisplayName("웹툰 ID로 웹툰 상세 정보를 조회할 수 있다.")
-    void findWebtoonById() {
-    }
+    // TODO: 2023-09-05 findWebtoonById 테스트 코드 작성
+    // TODO: 2023-09-06 User 통합 테스트 필요 
 
     @ParameterizedTest
     @DisplayName("연재 요일로 해당 연재 요일의 웹툰 목록을 조회할 수 있다.")
@@ -86,11 +82,4 @@ class DefaultWebtoonControllerTest {
 
     }
 
-    @Test
-    void findAllWebtoonsWithPaging() {
-    }
-
-    @Test
-    void findAllWebtoonsForEachDayOfWeek() {
-    }
 }
