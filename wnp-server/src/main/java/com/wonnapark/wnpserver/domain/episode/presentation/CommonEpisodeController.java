@@ -5,8 +5,8 @@ import com.wonnapark.wnpserver.domain.episode.dto.request.WebtoonListPageRequest
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeDetailFormResponse;
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.global.response.ApiResponse;
+import com.wonnapark.wnpserver.global.response.PageResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,11 +32,11 @@ public class CommonEpisodeController {
 
     @GetMapping("/list")
     @ResponseStatus(OK)
-    ApiResponse<Page<EpisodeListFormResponse>> findEpisodeListForm(
+    ApiResponse<PageResponse<EpisodeListFormResponse>> findEpisodeListForm(
             @RequestParam Long webtoonId,
             WebtoonListPageRequest webtoonListPageRequest
     ) {
-        Page<EpisodeListFormResponse> episodeListForms = episodeFindUseCase.findEpisodeListForm(webtoonId, webtoonListPageRequest.toPageable());
+        PageResponse<EpisodeListFormResponse> episodeListForms = PageResponse.from(episodeFindUseCase.findEpisodeListForm(webtoonId, webtoonListPageRequest.toPageable()));
         return ApiResponse.from(episodeListForms);
     }
 
