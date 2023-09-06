@@ -11,7 +11,7 @@ public enum ErrorCode {
 
     // Token
     EXPIRED_TOKEN(400, "T001", "만료된 토큰입니다."),
-    UNSUPPORTED_TOKEN(400, "T002", "잘못된 형식의 토큰입니다. 토큰이 탈취되었을 수도 있습니다."),
+    UNSUPPORTED_TOKEN(400, "T002", "잘못된 형식의 토큰입니다."),
     WRONG_SIGNATURE_TOKEN(400, "T003", "변조된 토큰입니다. 토큰이 탈취되었을 수도 있습니다."),
     TOKEN_NOT_FOUND(404, "T001", "토큰을 찾을 수 없습니다."),
 

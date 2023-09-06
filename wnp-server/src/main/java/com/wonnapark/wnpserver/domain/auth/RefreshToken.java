@@ -6,16 +6,17 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 @Getter
-@RedisHash(value = "refreshToken", timeToLive = 604800)
+@RedisHash(value = "refresh", timeToLive = 604800)
 public class RefreshToken {
 
     @Id
     private Long userId;
-    private String refreshToken;
+
+    private String value;
 
     @Builder
-    private RefreshToken(Long userId, String refreshToken) {
+    private RefreshToken(Long userId, String value) {
         this.userId = userId;
-        this.refreshToken = refreshToken;
+        this.value = value;
     }
 }
