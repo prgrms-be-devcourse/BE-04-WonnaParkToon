@@ -6,6 +6,7 @@ import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeCreationRequest
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeReleaseDateTimeUpdateRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeThumbnailUpdateRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeTitleUpdateRequest;
+import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeUrlsUpdateRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeCreationResponse;
 import com.wonnapark.wnpserver.global.response.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
@@ -69,6 +70,12 @@ public class AdminEpisodeController {
     @ResponseStatus(OK)
     public void updateEpisodeReleaseDateTime(@PathVariable Long id, @RequestBody @Valid EpisodeReleaseDateTimeUpdateRequest request) {
         episodeManageUseCase.updateEpisodeReleaseDateTime(id, request);
+    }
+
+    @PatchMapping("/{id}/image-urls")
+    @ResponseStatus(OK)
+    public void updateEpisodeUrls(@PathVariable Long id, @RequestBody @Valid EpisodeUrlsUpdateRequest request) {
+        episodeManageUseCase.updateEpisodeUrls(id, request);
     }
 
 }

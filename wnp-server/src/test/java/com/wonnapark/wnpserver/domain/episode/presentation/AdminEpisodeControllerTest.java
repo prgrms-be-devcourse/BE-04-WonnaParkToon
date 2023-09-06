@@ -7,6 +7,7 @@ import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeCreationRequest
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeReleaseDateTimeUpdateRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeThumbnailUpdateRequest;
 import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeTitleUpdateRequest;
+import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeUrlsUpdateRequest;
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
@@ -179,6 +180,28 @@ class AdminEpisodeControllerTest {
                         )));
     }
 
+    @Test
+    @DisplayName("에피소드 URL 전부를 업데이트 할 수 있다.")
+    void updateEpisodeUrls() throws Exception {
+        Long episodeId = Instancio.create(Long.class);
+        EpisodeUrlsUpdateRequest request = createEpisodeUrlsUpdateRequest();
+
+        mockMvc.perform(patch("/api/v1/admin/episode/{id}/image-urls", episodeId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andDo(document("admin-episode-v1-patch-updateEpisodeUrls",
+                        resourceDetails().tag("에피소드-관리자").description("에피소드 URL 수정"),
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("id").description("에피소드 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("urls[]").description("에피소드 이미지 URL 목록")
+                        )));
+    }
+
     private EpisodeCreationRequest createEpisodeCreationRequest() {
         return Instancio.of(EpisodeCreationRequest.class)
                 .generate(field(EpisodeCreationRequest::title), gen -> gen.string().length(1, 35))
@@ -202,4 +225,9 @@ class AdminEpisodeControllerTest {
     private EpisodeReleaseDateTimeUpdateRequest createEpisodeReleaseDateTimeUpdateRequest() {
         return Instancio.create(EpisodeReleaseDateTimeUpdateRequest.class);
     }
+
+    private EpisodeUrlsUpdateRequest createEpisodeUrlsUpdateRequest() {
+        return Instancio.create(EpisodeUrlsUpdateRequest.class);
+    }
+
 }
