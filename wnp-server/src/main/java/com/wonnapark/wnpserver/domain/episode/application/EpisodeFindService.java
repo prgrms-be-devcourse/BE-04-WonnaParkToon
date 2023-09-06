@@ -43,7 +43,7 @@ public class EpisodeFindService implements EpisodeFindUseCase {
         );
         return episodes.map(episode -> {
             boolean isViewed = viewedEpisodeIds.contains(episode.getId());
-            return EpisodeListFormResponse.from(episode, isViewed);
+            return EpisodeListFormResponse.of(episode, isViewed);
         });
     }
 

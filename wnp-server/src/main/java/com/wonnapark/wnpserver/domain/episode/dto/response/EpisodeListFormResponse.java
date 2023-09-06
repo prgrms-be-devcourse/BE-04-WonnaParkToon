@@ -22,7 +22,7 @@ public record EpisodeListFormResponse(
         );
     }
 
-    public static EpisodeListFormResponse from(Episode episode, boolean isViewed) {
+    public static EpisodeListFormResponse of(Episode episode, boolean isViewed) {
         return new EpisodeListFormResponse(
                 episode.getId(),
                 episode.getTitle(),
