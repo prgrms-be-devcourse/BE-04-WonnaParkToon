@@ -25,10 +25,10 @@ public class CommonEpisodeController {
 
     private final EpisodeFindUseCase episodeFindUseCase;
 
-    @GetMapping("/detail/{id}")
+    @GetMapping("/{episodeId}/detail")
     @ResponseStatus(OK)
-    ApiResponse<EpisodeDetailFormResponse> findEpisodeDetailForm(@PathVariable Long id) {
-        EpisodeDetailFormResponse episodeDetailForm = episodeFindUseCase.findEpisodeDetailForm(id);
+    ApiResponse<EpisodeDetailFormResponse> findEpisodeDetailForm(@PathVariable Long episodeId) {
+        EpisodeDetailFormResponse episodeDetailForm = episodeFindUseCase.findEpisodeDetailForm(episodeId);
         return ApiResponse.from(episodeDetailForm);
     }
 

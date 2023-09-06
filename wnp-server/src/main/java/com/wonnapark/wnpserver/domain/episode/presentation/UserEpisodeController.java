@@ -25,7 +25,7 @@ public class UserEpisodeController {
 
     private final EpisodeFindUseCase episodeFindUseCase;
 
-    @GetMapping("/detail/{episodeId}")
+    @GetMapping("/{episodeId}/detail")
     @ResponseStatus(OK)
     ApiResponse<EpisodeDetailFormResponse> findEpisodeDetailForm(@PathVariable Long episodeId) {
         Long userId = 1L; // TODO: parameter에 UserInfo 추가하고 삭제
