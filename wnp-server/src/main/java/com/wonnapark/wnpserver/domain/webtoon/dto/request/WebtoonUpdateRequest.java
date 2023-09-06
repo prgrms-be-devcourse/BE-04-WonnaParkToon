@@ -1,12 +1,17 @@
 package com.wonnapark.wnpserver.domain.webtoon.dto.request;
 
-public record WebtoonUpdateRequest (
+import java.time.DayOfWeek;
+import java.util.List;
+
+public record WebtoonUpdateRequest(
         String title,
         String artist,
         String detail,
         String genre,
-        String thumbnail
-){
+        String thumbnail,
+        String ageRating,
+        List<DayOfWeek> publishDays
+) {
 }
 
 
