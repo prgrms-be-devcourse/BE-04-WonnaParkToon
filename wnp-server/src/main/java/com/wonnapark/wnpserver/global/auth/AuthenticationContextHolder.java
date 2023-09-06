@@ -1,6 +1,9 @@
 package com.wonnapark.wnpserver.global.auth;
 
-public class AuthenticationContextHolder {
+public final class AuthenticationContextHolder {
+
+    private AuthenticationContextHolder() {
+    }
 
     private static final ThreadLocal<Authentication> authenticationHolder =
             ThreadLocal.withInitial(Authentication::initAuthentication);

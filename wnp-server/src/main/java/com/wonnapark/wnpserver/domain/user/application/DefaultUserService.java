@@ -38,4 +38,5 @@ public class DefaultUserService implements UserService {
                 .orElseThrow(NoSuchElementException::new);
         return UserResponse.from(user);
     }
+
 }

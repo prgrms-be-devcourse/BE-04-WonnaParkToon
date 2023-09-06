@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.random.RandomGenerator;
 
 @Component
 public class JwtTokenService {
@@ -40,9 +41,8 @@ public class JwtTokenService {
 
     public AccessTokenResponse generateAccessToken(AuthTokenRequest request) {
         long now = new Date().getTime();
-        long preventDuplicateNumber = (long) (Math.random() * 1000) + 500;
-//        long preventDuplicateNumber = 0L;
-        Date expiredAt = new Date(now + jwtProperties.refreshTokenExpireTime() + preventDuplicateNumber);
+        Date expiredAt = new Date(now + jwtProperties.refreshTokenExpireTime());
+
 
         String accessToken = Jwts.builder()
                 .claim(TokenConstants.AGE_CLAIM_NAME, request.age())
@@ -59,12 +59,12 @@ public class JwtTokenService {
 
     public RefreshTokenResponse generateRefreshToken(AuthTokenRequest request) {
         long now = new Date().getTime();
-        long preventDuplicateNumber = (long) (Math.random() * 1000) + 500;
-//        long preventDuplicateNumber = 0L;
-        Date expiredAt = new Date(now + jwtProperties.refreshTokenExpireTime() + preventDuplicateNumber);
+        Date expiredAt = new Date(now + jwtProperties.refreshTokenExpireTime());
+        RandomGenerator generator = RandomGenerator.getDefault();
+        int identifyNum = generator.ints().findAny().getAsInt();
 
         String refreshToken = Jwts.builder()
-                .setIssuer(TokenConstants.ISSUER)
+                .setIssuer(String.format(TokenConstants.ISSUER + "%d", identifyNum))
                 .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .setExpiration(expiredAt)
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -75,7 +75,6 @@ public class JwtTokenService {
                 .value(refreshToken)
                 .build();
         refreshTokenRepository.save(refreshTokenEntity);
-        System.out.println("refreshToken = " + refreshToken);
         return new RefreshTokenResponse(TokenConstants.BEARER_TYPE, refreshToken);
     }
 
@@ -91,7 +90,7 @@ public class JwtTokenService {
                 .build();
     }
 
-    public void addAccessTokenBlackList(String accessToken) {
+    public void logoutAccessToken(String accessToken) {
         redisTemplate.opsForValue()
                 .set(
                         accessToken,

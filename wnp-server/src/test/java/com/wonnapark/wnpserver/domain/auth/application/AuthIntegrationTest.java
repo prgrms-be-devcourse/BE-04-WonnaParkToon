@@ -41,7 +41,7 @@ class AuthIntegrationTest {
 
         // then
         assertThat(accessTokenResponse.grantType()).isEqualTo(TokenConstants.BEARER_TYPE);
-        assertThat(accessTokenResponse.accessTokenExpiresIn()).isEqualTo(ACCESS_TOKEN_EXPIRE_TIME / TokenConstants.MILLI_SECOND);
+        assertThat(accessTokenResponse.accessTokenExpiresIn()).isEqualTo(ACCESS_TOKEN_EXPIRE_TIME);
     }
 
     @Test
@@ -68,7 +68,7 @@ class AuthIntegrationTest {
 
         // then
         assertThat(authTokenResponse.grantType()).isEqualTo(TokenConstants.BEARER_TYPE);
-        assertThat(authTokenResponse.accessTokenExpiresIn()).isEqualTo(ACCESS_TOKEN_EXPIRE_TIME / TokenConstants.MILLI_SECOND);
+        assertThat(authTokenResponse.accessTokenExpiresIn()).isEqualTo(ACCESS_TOKEN_EXPIRE_TIME);
     }
 
     @Test
@@ -82,7 +82,7 @@ class AuthIntegrationTest {
         Authentication authentication = authenticationResolver.extractAuthentication(accessTokenResponse.accessToken());
 
         // then
-        assertThatNoException().isThrownBy(() -> authenticationResolver.isValidToken(accessTokenResponse.accessToken()));
+        assertThatNoException().isThrownBy(() -> authenticationResolver.validateAccessToken(accessTokenResponse.accessToken()));
         assertThat(authTokenRequest.userId()).isEqualTo(authentication.userId());
         assertThat(authTokenRequest.age()).isEqualTo(authentication.age());
         assertThat(authTokenRequest.role()).isEqualTo(authentication.role());
@@ -91,7 +91,7 @@ class AuthIntegrationTest {
     @Test
     @DisplayName("잘못된 AccessToken 검증 테스트")
     void validateWrongAccessToken() {
-        assertThatThrownBy(() -> authenticationResolver.isValidToken(Instancio.create(String.class)))
+        assertThatThrownBy(() -> authenticationResolver.validateAccessToken(Instancio.create(String.class)))
                 .isInstanceOf(JwtInvalidException.class);
     }
 
@@ -108,7 +108,7 @@ class AuthIntegrationTest {
         Authentication authentication = authenticationResolver.extractAuthentication(accessToken);
 
         // then
-        assertThat(authenticationResolver.isValidRefreshToken(refreshToken, authentication.userId())).isTrue();
+        assertThatNoException().isThrownBy(() -> authenticationResolver.validateRefreshToken(refreshToken, authentication.userId()));
     }
 
     @Nested
@@ -119,25 +119,25 @@ class AuthIntegrationTest {
         @DisplayName("RefreshToken 자체가 잘못된 경우 에러를 반환")
         void validateWrongRefreshToken() {
             assertThatThrownBy(() ->
-                    authenticationResolver.isValidRefreshToken(Instancio.create(String.class), Instancio.create(Long.class)))
+                    authenticationResolver.validateRefreshToken(Instancio.create(String.class), Instancio.create(Long.class)))
                     .isInstanceOf(JwtInvalidException.class);
         }
 
         @Test
-        @DisplayName("RefreshToken은 유효하지만 저장소와 일치하지 않는 경우 에러를 반환")
+        @DisplayName("RefreshToken은 유효하지만 저장소와 일치하지 않는 경우 false를 반환")
         void validateNotEqualRefreshToken() {
             // given
             AuthTokenRequest authTokenRequest = Instancio.create(AuthTokenRequest.class);
-            AuthTokenResponse authTokenResponse = jwtTokenService.generateAuthToken(authTokenRequest);
-            String accessToken = authTokenResponse.accessToken();
-            String wrongToken = authTokenResponse.refreshToken();
+            Long userId = authTokenRequest.userId();
+            RefreshTokenResponse refreshTokenResponse = jwtTokenService.generateRefreshToken(authTokenRequest);
+            String wrongToken = refreshTokenResponse.refreshToken();
 
             // when
             jwtTokenService.generateRefreshToken(authTokenRequest);
-            Authentication authentication = authenticationResolver.extractAuthentication(accessToken);
 
             // then
-            assertThat(authenticationResolver.isValidRefreshToken(wrongToken, authentication.userId())).isFalse();
+            assertThatThrownBy(() -> authenticationResolver.validateRefreshToken(wrongToken, userId))
+                    .isInstanceOf(JwtInvalidException.class);
         }
     }
 
