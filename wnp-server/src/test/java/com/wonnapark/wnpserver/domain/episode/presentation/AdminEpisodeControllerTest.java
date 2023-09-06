@@ -38,6 +38,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,17 +62,19 @@ class AdminEpisodeControllerTest {
         Long createdEpisodeId = Instancio.create(Long.class);
         given(episodeManageUseCase.createEpisode(webtoon.getId(), episodeCreationRequest)).willReturn(createdEpisodeId);
         // when // then
-        mockMvc.perform(post("/api/v1/admin/episode/{webtoonId}", webtoon.getId())
+        mockMvc.perform(post("/api/v1/admin/episode")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(episodeCreationRequest)))
+                        .content(objectMapper.writeValueAsString(episodeCreationRequest))
+                        .param("webtoonId", String.valueOf(webtoon.getId()))
+                )
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", String.format("/api/v1/common/episode/detail/%d", createdEpisodeId)))
                 .andDo(document("admin-episode-v1-post-createEpisode",
                         resourceDetails().tag("에피소드-관리자").description("에피소드 생성"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("webtoonId").description("Webtoon ID")
+                        queryParameters(
+                                parameterWithName("webtoonId").description("웹툰 ID")
                         ),
                         requestFields(
                                 fieldWithPath("title").type(STRING).description("에피소드 제목"),
@@ -155,6 +158,7 @@ class AdminEpisodeControllerTest {
     }
 
     @Test
+    @DisplayName("에피소드 공개일을 업데이트 할 수 있다.")
     void updateEpisodeReleaseDateTime() throws Exception {
         Long episodeId = Instancio.create(Long.class);
         EpisodeReleaseDateTimeUpdateRequest request = createEpisodeReleaseDateTimeUpdateRequest();

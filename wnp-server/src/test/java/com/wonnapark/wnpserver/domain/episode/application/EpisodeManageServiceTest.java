@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atMostOnce;
@@ -36,24 +37,28 @@ class EpisodeManageServiceTest {
     private EpisodeRepository episodeRepository;
     @Mock
     private WebtoonRepository webtoonRepository;
+    @Mock
+    private ViewHistoryService viewHistoryService;
 
     @Test
     @DisplayName("에피소드를 생성할 수 있다.")
     void createEpisode() {
         // given
-        Webtoon webtoon = Instancio.create(Webtoon.class);
-        EpisodeCreationRequest episodeCreationRequest = Instancio.create(EpisodeCreationRequest.class);
-        Episode episode = episodeCreationRequest.toEntity();
-        episode.setWebtoon(webtoon);
+        Long webtoonId = 1L;
+        EpisodeCreationRequest request = Instancio.create(EpisodeCreationRequest.class);
+        Webtoon mockWebtoon = mock(Webtoon.class);
+        Episode mockEpisode = mock(Episode.class);
 
-        given(webtoonRepository.findById(any(Long.class))).willReturn(Optional.of(webtoon));
-        given(episodeRepository.save(any(Episode.class))).willReturn(episode);
+        given(webtoonRepository.findById(webtoonId)).willReturn(Optional.of(mockWebtoon));
+        given(episodeRepository.existsByWebtoonIdAndTitle(anyLong(), any())).willReturn(false);
+        given(episodeRepository.save(any(Episode.class))).willReturn(mockEpisode);
+        given(mockEpisode.getId()).willReturn(100L);
 
         // when
-        Long returnedId = episodeService.createEpisode(webtoon.getId(), episodeCreationRequest);
+        Long createdEpisodeId = episodeService.createEpisode(webtoonId, request);
 
         // then
-        assertThat(returnedId).isEqualTo(episode.getId());
+        assertThat(createdEpisodeId).isEqualTo(100L);
     }
 
     @Test

@@ -1,12 +1,13 @@
 package com.wonnapark.wnpserver.domain.episode;
 
+import com.wonnapark.wnpserver.domain.episode.dto.request.WebtoonListPageRequest;
 import com.wonnapark.wnpserver.domain.user.User;
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import org.instancio.Instancio;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.instancio.Select.field;
@@ -29,31 +30,19 @@ public final class EpisodeFixtures {
 
     public static Episode createEpisode(Webtoon webtoon) {
         Episode episode = Instancio.of(Episode.class)
-                .ignore(field(Episode::getWebtoon))
+                .set(field(Episode::getWebtoon), webtoon)
                 .ignore(field(Episode::isDeleted))
                 .ignore(field(Episode::getEpisodeUrls))
                 .create();
-
-        episode.setWebtoon(webtoon);
-
-        List<EpisodeUrl> episodeUrls = createEpisodeUrls();
-        episode.setEpisodeUrls(episodeUrls);
+        episode.setEpisodeUrls(createEpisodeUrls());
         return episode;
     }
 
     public static List<Episode> createEpisodes(Webtoon webtoon) {
-        List<Episode> episodes = Instancio.ofList(Episode.class)
-                .ignore(field(Episode::getWebtoon))
-                .ignore(field(Episode::isDeleted))
-                .ignore(field(Episode::getEpisodeUrls))
-                .create();
-
-        episodes.forEach(episode -> {
-            episode.setWebtoon(webtoon);
-
-            List<EpisodeUrl> episodeUrls = createEpisodeUrls();
-            episode.setEpisodeUrls(episodeUrls);
-        });
+        List<Episode> episodes = new ArrayList<>();
+        for (int i = 0; i < Instancio.create(Integer.class); i++) {
+            episodes.add(createEpisode(webtoon));
+        }
         return episodes;
     }
 
@@ -80,7 +69,7 @@ public final class EpisodeFixtures {
     }
 
     public static Pageable createPageable() {
-        return PageRequest.of(0, 20, Sort.by("createAt").descending());
+        return new WebtoonListPageRequest(0, Sort.Direction.DESC).toPageable();
     }
 
 }

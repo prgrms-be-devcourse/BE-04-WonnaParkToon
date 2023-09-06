@@ -30,13 +30,11 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
-import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -58,7 +56,7 @@ class CommonEpisodeControllerTest {
         Episode episode = createEpisode(webtoon);
         given(episodeFindUseCase.findEpisodeDetailForm(episode.getId())).willReturn(EpisodeDetailFormResponse.from(episode));
         // when // then
-        this.mockMvc.perform(get("/api/v1/common/episode/detail/{id}", episode.getId())
+        this.mockMvc.perform(get("/api/v1/common/episode/{id}/detail", episode.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -86,49 +84,35 @@ class CommonEpisodeControllerTest {
         given(episodeFindUseCase.findEpisodeListForm(webtoon.getId(), pageable))
                 .willReturn(new PageImpl<>(episodes, pageable, episodes.size()).map(EpisodeListFormResponse::from));
         // when // then
-        mockMvc.perform(get("/api/v1/common/episode/{webtoonId}/list", webtoon.getId())
+        mockMvc.perform(get("/api/v1/common/episode/list")
+                        .param("webtoonId", String.valueOf(webtoon.getId()))
                         .param("page", "0")
-                        .param("size", "20")
-                        .param("sort", "createAt,desc"))
+                        .param("direction", "DESC"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("common-episode-v1-findEpisodeListForm",
                         resourceDetails().tag("에피소드-공통").description("에피소드 리스트 불러오기"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("webtoonId").description("웹툰 ID")
-                        ),
                         queryParameters(
+                                parameterWithName("webtoonId").description("웹툰 ID"),
                                 parameterWithName("page").description("페이지 번호"),
-                                parameterWithName("size").description("페이지 크기"),
-                                parameterWithName("sort").description("정렬 방식")
+                                parameterWithName("direction").description("정렬 방식")
                         ),
                         responseFields(
-                                fieldWithPath("data.content[].id").type(NUMBER).description("에피소드 ID"),
-                                fieldWithPath("data.content[].title").type(STRING).description("에피소드 제목"),
-                                fieldWithPath("data.content[].thumbnail").type(STRING).description("에피소드 썸네일 URL"),
-                                fieldWithPath("data.content[].releaseDate").type(STRING).description("에피소드 공개일"),
-                                fieldWithPath("data.content[].isViewed").type(BOOLEAN).description("조회 여부"),
-                                fieldWithPath("data.pageable.sort.empty").type(BOOLEAN).description("정렬 정보가 비어있는지 여부"),
-                                fieldWithPath("data.pageable.sort.sorted").type(BOOLEAN).description("정렬이 되어있는지 여부"),
-                                fieldWithPath("data.pageable.sort.unsorted").type(BOOLEAN).description("정렬이 안 되어있는지 여부"),
-                                fieldWithPath("data.pageable.offset").type(NUMBER).description("페이지 시작점"),
-                                fieldWithPath("data.pageable.pageNumber").type(NUMBER).description("페이지 번호"),
-                                fieldWithPath("data.pageable.pageSize").type(NUMBER).description("페이지 크기"),
-                                fieldWithPath("data.pageable.paged").type(BOOLEAN).description("페이징이 되어있는지 여부"),
-                                fieldWithPath("data.pageable.unpaged").type(BOOLEAN).description("페이징이 안 되어있는지 여부"),
-                                fieldWithPath("data.last").type(BOOLEAN).description("마지막 페이지인지 여부"),
-                                fieldWithPath("data.totalElements").type(NUMBER).description("총 엘리먼트 개수"),
-                                fieldWithPath("data.totalPages").type(NUMBER).description("총 페이지 수"),
-                                fieldWithPath("data.first").type(BOOLEAN).description("첫 페이지인지 여부"),
-                                fieldWithPath("data.size").type(NUMBER).description("페이지 크기"),
-                                fieldWithPath("data.number").type(NUMBER).description("페이지 번호"),
-                                fieldWithPath("data.sort.empty").type(BOOLEAN).description("정렬 정보가 비어있는지 여부"),
-                                fieldWithPath("data.sort.sorted").type(BOOLEAN).description("정렬이 되어있는지 여부"),
-                                fieldWithPath("data.sort.unsorted").type(BOOLEAN).description("정렬이 안 되어있는지 여부"),
-                                fieldWithPath("data.numberOfElements").type(NUMBER).description("현재 페이지의 엘리먼트 개수"),
-                                fieldWithPath("data.empty").type(BOOLEAN).description("응답이 비어있는지 여부")
+                                fieldWithPath("data.content[].id").description("ID"),
+                                fieldWithPath("data.content[].title").description("제목"),
+                                fieldWithPath("data.content[].thumbnail").description("썸네일"),
+                                fieldWithPath("data.content[].releaseDate").description("출시 날짜"),
+                                fieldWithPath("data.content[].isViewed").description("조회 여부"),
+                                fieldWithPath("data.numberOfElements").description("요소의 수"),
+                                fieldWithPath("data.page").description("현재 페이지"),
+                                fieldWithPath("data.size").description("페이지 크기"),
+                                fieldWithPath("data.sort.empty").description("정렬 여부"),
+                                fieldWithPath("data.sort.sorted").description("정렬됨"),
+                                fieldWithPath("data.sort.unsorted").description("정렬되지 않음"),
+                                fieldWithPath("data.totalPages").description("총 페이지 수"),
+                                fieldWithPath("data.totalElements").description("총 요소 수")
                         )
                 ));
     }

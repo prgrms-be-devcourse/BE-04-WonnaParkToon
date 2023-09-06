@@ -45,16 +45,15 @@ class ViewHistoryRepositoryTest {
     }
 
     @Test
-    @DisplayName("유저 ID와 에피소드 ID에 해당하는 VIEW_HISTORY가 없을 때 true를 반환힐 수 있다.")
+    @DisplayName("유저 ID와 에피소드 ID에 해당하는 VIEW_HISTORY가 있을 때 true를 반환힐 수 있다.")
     void existsByUserIdAndEpisodeId_true() {
         // given
         Episode episode = episodeRepository.save(createEpisode(webtoon));
         ViewHistory viewHistory = viewHistoryRepository.save(createViewHistory(user.getId(), episode.getId()));
-
         // when
-        boolean hasData = viewHistoryRepository.existsById_UserIdAndId_EpisodeId(user.getId(), episode.getId());
+        boolean result = viewHistoryRepository.existsById_UserIdAndId_EpisodeId(user.getId(), episode.getId());
         // then
-        assertThat(hasData).isTrue();
+        assertThat(result).isTrue();
     }
 
     @Test
@@ -64,18 +63,17 @@ class ViewHistoryRepositoryTest {
         Long fakeUserId = Instancio.create(Long.class);
         Long fakeEpisodeId = Instancio.create(Long.class);
         // when
-        boolean hasData = viewHistoryRepository.existsById_UserIdAndId_EpisodeId(fakeUserId, fakeEpisodeId);
+        boolean result = viewHistoryRepository.existsById_UserIdAndId_EpisodeId(fakeUserId, fakeEpisodeId);
         // then
-        assertThat(hasData).isFalse();
+        assertThat(result).isFalse();
     }
 
     @Test
     @DisplayName("주어진 유저 ID와 에피소드 ID들에 대한 VIEW_HISTORY가 존재하면 일치하는 에피소드 ID들 반환할 수 있다")
     void findEpisodeIdsInGivenEpisodeIdsByUserId_viewedEpisodeIds() {
         // given
-        List<Episode> episodes = createEpisodes(webtoon);
-        episodeRepository.saveAll(episodes);
-        List<Long> episodeIds = episodes.stream().map(Episode::getId).toList();
+        List<Episode> episodes = episodeRepository.saveAll(createEpisodes(webtoon));
+        List<Long> episodeIds = episodes.stream().map(Episode::getId).distinct().toList();
         List<ViewHistory> viewHistories = viewHistoryRepository.saveAll(createViewHistories(user.getId(), episodeIds));
         // when
         List<Long> viewedEpisodeIds = viewHistoryRepository.findEpisodeIdsInGivenEpisodeIdsByUserId(user.getId(), episodeIds);
