@@ -33,7 +33,7 @@ public class DefaultUserService implements UserService {
         return UserResponse.from(savedUser);
     }
 
-    public UserResponse findUserByProviderIdAndPlatform(Long providerId, OAuthProvider platform) {
+    public UserResponse findUserByProviderIdAndPlatform(String providerId, OAuthProvider platform) {
         User user = userRepository.findByProviderIdAndPlatform(providerId, platform)
                 .orElseThrow(NoSuchElementException::new);
         return UserResponse.from(user);
