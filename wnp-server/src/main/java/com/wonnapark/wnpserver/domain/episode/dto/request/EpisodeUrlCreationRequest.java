@@ -5,16 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 
 public record EpisodeUrlCreationRequest(
-        @NotBlank @Length(max = 255)
-        String episodeUrl,
-        int order
+        @NotBlank(message = "에피소드 URL은 공백이나 null일 수 없습니다.")
+        @Length(max = 255, message = "에피소드 URL 길이는 255자 이하여야 합니다.")
+        String episodeUrl
 ) {
 
-    public static EpisodeUrl toEntity(EpisodeUrlCreationRequest request) {
-        return EpisodeUrl.builder()
-                .url(request.episodeUrl)
-                .order(request.order)
-                .build();
+    public EpisodeUrl toEntity() {
+        return new EpisodeUrl(episodeUrl);
     }
 
 }

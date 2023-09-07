@@ -2,6 +2,7 @@ package com.wonnapark.wnpserver.domain.webtoon.application;
 
 import com.wonnapark.wnpserver.domain.webtoon.AgeRating;
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.domain.webtoon.dto.request.WebtoonCreateRequest;
 import com.wonnapark.wnpserver.domain.webtoon.dto.request.WebtoonUpdateRequest;
 import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;

@@ -1,7 +1,6 @@
-package com.wonnapark.wnpserver.domain.webtoon.application;
+package com.wonnapark.wnpserver.domain.webtoon;
 
-import com.wonnapark.wnpserver.domain.webtoon.AgeRating;
-import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.global.common.UserInfo;
 import org.instancio.Instancio;
 
 import java.time.DayOfWeek;
@@ -12,7 +11,7 @@ import static org.instancio.Select.field;
 
 public final class WebtoonFixtures {
 
-    static final List<String> ageRatingNames = Arrays.stream(AgeRating.values())
+    public static final List<String> ageRatingNames = Arrays.stream(AgeRating.values())
             .map(AgeRating::getRatingName).toList();
 
     private WebtoonFixtures() {
@@ -62,6 +61,37 @@ public final class WebtoonFixtures {
     public static List<Webtoon> createWebtoonsOnPublishDay(DayOfWeek publishDay) {
         return Instancio.ofList(Webtoon.class)
                 .set(field(Webtoon::getPublishDays), Arrays.asList(publishDay))
+                .create();
+    }
+
+    /**
+     * 나이 조건 없이 사용자 정보를 생성하는 메서드
+     *
+     * @return UserInfo 인스턴스
+     */
+    public static UserInfo createUserInfo() {
+        return Instancio.create(UserInfo.class);
+    }
+
+    /**
+     * 18세 이상인 사용자 정보를 생성하는 메서드
+     *
+     * @return age가 18~100인 UserInfo 인스턴스
+     */
+    public static UserInfo createUserInfoOver18() {
+        return Instancio.of(UserInfo.class)
+                .generate(field(UserInfo::age), gen -> gen.ints().range(18, 100))
+                .create();
+    }
+
+    /**
+     * 18세 미만인 사용자 정보를 생성하는 메서드
+     *
+     * @return age가 0~18인 UserInfo 인스턴스
+     */
+    public static UserInfo createUserInfoUnder18() {
+        return Instancio.of(UserInfo.class)
+                .generate(field(UserInfo::age), gen -> gen.ints().range(0, 18))
                 .create();
     }
 

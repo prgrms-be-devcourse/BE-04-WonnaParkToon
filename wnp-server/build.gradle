@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.9'
     id 'io.spring.dependency-management' version '1.1.2'
+    id 'com.epages.restdocs-api-spec' version '0.18.2'
+    id 'org.hidetake.swagger.generator' version '2.18.2'
 }
 
 group = 'com.wonnapark'
@@ -41,8 +43,14 @@ dependencies {
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation group: 'org.instancio', name: 'instancio-junit', version: '3.0.0'
+
+    // docs
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'com.epages:restdocs-api-spec:0.18.3'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.3'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+
     testImplementation "org.testcontainers:testcontainers:1.19.0"
     testImplementation "org.testcontainers:junit-jupiter:1.19.0"
     
@@ -54,4 +62,28 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+openapi3 {
+    server = 'http://localhost:8080'
+    title = 'Wonna Park API'
+    description = '내가 만든 API'
+    version = "${project.version}"
+    outputFileNamePrefix = 'wonna-park'
+    outputDirectory = 'build/resources/main/static'
+}
+
+tasks.register('copyDocs') {
+    dependsOn(':openapi3')
+    doLast {
+        delete 'src/main/resources/static/wonna-park.json'
+        copy {
+            from "build/resources/main/static/wonna-park.json"
+            into "src/main/resources/static/"
+        }
+    }
+}
+
+bootJar {
+    dependsOn(':copyDocs')
 }

@@ -28,21 +28,21 @@ public class DefaultWebtoonController {
 
     @GetMapping("/{webtoonId}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<WebtoonDetailResponse> getWebtoonDetail(@PathVariable Long webtoonId, @Authorized UserInfo userInfo) {
+    public ApiResponse<WebtoonDetailResponse> findWebtoonById(@PathVariable Long webtoonId, UserInfo userInfo) {
         WebtoonDetailResponse response = userWebtoonService.findWebtoonById(webtoonId, userInfo);
         return ApiResponse.from(response);
     }
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<List<WebtoonSimpleResponse>> getWebtoonListOfPublishDay(@RequestParam DayOfWeek publishDay) {
+    public ApiResponse<List<WebtoonSimpleResponse>> findWebtoonsByPublishDay(@RequestParam DayOfWeek publishDay) {
         List<WebtoonSimpleResponse> data = defaultWebtoonService.findWebtoonsByPublishDay(publishDay);
         return ApiResponse.from(data);
     }
 
     @GetMapping("/page")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<Page<WebtoonSimpleResponse>> getWeboonListWithPaging(@PageableDefault Pageable pageable) {
+    public ApiResponse<Page<WebtoonSimpleResponse>> findAllWebtoonsWithPaging(@PageableDefault Pageable pageable) {
         Page<WebtoonSimpleResponse> data = defaultWebtoonService.findAllWebtoonsWithPaging(pageable);
 
         return ApiResponse.from(data);
@@ -50,8 +50,8 @@ public class DefaultWebtoonController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<List<WebtoonsOnPublishDayResponse>> getAllWebtoonsOnEachPublishDays() {
-        List<WebtoonsOnPublishDayResponse> data = defaultWebtoonService.findAllWebtoonsOnEachPublishDay();
+    public ApiResponse<List<WebtoonsOnPublishDayResponse>> findAllWebtoonsForEachDayOfWeek() {
+        List<WebtoonsOnPublishDayResponse> data = defaultWebtoonService.findAllWebtoonsForEachDayOfWeek();
 
         return ApiResponse.from(data);
     }
