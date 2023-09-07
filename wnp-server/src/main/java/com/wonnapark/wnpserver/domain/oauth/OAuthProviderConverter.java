@@ -9,4 +9,5 @@ public class OAuthProviderConverter implements Converter<String, OAuthProvider> 
     public OAuthProvider convert(@NotBlank String platform) {
         return OAuthProvider.from(platform);
     }
+    
 }
