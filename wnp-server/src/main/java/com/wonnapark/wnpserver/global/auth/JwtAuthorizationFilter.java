@@ -25,8 +25,8 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private final static String LOGOUT_URI = "/api/v1/oauth/logout";
-    private final static String REISSUE_URI = "/api/v1/token/reissue";
+    private final static String LOGOUT_URI = "/api/v1/auth/logout";
+    private final static String REISSUE_URI = "/api/v1/auth/reissue";
     private final static String RE_LOGIN_URI = "/front/login";
 
     private final AuthenticationResolver authenticationResolver;
@@ -59,12 +59,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 } catch (JwtInvalidException jwtInvalidException) {
                     setErrorResponse(response, jwtInvalidException, RE_LOGIN_URI);
                     AuthenticationContextHolder.clearContext();
+                    return;
                 }
             }
             filterChain.doFilter(request, response);
-            AuthenticationContextHolder.clearContext();
         } catch (JwtInvalidException jwtInvalidException) {
             setErrorResponse(response, jwtInvalidException, REISSUE_URI);
+        } finally {
             AuthenticationContextHolder.clearContext();
         }
     }
