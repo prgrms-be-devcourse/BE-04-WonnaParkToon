@@ -6,20 +6,21 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 @RequiredArgsConstructor
-public class KakaoLoginRequest implements OAuthLoginRequest {
+public class NaverLoginRequest implements OAuthLoginRequest {
 
     private final String code;
+    private final String state;
 
     @Override
     public OAuthProvider getOAuthProvider() {
-        return OAuthProvider.KAKAO;
+        return OAuthProvider.NAVER;
     }
 
     @Override
     public MultiValueMap<String, String> makeBody() {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("code", code);
-        System.out.println("authroizationCode = " + code);
+        body.add("state", state);
         return body;
     }
 }
