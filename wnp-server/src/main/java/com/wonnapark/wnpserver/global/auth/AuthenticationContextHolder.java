@@ -1,9 +1,10 @@
 package com.wonnapark.wnpserver.global.auth;
 
-public final class AuthenticationContextHolder {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-    private AuthenticationContextHolder() {
-    }
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class AuthenticationContextHolder {
 
     private static final ThreadLocal<Authentication> authenticationHolder =
             ThreadLocal.withInitial(Authentication::initAuthentication);
