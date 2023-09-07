@@ -36,7 +36,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String[] blackList = {
                 "/api/v1/guest/",
-                "/api/v1/oauth/kakao",
+                "/api/v1/oauth/",
                 "/h2-console"
         };
         String path = request.getRequestURI();
@@ -54,13 +54,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             if (path.equals(REISSUE_URI) || path.equals(LOGOUT_URI)) {
                 String refreshToken = extractTokenFromHeader(request, TokenConstants.REFRESH_TOKEN);
-                authenticationResolver.validateRefreshToken(refreshToken, authentication.userId());
+                try {
+                    authenticationResolver.validateRefreshToken(refreshToken, authentication.userId());
+                } catch (JwtInvalidException jwtInvalidException) {
+                    setErrorResponse(response, jwtInvalidException, RE_LOGIN_URI);
+                    AuthenticationContextHolder.clearContext();
+                }
             }
             filterChain.doFilter(request, response);
             AuthenticationContextHolder.clearContext();
-
         } catch (JwtInvalidException jwtInvalidException) {
-            setErrorResponse(response, jwtInvalidException, null);
+            setErrorResponse(response, jwtInvalidException, REISSUE_URI);
             AuthenticationContextHolder.clearContext();
         }
     }
