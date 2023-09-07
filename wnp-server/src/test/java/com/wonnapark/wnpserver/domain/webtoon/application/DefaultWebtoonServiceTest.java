@@ -1,6 +1,7 @@
 package com.wonnapark.wnpserver.domain.webtoon.application;
 
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonSimpleResponse;
 import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -73,6 +74,6 @@ class DefaultWebtoonServiceTest {
         }
     }
 
-    // TODO: 2023-09-03 findAllWebtoonsOnEachPublishDay 테스트 코드 추가
+    // TODO: 2023-09-03 findAllWebtoonsForEachDayOfWeek 테스트 코드 추가
 
 }

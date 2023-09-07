@@ -17,7 +17,7 @@ public class GuestWebtoonController {
     private final GuestWebtoonService guestWebtoonService;
 
     @GetMapping("/{webtoonId}")
-    public ApiResponse<WebtoonDetailResponse> getWebtoonDetail(@PathVariable Long webtoonId) {
+    public ApiResponse<WebtoonDetailResponse> findWebtoonById(@PathVariable Long webtoonId) {
         WebtoonDetailResponse data = guestWebtoonService.findWebtoonById(webtoonId);
         return ApiResponse.from(data);
     }

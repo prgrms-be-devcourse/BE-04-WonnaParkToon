@@ -25,7 +25,7 @@ public class DefaultWebtoonService {
                 .map(WebtoonSimpleResponse::from);
     }
 
-    public List<WebtoonsOnPublishDayResponse> findAllWebtoonsOnEachPublishDay() {
+    public List<WebtoonsOnPublishDayResponse> findAllWebtoonsForEachDayOfWeek() {
         List<WebtoonsOnPublishDayResponse> responseList = new ArrayList<>();
         for (DayOfWeek publishDay : DayOfWeek.values()) {
             responseList.add(WebtoonsOnPublishDayResponse.of(publishDay, findWebtoonsByPublishDay(publishDay)));
