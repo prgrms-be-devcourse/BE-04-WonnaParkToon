@@ -4,7 +4,7 @@ import com.wonnapark.wnpserver.domain.oauth.OAuthProvider;
 
 public interface OAuthInfoResponse {
 
-    Long getProviderId();
+    String getProviderId();
 
     String getNickname();
 

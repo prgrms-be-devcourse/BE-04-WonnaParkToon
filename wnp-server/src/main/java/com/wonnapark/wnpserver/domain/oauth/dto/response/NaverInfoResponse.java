@@ -11,50 +11,43 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class KakaoInfoResponse implements OAuthInfoResponse {
+public class NaverInfoResponse implements OAuthInfoResponse {
 
-    private Long id;
-    private KakaoAccount kakaoAccount;
+    private Response response;
 
     @Getter
     @NoArgsConstructor
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    private static class KakaoAccount {
-        private Profile profile;
-        private String birthyear;
+    public static class Response {
+        private String id;
+        private String nickname;
         private String gender;
-
-        @Getter
-        @NoArgsConstructor
-        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        private static class Profile {
-            private String nickname;
-        }
+        private String birthyear;
     }
 
     @Override
     public String getProviderId() {
-        return String.valueOf(id);
+        return response.id;
     }
 
     @Override
     public String getNickname() {
-        return kakaoAccount.profile.nickname;
+        return response.nickname;
     }
 
     @Override
     public OAuthProvider getOAuthProvider() {
-        return OAuthProvider.KAKAO;
+        return OAuthProvider.NAVER;
     }
 
     @Override
     public int getAge() {
-        return getAgeFromBirthYear(kakaoAccount.birthyear);
+        return getAgeFromBirthYear(response.birthyear);
     }
 
     @Override
     public String getGender() {
-        return kakaoAccount.gender;
+        return response.gender;
     }
 
     private int getAgeFromBirthYear(String birthYear) {
