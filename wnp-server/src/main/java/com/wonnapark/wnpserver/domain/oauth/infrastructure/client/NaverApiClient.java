@@ -1,12 +1,13 @@
-package com.wonnapark.wnpserver.domain.oauth.infrastructure;
+package com.wonnapark.wnpserver.domain.oauth.infrastructure.client;
 
 import com.wonnapark.wnpserver.domain.auth.config.TokenConstants;
 import com.wonnapark.wnpserver.domain.oauth.OAuthProvider;
 import com.wonnapark.wnpserver.domain.oauth.config.OauthProperties;
 import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
-import com.wonnapark.wnpserver.domain.oauth.dto.response.KakaoInfoResponse;
-import com.wonnapark.wnpserver.domain.oauth.dto.response.KakaoToken;
+import com.wonnapark.wnpserver.domain.oauth.dto.response.NaverInfoResponse;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
+import com.wonnapark.wnpserver.domain.oauth.infrastructure.NaverToken;
+import com.wonnapark.wnpserver.global.response.ErrorCode;
 import io.jsonwebtoken.lang.Assert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -18,46 +19,49 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
-public class KakaoApiClient implements OAuthApiClient {
+public class NaverApiClient implements OAuthApiClient {
+
     private static final String GRANT_TYPE = "authorization_code";
     private static final String EMPTY_SPACE = " ";
 
-    private final RestTemplate restTemplate;
     private final OauthProperties oauthProperties;
+    private final RestTemplate restTemplate;
 
     @Override
     public OAuthProvider getOAuthProvider() {
-        return OAuthProvider.KAKAO;
+        return OAuthProvider.NAVER;
     }
 
     @Override
-    public String requestAccessToken(OAuthLoginRequest params) {
-        String url = oauthProperties.getKakao().getUrl().getAuthUrl() + OauthProperties.KAKAO_REQUEST_TOKEN_URI;
+    public String requestAccessToken(OAuthLoginRequest param) {
+        String url = oauthProperties.getNaver().getUrl().getRequestTokenUrl();
+
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String, String> body = params.makeBody();
+        MultiValueMap<String, String> body = param.makeBody();
         body.add("grant_type", GRANT_TYPE);
-        body.add("client_id", oauthProperties.getKakao().getClientId());
+        body.add("client_id", oauthProperties.getNaver().getClientId());
+        body.add("client_secret", oauthProperties.getNaver().getClientSecret());
+
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
-        KakaoToken response = restTemplate.postForObject(url, request, KakaoToken.class);
+        NaverToken response = restTemplate.postForObject(url, request, NaverToken.class);
 
-        Assert.notNull(response, "토큰 못 받았어요");
-        // TODO: 2023-09-03 RestClientException 처리 또는 커스텀 예외로?
+        Assert.notNull(response, ErrorCode.OAUTH_RESPONSE_NOT_FOUND.getMessage());
         return response.accessToken();
     }
 
     @Override
     public OAuthInfoResponse requestOauthInfo(String accessToken) {
-        String url = oauthProperties.getKakao().getUrl().getApiUrl() + OauthProperties.KAKAO_REQUEST_INFO_URL;
+        String url = oauthProperties.getNaver().getUrl().getRequestInfoUrl();
+
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         httpHeaders.set(HttpHeaders.AUTHORIZATION, TokenConstants.BEARER_TYPE + EMPTY_SPACE + accessToken);
 
         HttpEntity<?> request = new HttpEntity<>(httpHeaders);
-        return restTemplate.postForObject(url, request, KakaoInfoResponse.class);
-        // TODO: 2023-09-03 RestClientException 처리 또는 커스텀 예외로?
-    }
 
+        return restTemplate.postForObject(url, request, NaverInfoResponse.class);
+    }
 }
