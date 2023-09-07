@@ -1,7 +1,9 @@
 package com.wonnapark.wnpserver.domain.episode.infrastructure;
 
 import com.wonnapark.wnpserver.domain.episode.Episode;
-import com.wonnapark.wnpserver.domain.episode.EpisodeUrl;
+import com.wonnapark.wnpserver.domain.episode.EpisodeFixtures;
+import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,102 +11,67 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Select.field;
 
 @DataJpaTest
 class EpisodeRepositoryTest {
 
     @Autowired
     private EpisodeRepository episodeRepository;
-    private Episode episode;
+    @Autowired
+    private WebtoonRepository webtoonRepository;
+
+    private Webtoon webtoon;
 
     @BeforeEach
     void init() {
-        episode = episodeRepository.save(
-                Instancio.of(Episode.class)
-                        .ignore(field(Episode::getId))
-                        .create()
-        );
+        webtoon = webtoonRepository.save(EpisodeFixtures.createWebtoon());
     }
 
     @Test
-    @DisplayName("에피소드를 단건 조회할 수 있다.")
-    void testFindById() {
+    @DisplayName("특정 웹툰아이디를 통해 에피소드를 페이지 조회할 수 있다.")
+    void findAllByWebtoonId() {
         // given
+        Pageable pageable = EpisodeFixtures.createPageable();
+        List<Episode> episodes = episodeRepository.saveAll(EpisodeFixtures.createEpisodes(webtoon));
+
         // when
-        Optional<Episode> foundEpisode = episodeRepository.findById(episode.getId());
+        Page<Episode> episodePage = episodeRepository.findAllByWebtoonId(webtoon.getId(), pageable);
+
         // then
-        assertThat(foundEpisode).isPresent();
+        Set<String> originalEpisodeTitles = episodes.stream().map(Episode::getTitle).collect(Collectors.toSet());
+        Set<String> returnedEpisodeTitles = episodePage.map(Episode::getTitle).toSet();
+
+        assertThat(episodePage.getContent()).hasSize(Math.min(episodes.size(), pageable.getPageSize()));
+        assertThat(originalEpisodeTitles).containsAll(returnedEpisodeTitles);
     }
 
     @Test
-    @DisplayName("에피소드를 페이지 조회할 수 있다.")
-    void testFindPageable() {
+    @DisplayName("해당 title을 가진 에피소드가 있는지 확인할 수 있다.")
+    void existsByTitle_True() {
         // given
-        Pageable pageable = PageRequest.of(0, 10);
+        Episode episode = episodeRepository.save(EpisodeFixtures.createEpisode(webtoon));
         // when
-        Page<Episode> episodePage = episodeRepository.findAll(pageable);
+        boolean result = episodeRepository.existsByWebtoonIdAndTitle(webtoon.getId(), episode.getTitle());
         // then
-        assertThat(episodePage).isNotNull();
+        assertThat(result).isTrue();
     }
 
     @Test
-    @DisplayName("에피소드 타이틀을 수정할 수 있다.")
-    void testUpdateTitle() {
+    @DisplayName("해당 title을 가진 에피소드가 있는지 확인할 수 있다.")
+    void existsByTitle_False() {
         // given
-        String newTitle = Instancio.create(String.class);
+        String fakeTitle = Instancio.create(String.class);
         // when
-        episode.changeTitle(newTitle);
+        boolean result = episodeRepository.existsByWebtoonIdAndTitle(webtoon.getId(), fakeTitle);
         // then
-        Optional<Episode> foundEpisode = episodeRepository.findById(episode.getId());
-        assertThat(foundEpisode).isPresent();
-        assertThat(foundEpisode.get()).usingRecursiveComparison().isEqualTo(episode);
-    }
-
-    @Test
-    @DisplayName("에피소드 작가의 말을 수정할 수 있다.")
-    void testUpdateArtistComment() {
-        // given
-        String newArtistComment = Instancio.create(String.class);
-        // when
-        episode.changeArtistComment(newArtistComment);
-        // then
-        Optional<Episode> foundEpisode = episodeRepository.findById(episode.getId());
-        assertThat(foundEpisode).isPresent();
-        assertThat(foundEpisode.get()).usingRecursiveComparison().isEqualTo(episode);
-    }
-
-    @Test
-    @DisplayName("에피소드 썸네일을 수정할 수 있다.")
-    void testUpdateThumbNail() {
-        // given
-        String newThumbNail = Instancio.create(String.class);
-        // when
-        episode.changeThumbNail(newThumbNail);
-        // then
-        Optional<Episode> foundEpisode = episodeRepository.findById(episode.getId());
-        assertThat(foundEpisode).isPresent();
-        assertThat(foundEpisode.get()).usingRecursiveComparison().isEqualTo(episode);
-    }
-
-    @Test
-    @DisplayName("에피소드 공개일을 수정할 수 있다.")
-    void testUpdateReleaseDateTime() {
-        // given
-        LocalDateTime newReleaseDateTime = Instancio.create(LocalDateTime.class);
-        // when
-        episode.changeReleaseDateTime(newReleaseDateTime);
-        // then
-        Optional<Episode> foundEpisode = episodeRepository.findById(episode.getId());
-        assertThat(foundEpisode).isPresent();
-        assertThat(foundEpisode.get()).usingRecursiveComparison().isEqualTo(episode);
+        assertThat(result).isFalse();
     }
 
 }

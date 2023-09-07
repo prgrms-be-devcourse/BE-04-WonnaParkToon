@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,26 +31,8 @@ public class EpisodeUrl {
     @Column(name = "url", nullable = false)
     private String url;
 
-    @Column(name = "orders", nullable = false, columnDefinition = "TINYINT")
-    private int order;
-
-    @Column(name = "is_deleted")
-    private boolean isDeleted = false;
-
-    @Builder
-    private EpisodeUrl(String url, int order) {
+    public EpisodeUrl(String url) {
         this.url = url;
-        this.order = order;
-    }
-
-    public void changeUrl(String url) {
-        // TODO: 업데이트 고민하고 상의할 부분이 많음
-        this.url = url;
-    }
-
-    public void delete() {
-        isDeleted = true;
-        episode.getEpisodeUrls().remove(this);
     }
 
     public void setEpisode(Episode episode) {

@@ -2,8 +2,10 @@ package com.wonnapark.wnpserver.domain.episode;
 
 import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
 import com.wonnapark.wnpserver.global.common.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,16 +25,20 @@ import java.util.List;
 
 @Table(name = "episodes")
 @Entity
+@Where(clause = "is_deleted = false")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Episode extends BaseEntity {
+
+    private static final int MAX_TITLE_LENGTH = 35;
+    private static final int MAX_ARTIST_COMMENT_LENGTH = 100;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "title", length = 35)
+    @Column(name = "title", nullable = false, length = MAX_TITLE_LENGTH)
     private String title;
 
     @Column(name = "release_date", nullable = false, columnDefinition = "TIMESTAMP(6)")
@@ -40,26 +47,26 @@ public class Episode extends BaseEntity {
     @Column(name = "thumbnail", nullable = false)
     private String thumbnail;
 
-    @Column(name = "artist_comment", nullable = false, length = 100)
+    @Column(name = "artist_comment", nullable = false, length = MAX_ARTIST_COMMENT_LENGTH)
     private String artistComment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "webtoon_id", nullable = false)
     private Webtoon webtoon;
 
-    @OneToMany(mappedBy = "episode")
-    List<EpisodeUrl> episodeUrls = new ArrayList<>();
+    @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<EpisodeUrl> episodeUrls = new ArrayList<>();
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
     @Builder
-    private Episode(String title, LocalDateTime releaseDateTime, String thumbnail, String artistComment) {
+    private Episode(String title, LocalDateTime releaseDateTime, String thumbnail, String artistComment, Webtoon webtoon) {
         this.title = title;
         this.releaseDateTime = releaseDateTime;
         this.thumbnail = thumbnail;
         this.artistComment = artistComment;
-        isDeleted = false;
+        this.webtoon = webtoon;
     }
 
     public void changeTitle(String title) {
@@ -70,7 +77,7 @@ public class Episode extends BaseEntity {
         this.artistComment = artistComment;
     }
 
-    public void changeThumbNail(String thumbnail) {
+    public void changeThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
     }
 
@@ -78,15 +85,17 @@ public class Episode extends BaseEntity {
         this.releaseDateTime = releaseDateTime;
     }
 
-    public void delete() {
-        isDeleted = true;
-        episodeUrls.forEach(EpisodeUrl::delete);
+    public void changeEpisodeUrls(List<EpisodeUrl> episodeUrls) {
+        this.episodeUrls.clear();
+        setEpisodeUrls(episodeUrls);
     }
 
-    public void setEpisodeUrls(List<EpisodeUrl> episodeUrl) {
-        for (EpisodeUrl url : episodeUrl) {
-            url.setEpisode(this);
-        }
+    public void delete() {
+        isDeleted = true;
+    }
+
+    public void setEpisodeUrls(List<EpisodeUrl> episodeUrls) {
+        episodeUrls.forEach(episodeUrl -> episodeUrl.setEpisode(this));
     }
 
 }
