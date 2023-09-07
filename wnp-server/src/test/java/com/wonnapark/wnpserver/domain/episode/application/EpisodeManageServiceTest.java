@@ -44,21 +44,22 @@ class EpisodeManageServiceTest {
     @DisplayName("에피소드를 생성할 수 있다.")
     void createEpisode() {
         // given
-        Long webtoonId = 1L;
         EpisodeCreationRequest request = Instancio.create(EpisodeCreationRequest.class);
+        Long webtoonId = 1L;
         Webtoon mockWebtoon = mock(Webtoon.class);
+        Long episodeId = 100L;
         Episode mockEpisode = mock(Episode.class);
 
         given(webtoonRepository.findById(webtoonId)).willReturn(Optional.of(mockWebtoon));
         given(episodeRepository.existsByWebtoonIdAndTitle(anyLong(), any())).willReturn(false);
         given(episodeRepository.save(any(Episode.class))).willReturn(mockEpisode);
-        given(mockEpisode.getId()).willReturn(100L);
+        given(mockEpisode.getId()).willReturn(episodeId);
 
         // when
         Long createdEpisodeId = episodeService.createEpisode(webtoonId, request);
 
         // then
-        assertThat(createdEpisodeId).isEqualTo(100L);
+        assertThat(createdEpisodeId).isEqualTo(episodeId);
     }
 
     @Test
