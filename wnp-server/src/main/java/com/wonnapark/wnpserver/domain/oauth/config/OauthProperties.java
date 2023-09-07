@@ -24,7 +24,7 @@ public class OauthProperties {
 
             private static String KAKAO_AUTHORIZE_URI = "/oauth/authorize";
             private static String KAKAO_REQUEST_TOKEN_URI = "/oauth/token";
-            private static String KAKAO_REQUEST_INFO_URL = "/v2/user/me";
+            private static String KAKAO_REQUEST_INFO_URI = "/v2/user/me";
 
             private final String authUrl;
             private final String apiUrl;
@@ -39,7 +39,7 @@ public class OauthProperties {
             }
 
             public String getRequestInfoUrl() {
-                return apiUrl + KAKAO_REQUEST_INFO_URL;
+                return apiUrl + KAKAO_REQUEST_INFO_URI;
             }
 
             public String getRedirectUrl() {
@@ -62,7 +62,7 @@ public class OauthProperties {
 
             private static String NAVER_AUTHORIZE_URI = "/oauth2.0/authorize";
             private static String NAVER_REQUEST_TOKEN_URI = "/oauth2.0/token";
-            private static String NAVER_REQUEST_INFO_URL = "/v1/nid/me";
+            private static String NAVER_REQUEST_INFO_URI = "/v1/nid/me";
 
             private final String authUrl;
             private final String apiUrl;
@@ -77,7 +77,7 @@ public class OauthProperties {
             }
 
             public String getRequestInfoUrl() {
-                return apiUrl + NAVER_REQUEST_INFO_URL;
+                return apiUrl + NAVER_REQUEST_INFO_URI;
             }
 
             public String getRedirectUrl() {
