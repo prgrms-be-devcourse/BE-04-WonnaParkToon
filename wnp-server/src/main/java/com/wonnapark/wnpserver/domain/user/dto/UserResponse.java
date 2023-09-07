@@ -1,12 +1,12 @@
 package com.wonnapark.wnpserver.domain.user.dto;
 
-import com.wonnapark.wnpserver.domain.user.OAuthProvider;
+import com.wonnapark.wnpserver.domain.oauth.OAuthProvider;
 import com.wonnapark.wnpserver.domain.user.Role;
 import com.wonnapark.wnpserver.domain.user.User;
 
 public record UserResponse(
         Long id,
-        Long providerId,
+        String providerId,
         OAuthProvider platform,
         String nickname,
         int age,

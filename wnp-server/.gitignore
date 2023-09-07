@@ -40,3 +40,4 @@ out/
 
 ### yml ###
 *.yml
+/src/main/resources/.env

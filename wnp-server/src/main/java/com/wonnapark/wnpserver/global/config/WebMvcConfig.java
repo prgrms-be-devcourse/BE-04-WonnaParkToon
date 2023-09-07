@@ -1,9 +1,11 @@
 package com.wonnapark.wnpserver.global.config;
 
+import com.wonnapark.wnpserver.domain.oauth.OAuthProviderConverter;
 import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
 import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -25,5 +27,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtAuthenticationInterceptor);
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new OAuthProviderConverter());
     }
 }

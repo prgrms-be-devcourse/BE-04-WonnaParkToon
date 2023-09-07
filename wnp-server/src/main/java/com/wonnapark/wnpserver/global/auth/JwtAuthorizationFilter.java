@@ -26,7 +26,7 @@ import java.util.Arrays;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final static String LOGOUT_URI = "/api/v1/auth/logout";
-    private final static String REISSUE_URI = "/api/v1/token/reissue";
+    private final static String REISSUE_URI = "/api/v1/auth/reissue";
     private final static String RE_LOGIN_URI = "/front/login";
 
     private final AuthenticationResolver authenticationResolver;
@@ -36,7 +36,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String[] blackList = {
                 "/api/v1/guest/",
-                "/api/v1/oauth/kakao",
+                "/api/v1/oauth/",
                 "/h2-console"
         };
         String path = request.getRequestURI();
@@ -48,22 +48,25 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String accessToken = extractTokenFromHeader(request, HttpHeaders.AUTHORIZATION);
         try {
-            if (authenticationResolver.isValidAccessToken(accessToken)) {
-                Authentication authentication = authenticationResolver.extractAuthentication(accessToken);
-                AuthenticationContextHolder.setAuthenticationHolder(authentication);
-                if (path.equals(REISSUE_URI) || path.equals(LOGOUT_URI)) {
-                    String refreshToken = extractTokenFromHeader(request, TokenConstants.REFRESH_TOKEN);
-                    if (!authenticationResolver.isValidRefreshToken(refreshToken, authentication.userId())) {
-                        setErrorResponse(response, new JwtInvalidException(ErrorCode.UNSUPPORTED_TOKEN), RE_LOGIN_URI);
-                        AuthenticationContextHolder.clearContext();
-                        return;
-                    }
+            authenticationResolver.validateAccessToken(accessToken);
+            Authentication authentication = authenticationResolver.extractAuthentication(accessToken);
+            AuthenticationContextHolder.setAuthenticationHolder(authentication);
+
+            if (path.equals(REISSUE_URI) || path.equals(LOGOUT_URI)) {
+                String refreshToken = extractTokenFromHeader(request, TokenConstants.REFRESH_TOKEN);
+                try {
+                    authenticationResolver.validateRefreshToken(refreshToken, authentication.userId());
+                } catch (JwtInvalidException jwtInvalidException) {
+                    setErrorResponse(response, jwtInvalidException, RE_LOGIN_URI);
+                    AuthenticationContextHolder.clearContext();
+                    return;
                 }
-                filterChain.doFilter(request, response);
-                AuthenticationContextHolder.clearContext();
             }
+            filterChain.doFilter(request, response);
         } catch (JwtInvalidException jwtInvalidException) {
             setErrorResponse(response, jwtInvalidException, REISSUE_URI);
+        } finally {
+            AuthenticationContextHolder.clearContext();
         }
     }
 
@@ -85,8 +88,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         try {
             String json = objectMapper.writeValueAsString(errorResponse);
             response.getWriter().write(json);
-            log.warn("터진 곳 -> {}", exception.getStackTrace());
-            log.warn("토큰 예외 정보 : {}", errorResponse);
+            log.warn("토큰 예외 정보 : {}", errorResponse, exception);
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
         }

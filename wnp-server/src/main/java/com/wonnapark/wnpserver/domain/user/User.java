@@ -1,5 +1,6 @@
 package com.wonnapark.wnpserver.domain.user;
 
+import com.wonnapark.wnpserver.domain.oauth.OAuthProvider;
 import com.wonnapark.wnpserver.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -22,7 +23,7 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(name = "provider_id", nullable = false)
-    private Long providerId;
+    private String providerId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "platform", nullable = false)
@@ -45,7 +46,7 @@ public class User extends BaseEntity {
     private LocalDateTime isDeleted;
 
     @Builder
-    private User(Long providerId, OAuthProvider platform, String nickname, int age, String gender, Role role) {
+    private User(String providerId, OAuthProvider platform, String nickname, int age, String gender, Role role) {
         this.providerId = providerId;
         this.platform = platform;
         this.nickname = nickname;

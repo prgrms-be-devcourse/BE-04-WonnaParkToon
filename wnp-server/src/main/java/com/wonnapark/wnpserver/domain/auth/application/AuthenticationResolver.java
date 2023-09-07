@@ -32,28 +32,28 @@ public class AuthenticationResolver {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public boolean isValidAccessToken(String accessToken) {
+    public void validateAccessToken(String accessToken) {
         if (isValidToken(accessToken)) {
             String expiredAccessToken = redisTemplate.opsForValue().get(accessToken);
 
             if (!Strings.hasText(expiredAccessToken))
-                return true;
+                return;
 
-            if (expiredAccessToken.equals(TokenConstants.LOGOUT))
-                throw new JwtInvalidException(ErrorCode.EXPIRED_TOKEN);
-
-            return true;
+            if (!expiredAccessToken.equals(TokenConstants.LOGOUT))
+                return;
         }
-        return false;
+        throw new JwtInvalidException(ErrorCode.LOGOUT_TOKEN);
     }
 
-    // 레디스로 만료기간을 같이 관리하니까 정합성이 안 맞을 수 있다.
-    public boolean isValidRefreshToken(String token, Long userId) {
+    // 레디스로 만료기간을 같이 관리하니까 정합성이 안 맞을 수 있다. -> 순간의 차이로 정합성이 안맞아도 곧 만료이기 때문에 재로그인으로 이어지는 흐름은 같다.
+    public void validateRefreshToken(String token, Long userId) {
         if (isValidToken(token)) {
-            RefreshToken refreshToken = refreshTokenRepository.findById(userId).orElseThrow(() -> new JwtInvalidException(ErrorCode.EXPIRED_TOKEN));
-            return refreshToken.getValue().equals(token); // UUID 등을 필드로 줘서
+            RefreshToken refreshToken = refreshTokenRepository.findById(userId)
+                    .orElseThrow(() -> new JwtInvalidException(ErrorCode.EXPIRED_TOKEN));
+            if (refreshToken.getValue().equals(token))
+                return;
         }
-        return false;
+        throw new JwtInvalidException(ErrorCode.EXPIRED_TOKEN);
     }
 
     public boolean isValidToken(String token) {

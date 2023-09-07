@@ -9,11 +9,15 @@ public enum ErrorCode {
     ENTITY_NOT_FOUND(404, "C001", "해당 엔티티를 찾을 수 없습니다."),
     INTERNAL_SERVER_ERROR(500, "C999", "서버 내부 에러입니다."),
 
+    // Oauth
+    OAUTH_RESPONSE_NOT_FOUND(404, "O001", "요청에 해당하는 응답을 찾을 수 없습니다."),
+
     // Token
-    EXPIRED_TOKEN(400, "T001", "만료된 토큰입니다."),
-    UNSUPPORTED_TOKEN(400, "T002", "잘못된 형식의 토큰입니다."),
-    WRONG_SIGNATURE_TOKEN(400, "T003", "변조된 토큰입니다. 토큰이 탈취되었을 수도 있습니다."),
     TOKEN_NOT_FOUND(404, "T001", "토큰을 찾을 수 없습니다."),
+    EXPIRED_TOKEN(400, "T002", "만료된 토큰입니다."),
+    UNSUPPORTED_TOKEN(400, "T003", "잘못된 형식의 토큰입니다."),
+    WRONG_SIGNATURE_TOKEN(400, "T004", "변조된 토큰입니다. 토큰이 탈취되었을 수도 있습니다."),
+    LOGOUT_TOKEN(400, "T005", "로그아웃 처리된 토큰입니다. 로그인을 재시도 해주세요."),
 
     // User
     USER_NOT_FOUND(404, "U001", "유저를 찾을 수 없습니다.");

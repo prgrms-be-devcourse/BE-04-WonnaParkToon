@@ -11,7 +11,8 @@ public class OAuthLogoutService {
     private final JwtTokenService jwtTokenService;
 
     public void logout(Long userId, String accessToken) {
-        jwtTokenService.addAccessTokenBlackList(accessToken);
+        jwtTokenService.logoutAccessToken(accessToken);
         jwtTokenService.deleteRefreshTokenByUserId(userId);
     }
+
 }
