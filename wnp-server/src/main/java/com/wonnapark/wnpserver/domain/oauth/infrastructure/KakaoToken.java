@@ -1,4 +1,4 @@
-package com.wonnapark.wnpserver.domain.oauth.dto.response;
+package com.wonnapark.wnpserver.domain.oauth.infrastructure;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
