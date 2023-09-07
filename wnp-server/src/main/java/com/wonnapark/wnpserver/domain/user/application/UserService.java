@@ -8,5 +8,5 @@ public interface UserService {
 
     UserResponse create(OAuthInfoResponse response);
 
-    UserResponse findUserByProviderIdAndPlatform(Long providerId, OAuthProvider platform);
+    UserResponse findUserByProviderIdAndPlatform(String providerId, OAuthProvider platform);
 }
