@@ -5,7 +5,6 @@ import com.wonnapark.wnpserver.domain.oauth.OAuthProvider;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -21,12 +20,8 @@ public class AuthorizationRequestService {
     }
 
     public String provide(OAuthProvider oAuthProvider) {
-        return getProivder(oAuthProvider).provideUrl();
-    }
-
-    private AuthorizationRequestUrlProvider getProivder(OAuthProvider oAuthProvider) {
-        return Optional.ofNullable(providers.get(oAuthProvider))
-                .orElseThrow(() -> new IllegalArgumentException("지원하지 않는 소셜 로그인 방식입니다."));
+        AuthorizationRequestUrlProvider authorizationRequestUrlProvider = providers.get(oAuthProvider);
+        return authorizationRequestUrlProvider.provideUrl();
     }
 
 }

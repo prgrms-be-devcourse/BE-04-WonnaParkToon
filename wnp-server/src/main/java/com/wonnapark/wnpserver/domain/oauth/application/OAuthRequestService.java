@@ -7,7 +7,6 @@ import com.wonnapark.wnpserver.domain.oauth.infrastructure.client.OAuthApiClient
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,13 +22,9 @@ public class OAuthRequestService {
     }
 
     public OAuthInfoResponse requestInfo(OAuthLoginRequest request) {
-        OAuthApiClient oAuthApiClient = getOAuthApiClient(request.getOAuthProvider());
+        OAuthApiClient oAuthApiClient = clients.get(request.getOAuthProvider());
         String accessToken = oAuthApiClient.requestAccessToken(request);
         return oAuthApiClient.requestOauthInfo(accessToken);
     }
 
-    private OAuthApiClient getOAuthApiClient(OAuthProvider oAuthProvider) {
-        return Optional.ofNullable(clients.get(oAuthProvider))
-                .orElseThrow(() -> new IllegalArgumentException("지원하지 않는 소셜 로그인 방식입니다."));
-    }
 }
