@@ -3,6 +3,7 @@ package com.wonnapark.wnpserver.domain.oauth.application;
 import com.wonnapark.wnpserver.domain.auth.application.JwtTokenService;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
+import com.wonnapark.wnpserver.domain.oauth.OAuthProvider;
 import com.wonnapark.wnpserver.domain.oauth.dto.request.OAuthLoginRequest;
 import com.wonnapark.wnpserver.domain.oauth.dto.response.OAuthInfoResponse;
 import com.wonnapark.wnpserver.domain.user.application.UserService;
@@ -17,6 +18,11 @@ public class OAuthLoginService {
     private final UserService userService;
     private final JwtTokenService jwtTokenService;
     private final OAuthRequestService oAuthRequestService;
+    private final AuthorizationRequestService authorizationRequestService;
+
+    public String getAuthorizationRequestUrl(OAuthProvider oAuthProvider) {
+        return authorizationRequestService.provide(oAuthProvider);
+    }
 
     public AuthTokenResponse login(OAuthLoginRequest request) {
         OAuthInfoResponse response = oAuthRequestService.requestInfo(request);
