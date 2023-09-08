@@ -1,10 +1,11 @@
 package com.wonnapark.wnpserver.domain.episode.presentation;
 
-import com.wonnapark.wnpserver.domain.episode.Episode;
-import com.wonnapark.wnpserver.domain.episode.application.EpisodeFindUseCase;
-import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeDetailFormResponse;
-import com.wonnapark.wnpserver.domain.episode.dto.response.EpisodeListFormResponse;
-import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.episode.Episode;
+import com.wonnapark.wnpserver.episode.application.EpisodeFindUseCase;
+import com.wonnapark.wnpserver.episode.dto.response.EpisodeDetailFormResponse;
+import com.wonnapark.wnpserver.episode.dto.response.EpisodeListFormResponse;
+import com.wonnapark.wnpserver.episode.presentation.UserEpisodeController;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

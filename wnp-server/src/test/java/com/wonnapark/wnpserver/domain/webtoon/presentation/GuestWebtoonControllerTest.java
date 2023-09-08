@@ -1,9 +1,10 @@
 package com.wonnapark.wnpserver.domain.webtoon.presentation;
 
-import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
-import com.wonnapark.wnpserver.domain.webtoon.application.GuestWebtoonService;
-import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonDetailResponse;
+import com.wonnapark.wnpserver.webtoon.application.GuestWebtoonService;
+import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
+import com.wonnapark.wnpserver.webtoon.presentation.GuestWebtoonController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

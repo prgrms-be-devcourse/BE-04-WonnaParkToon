@@ -1,11 +1,13 @@
 package com.wonnapark.wnpserver.domain.auth.application;
 
-import com.wonnapark.wnpserver.domain.auth.config.TokenConstants;
-import com.wonnapark.wnpserver.domain.auth.dto.AccessTokenResponse;
-import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenRequest;
-import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
-import com.wonnapark.wnpserver.domain.auth.dto.RefreshTokenResponse;
-import com.wonnapark.wnpserver.domain.auth.exception.JwtInvalidException;
+import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
+import com.wonnapark.wnpserver.auth.application.JwtTokenService;
+import com.wonnapark.wnpserver.auth.config.TokenConstants;
+import com.wonnapark.wnpserver.auth.dto.AccessTokenResponse;
+import com.wonnapark.wnpserver.auth.dto.AuthTokenRequest;
+import com.wonnapark.wnpserver.auth.dto.AuthTokenResponse;
+import com.wonnapark.wnpserver.auth.dto.RefreshTokenResponse;
+import com.wonnapark.wnpserver.auth.exception.JwtInvalidException;
 import com.wonnapark.wnpserver.domain.common.config.TestContainerConfig;
 import com.wonnapark.wnpserver.global.auth.Authentication;
 import org.instancio.Instancio;

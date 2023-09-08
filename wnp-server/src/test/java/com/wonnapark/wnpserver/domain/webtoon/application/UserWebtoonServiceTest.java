@@ -1,10 +1,11 @@
 package com.wonnapark.wnpserver.domain.webtoon.application;
 
-import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
-import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonDetailResponse;
-import com.wonnapark.wnpserver.domain.webtoon.exception.UnderageAccessDeniedException;
-import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;
+import com.wonnapark.wnpserver.webtoon.application.UserWebtoonService;
+import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
+import com.wonnapark.wnpserver.webtoon.exception.UnderageAccessDeniedException;
+import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
 import com.wonnapark.wnpserver.global.common.UserInfo;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;

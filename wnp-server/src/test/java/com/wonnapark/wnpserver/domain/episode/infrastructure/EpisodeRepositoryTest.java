@@ -1,9 +1,10 @@
 package com.wonnapark.wnpserver.domain.episode.infrastructure;
 
-import com.wonnapark.wnpserver.domain.episode.Episode;
+import com.wonnapark.wnpserver.episode.Episode;
 import com.wonnapark.wnpserver.domain.episode.EpisodeFixtures;
-import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
-import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;
+import com.wonnapark.wnpserver.episode.infrastructure.EpisodeRepository;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
+import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,11 +1,12 @@
 package com.wonnapark.wnpserver.domain.webtoon.application;
 
-import com.wonnapark.wnpserver.domain.webtoon.AgeRating;
-import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.webtoon.AgeRating;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
-import com.wonnapark.wnpserver.domain.webtoon.dto.request.WebtoonCreateRequest;
-import com.wonnapark.wnpserver.domain.webtoon.dto.request.WebtoonUpdateRequest;
-import com.wonnapark.wnpserver.domain.webtoon.infrastructure.WebtoonRepository;
+import com.wonnapark.wnpserver.webtoon.application.AdminWebtoonService;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateRequest;
+import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

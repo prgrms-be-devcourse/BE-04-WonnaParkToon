@@ -1,6 +1,6 @@
 package com.wonnapark.wnpserver.global.auth;
 
-import com.wonnapark.wnpserver.domain.user.Role;
+import com.wonnapark.wnpserver.user.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
