@@ -1,10 +1,11 @@
 package com.wonnapark.wnpserver.domain.webtoon.presentation;
 
-import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
-import com.wonnapark.wnpserver.domain.webtoon.application.DefaultWebtoonService;
-import com.wonnapark.wnpserver.domain.webtoon.application.UserWebtoonService;
-import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonSimpleResponse;
+import com.wonnapark.wnpserver.webtoon.application.DefaultWebtoonService;
+import com.wonnapark.wnpserver.webtoon.application.UserWebtoonService;
+import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonSimpleResponse;
+import com.wonnapark.wnpserver.webtoon.presentation.DefaultWebtoonController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;

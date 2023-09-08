@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.global.auth;
 
-import com.wonnapark.wnpserver.domain.auth.exception.JwtInvalidException;
-import com.wonnapark.wnpserver.domain.user.infrastructure.UserRepository;
+import com.wonnapark.wnpserver.auth.exception.JwtInvalidException;
+import com.wonnapark.wnpserver.user.infrastructure.UserRepository;
 import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;

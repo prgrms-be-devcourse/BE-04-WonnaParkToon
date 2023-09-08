@@ -1,9 +1,9 @@
 package com.wonnapark.wnpserver.global.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wonnapark.wnpserver.domain.auth.application.AuthenticationResolver;
-import com.wonnapark.wnpserver.domain.auth.config.TokenConstants;
-import com.wonnapark.wnpserver.domain.auth.exception.JwtInvalidException;
+import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
+import com.wonnapark.wnpserver.auth.config.TokenConstants;
+import com.wonnapark.wnpserver.auth.exception.JwtInvalidException;
 import com.wonnapark.wnpserver.global.response.ErrorCode;
 import com.wonnapark.wnpserver.global.response.ErrorResponse;
 import jakarta.servlet.FilterChain;

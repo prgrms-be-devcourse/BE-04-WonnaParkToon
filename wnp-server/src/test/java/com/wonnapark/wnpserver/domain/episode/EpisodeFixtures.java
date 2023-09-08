@@ -1,8 +1,11 @@
 package com.wonnapark.wnpserver.domain.episode;
 
-import com.wonnapark.wnpserver.domain.episode.dto.request.WebtoonListPageRequest;
-import com.wonnapark.wnpserver.domain.user.User;
-import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.episode.Episode;
+import com.wonnapark.wnpserver.episode.EpisodeUrl;
+import com.wonnapark.wnpserver.episode.ViewHistory;
+import com.wonnapark.wnpserver.episode.dto.request.WebtoonListPageRequest;
+import com.wonnapark.wnpserver.user.User;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
 import org.instancio.Instancio;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,6 +21,7 @@ public final class EpisodeFixtures {
 
     public static Webtoon createWebtoon() {
         return Instancio.of(Webtoon.class)
+                .ignore(field(Webtoon::getId))
                 .ignore(field(Webtoon::getIsDeleted))
                 .create();
     }
@@ -25,12 +29,14 @@ public final class EpisodeFixtures {
     public static User createUser() {
         return Instancio.of(User.class)
                 .ignore(field(User::getIsDeleted))
+                .ignore(field(User::getId))
                 .create();
     }
 
     public static Episode createEpisode(Webtoon webtoon) {
         Episode episode = Instancio.of(Episode.class)
                 .set(field(Episode::getWebtoon), webtoon)
+                .ignore(field(Episode::getId))
                 .ignore(field(Episode::isDeleted))
                 .ignore(field(Episode::getEpisodeUrls))
                 .create();
@@ -64,6 +70,7 @@ public final class EpisodeFixtures {
 
     public static List<EpisodeUrl> createEpisodeUrls() {
         return Instancio.ofList(EpisodeUrl.class)
+                .ignore(field(EpisodeUrl::getId))
                 .ignore(field(EpisodeUrl::getEpisode))
                 .create();
     }
