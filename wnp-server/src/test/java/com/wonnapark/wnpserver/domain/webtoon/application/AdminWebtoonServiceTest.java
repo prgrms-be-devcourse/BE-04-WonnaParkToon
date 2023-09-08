@@ -37,9 +37,7 @@ class AdminWebtoonServiceTest {
     @DisplayName("올바른 요청을 통해 웹툰을 생성할 수 있다.")
     void createWebtoon() {
         // given
-        WebtoonCreateRequest request = Instancio.of(WebtoonCreateRequest.class)
-                .generate(field(WebtoonCreateRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
-                .create();
+        WebtoonCreateRequest request = WebtoonFixtures.createWebtoonCreateRequest();
 
         Webtoon webtoon = WebtoonCreateRequest.toEntity(request);
         given(webtoonRepository.save(any(Webtoon.class))).willReturn(webtoon);
@@ -56,9 +54,7 @@ class AdminWebtoonServiceTest {
     @DisplayName("올바른 요청을 통해 웹툰을 수정할 수 있다.")
     void updateWebtoon() {
         // given
-        WebtoonUpdateRequest request = Instancio.of(WebtoonUpdateRequest.class)
-                .generate(field(WebtoonUpdateRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
-                .create();
+        WebtoonUpdateRequest request = WebtoonFixtures.createWebtoonUpdateRequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon();
         given(webtoonRepository.findById(any(Long.class))).willReturn(Optional.of(webtoon));
 
