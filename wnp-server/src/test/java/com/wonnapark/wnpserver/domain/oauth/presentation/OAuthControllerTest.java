@@ -1,14 +1,15 @@
 package com.wonnapark.wnpserver.domain.oauth.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wonnapark.wnpserver.domain.auth.application.AuthenticationResolver;
-import com.wonnapark.wnpserver.domain.auth.dto.AuthTokenResponse;
-import com.wonnapark.wnpserver.domain.oauth.OAuthProvider;
-import com.wonnapark.wnpserver.domain.oauth.application.OAuthLoginService;
-import com.wonnapark.wnpserver.domain.oauth.dto.request.KakaoLoginRequest;
-import com.wonnapark.wnpserver.domain.oauth.dto.request.NaverLoginRequest;
+import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
+import com.wonnapark.wnpserver.auth.dto.AuthTokenResponse;
 import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
 import com.wonnapark.wnpserver.global.response.ApiResponse;
+import com.wonnapark.wnpserver.oauth.OAuthProvider;
+import com.wonnapark.wnpserver.oauth.application.OAuthLoginService;
+import com.wonnapark.wnpserver.oauth.dto.request.KakaoLoginRequest;
+import com.wonnapark.wnpserver.oauth.dto.request.NaverLoginRequest;
+import com.wonnapark.wnpserver.oauth.presentation.OAuthController;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
