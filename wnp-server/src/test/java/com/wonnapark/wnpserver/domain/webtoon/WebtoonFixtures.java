@@ -3,6 +3,8 @@ package com.wonnapark.wnpserver.domain.webtoon;
 import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.webtoon.AgeRating;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateRequest;
 import org.instancio.Instancio;
 
 import java.time.DayOfWeek;
@@ -97,4 +99,15 @@ public final class WebtoonFixtures {
                 .create();
     }
 
+    public static WebtoonCreateRequest createWebtoonCreateRequest() {
+        return Instancio.of(WebtoonCreateRequest.class)
+                .generate(field(WebtoonCreateRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
+                .create();
+    }
+
+    public static WebtoonUpdateRequest createWebtoonUpdateRequest() {
+        return Instancio.of(WebtoonUpdateRequest.class)
+                .generate(field(WebtoonUpdateRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
+                .create();
+    }
 }
