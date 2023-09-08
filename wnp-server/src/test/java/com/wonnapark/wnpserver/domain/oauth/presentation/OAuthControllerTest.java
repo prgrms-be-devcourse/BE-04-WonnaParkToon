@@ -47,7 +47,6 @@ class OAuthControllerTest {
     @EnumSource(value = OAuthProvider.class)
     @DisplayName("OAuthProvider에 따라 알맞는 AuthorizeUrl을 redirectUrl로 반환한다")
     void redirectAuthorizationRequestUrlTest(OAuthProvider oAuthProvider) throws Exception {
-
         // given
         String redirectUrl = "authorizeUrl";
         String pathVariable = oAuthProvider.name().toLowerCase();
