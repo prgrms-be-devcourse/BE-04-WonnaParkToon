@@ -27,6 +27,7 @@ public class AuthController {
     private final JwtTokenService jwtTokenService;
 
     @GetMapping("reissue")
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<AuthTokenResponse> reissueAuthToken() {
         Authentication authentication = AuthenticationContextHolder.getAuthentication();
         AuthTokenResponse authTokenResponse = jwtTokenService.generateAuthToken(AuthTokenRequest.from(authentication));
