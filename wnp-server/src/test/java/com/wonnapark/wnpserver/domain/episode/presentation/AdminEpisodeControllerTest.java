@@ -1,14 +1,15 @@
 package com.wonnapark.wnpserver.domain.episode.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wonnapark.wnpserver.domain.episode.application.EpisodeManageUseCase;
-import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeArtistCommentUpdateRequest;
-import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeCreationRequest;
-import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeReleaseDateTimeUpdateRequest;
-import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeThumbnailUpdateRequest;
-import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeTitleUpdateRequest;
-import com.wonnapark.wnpserver.domain.episode.dto.request.EpisodeUrlsUpdateRequest;
-import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.episode.application.EpisodeManageUseCase;
+import com.wonnapark.wnpserver.episode.dto.request.EpisodeArtistCommentUpdateRequest;
+import com.wonnapark.wnpserver.episode.dto.request.EpisodeCreationRequest;
+import com.wonnapark.wnpserver.episode.dto.request.EpisodeReleaseDateTimeUpdateRequest;
+import com.wonnapark.wnpserver.episode.dto.request.EpisodeThumbnailUpdateRequest;
+import com.wonnapark.wnpserver.episode.dto.request.EpisodeTitleUpdateRequest;
+import com.wonnapark.wnpserver.episode.dto.request.EpisodeUrlsUpdateRequest;
+import com.wonnapark.wnpserver.episode.presentation.AdminEpisodeController;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

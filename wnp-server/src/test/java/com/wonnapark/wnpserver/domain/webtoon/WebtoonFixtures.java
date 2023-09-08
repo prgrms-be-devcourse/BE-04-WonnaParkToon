@@ -1,6 +1,8 @@
 package com.wonnapark.wnpserver.domain.webtoon;
 
 import com.wonnapark.wnpserver.global.common.UserInfo;
+import com.wonnapark.wnpserver.webtoon.AgeRating;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
 import org.instancio.Instancio;
 
 import java.time.DayOfWeek;

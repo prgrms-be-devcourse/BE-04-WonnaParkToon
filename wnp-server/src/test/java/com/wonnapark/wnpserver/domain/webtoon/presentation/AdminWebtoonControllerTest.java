@@ -1,12 +1,13 @@
 package com.wonnapark.wnpserver.domain.webtoon.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wonnapark.wnpserver.domain.webtoon.Webtoon;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
-import com.wonnapark.wnpserver.domain.webtoon.application.AdminWebtoonService;
-import com.wonnapark.wnpserver.domain.webtoon.dto.request.WebtoonCreateRequest;
-import com.wonnapark.wnpserver.domain.webtoon.dto.request.WebtoonUpdateRequest;
-import com.wonnapark.wnpserver.domain.webtoon.dto.response.WebtoonDetailResponse;
+import com.wonnapark.wnpserver.webtoon.application.AdminWebtoonService;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateRequest;
+import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
+import com.wonnapark.wnpserver.webtoon.presentation.AdminWebtoonController;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
