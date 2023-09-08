@@ -3,6 +3,7 @@ package com.wonnapark.wnpserver.domain.oauth.presentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
 import com.wonnapark.wnpserver.auth.dto.AuthTokenResponse;
+import com.wonnapark.wnpserver.auth.presentation.AuthFixtures;
 import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
 import com.wonnapark.wnpserver.global.response.ApiResponse;
 import com.wonnapark.wnpserver.oauth.OAuthProvider;
@@ -10,7 +11,6 @@ import com.wonnapark.wnpserver.oauth.application.OAuthLoginService;
 import com.wonnapark.wnpserver.oauth.dto.request.KakaoLoginRequest;
 import com.wonnapark.wnpserver.oauth.dto.request.NaverLoginRequest;
 import com.wonnapark.wnpserver.oauth.presentation.OAuthController;
-import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -64,7 +64,7 @@ class OAuthControllerTest {
     @DisplayName("카카오 로그인이 진행된다.")
     void loginWithKakaoTest() throws Exception {
         // given
-        AuthTokenResponse authTokenResponse = createAuthTokenResponse();
+        AuthTokenResponse authTokenResponse = AuthFixtures.createAuthTokenResponse();
         ApiResponse<AuthTokenResponse> from = ApiResponse.from(authTokenResponse);
         given(oAuthLoginService.login(any(KakaoLoginRequest.class))).willReturn(authTokenResponse);
 
@@ -80,7 +80,7 @@ class OAuthControllerTest {
     @DisplayName("네이버 로그인이 진행된다.")
     void loginWithNaverTest() throws Exception {
         // given
-        AuthTokenResponse authTokenResponse = createAuthTokenResponse();
+        AuthTokenResponse authTokenResponse = AuthFixtures.createAuthTokenResponse();
         ApiResponse<AuthTokenResponse> from = ApiResponse.from(authTokenResponse);
         given(oAuthLoginService.login(any(NaverLoginRequest.class))).willReturn(authTokenResponse);
 
@@ -92,8 +92,5 @@ class OAuthControllerTest {
                 .andDo(print());
     }
 
-    private AuthTokenResponse createAuthTokenResponse() {
-        return Instancio.create(AuthTokenResponse.class);
-    }
 
 }
