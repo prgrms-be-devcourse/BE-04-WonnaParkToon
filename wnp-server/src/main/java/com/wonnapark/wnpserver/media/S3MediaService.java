@@ -6,17 +6,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-
 @Service
-public class S3ManageService {
+public class S3MediaService {
 
     private final AmazonS3 amazonS3;
-
     private final String bucketName;
 
-    public S3ManageService(
+    public S3MediaService(
             AmazonS3 amazonS3,
             @Value("${cloud.aws.s3.bucket}") String bucketName
     ) {
@@ -24,12 +20,9 @@ public class S3ManageService {
         this.bucketName = bucketName;
     }
 
-    public void upload(String key, MultipartFile file) throws IOException {
+    public String upload(String key, MultipartFile file) {
         amazonS3.putObject(bucketName, key, FileUtils.convertMultipartFileToFile(file));
-    }
-
-    public void upload(String key, File file) {
-        amazonS3.putObject(bucketName, key, file);
+        return amazonS3.getUrl(bucketName, key).toExternalForm();
     }
 
     public void delete(String key) {
