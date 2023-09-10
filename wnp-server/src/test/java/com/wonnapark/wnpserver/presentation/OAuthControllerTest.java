@@ -1,9 +1,9 @@
-package com.wonnapark.wnpserver.domain.oauth.presentation;
+package com.wonnapark.wnpserver.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
 import com.wonnapark.wnpserver.auth.dto.AuthTokenResponse;
-import com.wonnapark.wnpserver.auth.presentation.AuthFixtures;
+import com.wonnapark.wnpserver.global.auth.AuthFixtures;
 import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
 import com.wonnapark.wnpserver.global.response.ApiResponse;
 import com.wonnapark.wnpserver.oauth.OAuthProvider;

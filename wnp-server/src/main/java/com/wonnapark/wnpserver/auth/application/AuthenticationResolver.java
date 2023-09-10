@@ -5,9 +5,9 @@ import com.wonnapark.wnpserver.auth.config.JwtProperties;
 import com.wonnapark.wnpserver.auth.config.TokenConstants;
 import com.wonnapark.wnpserver.auth.exception.JwtInvalidException;
 import com.wonnapark.wnpserver.auth.infrastructure.RefreshTokenRepository;
-import com.wonnapark.wnpserver.user.Role;
 import com.wonnapark.wnpserver.global.auth.Authentication;
 import com.wonnapark.wnpserver.global.response.ErrorCode;
+import com.wonnapark.wnpserver.user.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.lang.Strings;
@@ -56,7 +56,7 @@ public class AuthenticationResolver {
         throw new JwtInvalidException(ErrorCode.EXPIRED_TOKEN);
     }
 
-    public boolean isValidToken(String token) {
+    private boolean isValidToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key)

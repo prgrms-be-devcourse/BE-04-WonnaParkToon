@@ -6,6 +6,7 @@ import com.wonnapark.wnpserver.auth.application.JwtTokenService;
 import com.wonnapark.wnpserver.auth.config.TokenConstants;
 import com.wonnapark.wnpserver.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.auth.dto.AuthTokenResponse;
+import com.wonnapark.wnpserver.global.auth.AuthFixtures;
 import com.wonnapark.wnpserver.global.auth.Authentication;
 import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
 import com.wonnapark.wnpserver.global.common.UserInfo;
@@ -74,13 +75,13 @@ class AuthControllerTest {
         // given
         Authentication authentication = AuthFixtures.createUserAuthentication();
         UserInfo userInfo = UserInfo.from(authentication);
-        
-        // when // then
+
         given(authenticationResolver.extractAuthentication(any())).willReturn(authentication);
         given(authorizedArgumentResolver.supportsParameter(any())).willReturn(true);
         given(authorizedArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(userInfo);
         willDoNothing().given(oAuthLogoutService).logout(any(), any());
 
+        // when // then
         mockMvc.perform(get("/api/v1/auth/logout")
                         .header(HttpHeaders.AUTHORIZATION, "accessToken")
                         .header(TokenConstants.REFRESH_TOKEN, "refreshToken"))
