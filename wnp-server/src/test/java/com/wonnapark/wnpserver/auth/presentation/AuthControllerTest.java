@@ -57,7 +57,9 @@ class AuthControllerTest {
         AuthTokenResponse authTokenResponse = AuthFixtures.createAuthTokenResponse();
         ApiResponse<AuthTokenResponse> response = ApiResponse.from(authTokenResponse);
 
+        willDoNothing().given(authenticationResolver).validateAccessToken(any());
         given(authenticationResolver.extractAuthentication(any())).willReturn(authentication);
+
         given(jwtTokenService.generateAuthToken(any(AuthTokenRequest.class))).willReturn(authTokenResponse);
 
         // when // then
@@ -76,9 +78,13 @@ class AuthControllerTest {
         Authentication authentication = AuthFixtures.createUserAuthentication();
         UserInfo userInfo = UserInfo.from(authentication);
 
+        willDoNothing().given(authenticationResolver).validateAccessToken(any());
         given(authenticationResolver.extractAuthentication(any())).willReturn(authentication);
+        willDoNothing().given(authenticationResolver).validateRefreshToken(any(), any());
+
         given(authorizedArgumentResolver.supportsParameter(any())).willReturn(true);
         given(authorizedArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(userInfo);
+
         willDoNothing().given(oAuthLogoutService).logout(any(), any());
 
         // when // then
