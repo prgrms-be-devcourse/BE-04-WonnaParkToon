@@ -112,7 +112,6 @@ class JwtAuthorizationFilterTest {
     void validateAccessAndRefreshTokenWhenRequestIsReissueOrLogout(String requestURI) throws ServletException, IOException {
         // given
         request.setRequestURI(requestURI);
-        System.out.println("requestURI = " + request.getRequestURI());
         String accessToken = "accessToken";
         String refreshToken = "refreshToken";
         request.addHeader(HttpHeaders.AUTHORIZATION, accessToken);
