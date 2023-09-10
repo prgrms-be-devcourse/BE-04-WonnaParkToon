@@ -1,8 +1,9 @@
 package com.wonnapark.wnpserver.domain.webtoon.application;
 
+import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
+import com.wonnapark.wnpserver.media.S3ManageService;
 import com.wonnapark.wnpserver.webtoon.AgeRating;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
-import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.webtoon.application.AdminWebtoonService;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateRequest;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateRequest;
@@ -14,14 +15,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Select.field;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.mock;
 
@@ -31,15 +35,18 @@ class AdminWebtoonServiceTest {
     @InjectMocks
     private AdminWebtoonService adminWebtoonService;
     @Mock
+    private S3ManageService s3ManageService;
+    @Mock
     private WebtoonRepository webtoonRepository;
 
     @Test
     @DisplayName("올바른 요청을 통해 웹툰을 생성할 수 있다.")
-    void createWebtoon() {
+    void createWebtoon() throws IOException {
         // given
         WebtoonCreateRequest request = WebtoonFixtures.createWebtoonCreateRequest();
 
-        Webtoon webtoon = WebtoonCreateRequest.toEntity(request);
+        willDoNothing().given(s3ManageService).upload(anyString(), any(MultipartFile.class));
+        Webtoon webtoon = WebtoonCreateRequest.toEntity(request, Instancio.create(String.class));
         given(webtoonRepository.save(any(Webtoon.class))).willReturn(webtoon);
 
         // when

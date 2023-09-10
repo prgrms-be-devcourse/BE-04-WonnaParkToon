@@ -6,6 +6,7 @@ import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateRequest;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateRequest;
 import org.instancio.Instancio;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.DayOfWeek;
 import java.util.Arrays;
@@ -100,7 +101,11 @@ public final class WebtoonFixtures {
     }
 
     public static WebtoonCreateRequest createWebtoonCreateRequest() {
+        byte[] content = "test image content".getBytes();
+        MockMultipartFile thumbnailMockFile = new MockMultipartFile("thumbnail.jpg", "thumbnail.jpg", "image/jpeg", content);
+
         return Instancio.of(WebtoonCreateRequest.class)
+                .set(field(WebtoonCreateRequest::thumbnail), thumbnailMockFile)
                 .generate(field(WebtoonCreateRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
                 .create();
     }
