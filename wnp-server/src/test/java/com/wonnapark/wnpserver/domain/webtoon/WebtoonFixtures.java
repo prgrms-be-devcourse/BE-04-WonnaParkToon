@@ -23,7 +23,28 @@ public final class WebtoonFixtures {
     public static Webtoon createWebtoon() {
         return Instancio.of(Webtoon.class)
                 .ignore(field(Webtoon::getIsDeleted))
+                .set(field(Webtoon::getThumbnail), Webtoon.DEFAULT_WEBTOON_THUMBNAIL)
                 .generate(field(Webtoon::getAgeRating), gen -> gen.enumOf(AgeRating.class))
+                .create();
+    }
+
+    public static Webtoon createWebtoon(WebtoonDetailRequest request) {
+        return Instancio.of(Webtoon.class)
+                .ignore(field(Webtoon::getIsDeleted))
+                .set(field(Webtoon::getTitle), request.title())
+                .set(field(Webtoon::getArtist), request.artist())
+                .set(field(Webtoon::getSummary), request.summary())
+                .set(field(Webtoon::getGenre), request.genre())
+                .set(field(Webtoon::getThumbnail), Webtoon.DEFAULT_WEBTOON_THUMBNAIL)
+                .set(field(Webtoon::getAgeRating), AgeRating.from(request.ageRating()))
+                .set(field(Webtoon::getPublishDays), request.publishDays())
+                .create();
+    }
+
+    public static Webtoon createWebtoon(Long webtoonId) {
+        return Instancio.of(Webtoon.class)
+                .ignore(field(Webtoon::getIsDeleted))
+                .set(field(Webtoon::getId), webtoonId)
                 .create();
     }
 

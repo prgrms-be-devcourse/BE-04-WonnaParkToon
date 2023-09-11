@@ -112,16 +112,35 @@ class AdminWebtoonControllerTest {
     @DisplayName("웹툰 상세 정보를 수정하고 수정된 결과를 반환할 수 있다.")
     void updateWebtoon() throws Exception {
         // given
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
         Long webtoonId = Instancio.create(Long.class);
-        WebtoonUpdateRequest webtoonUpdateRequest = WebtoonFixtures.createWebtoonUpdateRequest();
+        WebtoonDetailRequest request = WebtoonFixtures.createWebtoonDetailrequest();
+        Webtoon webtoon = WebtoonFixtures.createWebtoon(webtoonId);
+        webtoon.changeDetail(
+                request.title(),
+                request.artist(),
+                request.summary(),
+                request.genre(),
+                request.ageRating(),
+                request.publishDays()
+        );
+        WebtoonDetailResponse response = WebtoonDetailResponse.from(webtoon);
+        given(adminWebtoonService.updateWebtoon(request, webtoonId)).willReturn(response);
 
         // when, then
         mockMvc.perform(patch("/api/v1/admin/webtoons/{webtoonId}", webtoonId)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(webtoonUpdateRequest))
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("data.id").value(webtoonId))
+                .andExpect(jsonPath("data.title").value(request.title()))
+                .andExpect(jsonPath("data.artist").value(request.artist()))
+                .andExpect(jsonPath("data.summary").value(request.summary()))
+                .andExpect(jsonPath("data.genre").value(request.genre()))
+                .andExpect(jsonPath("data.ageRating").value(request.ageRating()))
                 .andDo(document("admin-webtoon-v1-patch-updateWebtoon",
                         resourceDetails().tag("웹툰-관리자").description("웹툰 수정"),
                         preprocessRequest(prettyPrint()),
@@ -133,7 +152,18 @@ class AdminWebtoonControllerTest {
                                 fieldWithPath("genre").type(JsonFieldType.STRING).description("웹툰 장르"),
                                 fieldWithPath("ageRating").type(JsonFieldType.STRING).description("웹툰 연령 등급"),
                                 fieldWithPath("publishDays").type(JsonFieldType.ARRAY).description("웹툰 연재 요일")
-                        )));
+                        ),
+                        responseFields(
+                                fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("웹툰 ID"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("웹툰 제목"),
+                                fieldWithPath("data.artist").type(JsonFieldType.STRING).description("웹툰 작가"),
+                                fieldWithPath("data.summary").type(JsonFieldType.STRING).description("웹툰 설명"),
+                                fieldWithPath("data.genre").type(JsonFieldType.STRING).description("웹툰 장르"),
+                                fieldWithPath("data.thumbnail").type(JsonFieldType.STRING).description("웹툰 썸네일"),
+                                fieldWithPath("data.ageRating").type(JsonFieldType.STRING).description("웹툰 연령 등급"),
+                                fieldWithPath("data.publishDays").type(JsonFieldType.ARRAY).description("웹툰 연재 요일")
+                        )
+                ));
     }
 
 }
