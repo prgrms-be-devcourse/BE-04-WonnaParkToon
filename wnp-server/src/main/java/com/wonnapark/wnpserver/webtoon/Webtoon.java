@@ -18,6 +18,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
 import java.time.DayOfWeek;
@@ -28,10 +30,12 @@ import java.util.List;
 @Table(name = "webtoons")
 @Entity
 @Getter
+@DynamicInsert
 @Where(clause = "is_deleted IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Webtoon extends BaseEntity {
 
+    public static final String DEFAULT_WEBTOON_THUMBNAIL = "https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg";
     private static final int MAX_TITLE_LENGTH = 50;
     private static final int MAX_ARTIST_LENGTH = 50;
     private static final int MAX_SUMMARY_LENGTH = 200;
@@ -53,7 +57,8 @@ public class Webtoon extends BaseEntity {
     @Column(name = "genre", nullable = false, length = MAX_GENRE_LENGTH)
     private String genre;
 
-    @Column(name = "thumbnail", nullable = false)
+    @Column(name = "thumbnail")
+    @ColumnDefault(DEFAULT_WEBTOON_THUMBNAIL)
     private String thumbnail;
 
     @Column(name = "age_rating", nullable = false)
