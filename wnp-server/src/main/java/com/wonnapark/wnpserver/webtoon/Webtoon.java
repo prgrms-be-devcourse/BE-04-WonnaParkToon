@@ -80,15 +80,23 @@ public class Webtoon extends BaseEntity {
     }
 
     /**
-     * Webtoon 멤버 변수를 새로운 값으로 변경하는 메서드
+     * Webtoon thumbnail을 제외한 멤버 변수를 새로운 값으로 변경하는 메서드
      */
-    public void change(String title, String artist, String detail, String genre, String thumbnail, String ageRating, List<DayOfWeek> publishDays) {
+    public void changeDetail(String title, String artist, String summary, String genre, String ageRating, List<DayOfWeek> publishDays) {
         this.title = title;
         this.artist = artist;
         this.detail = detail;
         this.genre = genre;
         this.ageRating = AgeRating.from(ageRating);
         this.publishDays = new ArrayList<DayOfWeek>(publishDays);
+    }
+
+    /**
+     * Webtoon thumbnail URL을 사로운 값으로 변경하는 메서드
+     * @param thumbnail 새로운 썸네일 URL
+     */
+    public void changeThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     /**

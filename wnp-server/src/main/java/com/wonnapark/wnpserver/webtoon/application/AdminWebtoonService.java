@@ -28,12 +28,11 @@ public class AdminWebtoonService {
     public WebtoonDetailResponse updateWebtoon(WebtoonDetailRequest request, Long webtoonId) {
         Webtoon webtoon = webtoonRepository.findById(webtoonId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(WebtoonExceptionMessage.WEBTOON_NOT_FOUND.getMessage(), webtoonId)));
-        webtoon.change(
+        webtoon.changeDetail(
                 request.title(),
                 request.artist(),
                 request.detail(),
                 request.genre(),
-                request.thumbnail(),
                 request.ageRating(),
                 request.publishDays()
         );
