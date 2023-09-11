@@ -87,7 +87,6 @@ public class Webtoon extends BaseEntity {
         this.artist = artist;
         this.detail = detail;
         this.genre = genre;
-        this.thumbnail = thumbnail;
         this.ageRating = AgeRating.from(ageRating);
         this.publishDays = new ArrayList<DayOfWeek>(publishDays);
     }

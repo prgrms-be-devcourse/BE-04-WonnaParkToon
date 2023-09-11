@@ -5,10 +5,10 @@ import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
 import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
 import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
+import com.wonnapark.wnpserver.webtoon.AgeRating;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.application.AdminWebtoonService;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateRequest;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import com.wonnapark.wnpserver.webtoon.presentation.AdminWebtoonController;
 import org.instancio.Instancio;
@@ -22,10 +22,14 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.DayOfWeek;
+
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
+import static org.instancio.Select.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
@@ -48,21 +52,16 @@ class AdminWebtoonControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private AdminWebtoonService adminWebtoonService;
-
     @MockBean
     AuthenticationResolver authenticationResolver;
-
     @MockBean
     AuthorizedArgumentResolver authorizedArgumentResolver;
-
     @MockBean
     JwtAuthenticationInterceptor jwtAuthenticationInterceptor;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private AdminWebtoonService adminWebtoonService;
 
     @Test
     @DisplayName("새로운 웹툰을 생성하고 웹툰 상세 정보를 반환할 수 있다.")
@@ -70,7 +69,7 @@ class AdminWebtoonControllerTest {
         // given
         given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
-        WebtoonCreateRequest request = WebtoonFixtures.createWebtoonCreateRequest();
+        WebtoonDetailRequest request = WebtoonFixtures.createWebtoonDetailrequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon(request);
         WebtoonDetailResponse response = WebtoonDetailResponse.from(webtoon);
         given(adminWebtoonService.createWebtoon(request)).willReturn(response);
@@ -132,7 +131,6 @@ class AdminWebtoonControllerTest {
                                 fieldWithPath("artist").type(JsonFieldType.STRING).description("웹툰 작가"),
                                 fieldWithPath("detail").type(JsonFieldType.STRING).description("웹툰 설명"),
                                 fieldWithPath("genre").type(JsonFieldType.STRING).description("웹툰 장르"),
-                                fieldWithPath("thumbnail").type(JsonFieldType.STRING).description("웹툰 썸네일"),
                                 fieldWithPath("ageRating").type(JsonFieldType.STRING).description("웹툰 연령 등급"),
                                 fieldWithPath("publishDays").type(JsonFieldType.ARRAY).description("웹툰 연재 요일")
                         )));
