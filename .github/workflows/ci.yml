@@ -5,6 +5,10 @@ on:
     branches:
       - main
       - dev
+      
+defaults:
+  run:
+    working-directory: wnp-server
 
 jobs:
   test:
