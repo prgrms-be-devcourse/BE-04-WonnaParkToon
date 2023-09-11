@@ -31,7 +31,7 @@ jobs:
        run: echo 'gradle cache missed!'
 
      - name: JDK 17 설치
-       uses: action/setup-java@v3
+       uses: actions/setup-java@v3
        with:
          java-version: '17'
          distribution: 'zulu'
