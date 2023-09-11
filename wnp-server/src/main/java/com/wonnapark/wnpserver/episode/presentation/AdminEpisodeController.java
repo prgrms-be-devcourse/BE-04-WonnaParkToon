@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.episode.presentation;
 
+import com.wonnapark.wnpserver.episode.application.EpisodeImageService;
 import com.wonnapark.wnpserver.episode.application.EpisodeManageUseCase;
-import com.wonnapark.wnpserver.episode.application.EpisodeMediaService;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeArtistCommentUpdateRequest;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeCreationRequest;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeReleaseDateTimeUpdateRequest;
@@ -39,7 +39,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class AdminEpisodeController {
 
     private final EpisodeManageUseCase episodeManageUseCase;
-    private final EpisodeMediaService episodeMediaService;
+    private final EpisodeImageService episodeImageService;
 
     @PostMapping("/images")
     @ResponseStatus(CREATED)
@@ -54,7 +54,7 @@ public class AdminEpisodeController {
             @NotNull(message = "에피소드 이미지는 null일 수 없습니다.")
             List<MultipartFile> episodeImages
     ) {
-        return ApiResponse.from(episodeMediaService.uploadEpisodeMedia(
+        return ApiResponse.from(episodeImageService.uploadEpisodeMedia(
                 webtoonId,
                 FileUtils.convertMultipartFileToFile(thumbnail),
                 episodeImages.stream()

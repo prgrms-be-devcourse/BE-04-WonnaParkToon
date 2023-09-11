@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class EpisodeMediaService {
+public class EpisodeImageService {
 
     private static final String THUMBNAIL_KEY_PATTERN = "webtoon/%s/thumbnail_202x120_%s";
     private static final String EPISODE_URL_KEY_PATTERN = "webtoon/%s/%s_%s_IMAG01_%s";
@@ -24,8 +24,8 @@ public class EpisodeMediaService {
 
     public EpisodeMediaUploadResponse uploadEpisodeMedia(String webtoonId, File thumbnail, List<File> episodeImages) {
         return new EpisodeMediaUploadResponse(
-                uploadThumbnail(webtoonId, thumbnail),
-                uploadEpisodeImages(webtoonId, episodeImages)
+                uploadThumbnail(webtoonId, thumbnail), // 썸네일
+                uploadEpisodeImages(webtoonId, episodeImages) // 본문 images
         );
     }
 

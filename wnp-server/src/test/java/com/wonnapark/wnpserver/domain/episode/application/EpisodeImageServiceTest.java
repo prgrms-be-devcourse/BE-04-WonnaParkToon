@@ -1,6 +1,6 @@
 package com.wonnapark.wnpserver.domain.episode.application;
 
-import com.wonnapark.wnpserver.episode.application.EpisodeMediaService;
+import com.wonnapark.wnpserver.episode.application.EpisodeImageService;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeMediaUploadResponse;
 import com.wonnapark.wnpserver.media.S3MediaService;
 import org.junit.jupiter.api.Test;
@@ -24,10 +24,10 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class EpisodeMediaServiceTest {
+class EpisodeImageServiceTest {
 
     @InjectMocks
-    EpisodeMediaService episodeMediaService;
+    EpisodeImageService episodeImageService;
     @Mock
     S3MediaService s3MediaService;
 
@@ -54,7 +54,7 @@ class EpisodeMediaServiceTest {
         );
 
         // when
-        EpisodeMediaUploadResponse episodeMediaUploadResponse = episodeMediaService.uploadEpisodeMedia(webtoonId, thumbnail, episodeImages);
+        EpisodeMediaUploadResponse episodeMediaUploadResponse = episodeImageService.uploadEpisodeMedia(webtoonId, thumbnail, episodeImages);
 
         // then
         assertThat(episodeMediaUploadResponse.thumbnailUrl()).isEqualTo(expectedThumbnailUrl);
