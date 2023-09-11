@@ -19,11 +19,14 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (!(handler instanceof HandlerMethod handlerMethod))
             return true;
+        
         if (!isAdminMethod(handlerMethod))
             return true;
+
         Authentication authentication = AuthenticationContextHolder.getAuthentication();
         Role userRole = authentication.role();
         Role handlerRole = getMethodRole(handlerMethod);
+
         if (!userRole.equals(handlerRole))
             throw new AuthenticationException();
         return true;
