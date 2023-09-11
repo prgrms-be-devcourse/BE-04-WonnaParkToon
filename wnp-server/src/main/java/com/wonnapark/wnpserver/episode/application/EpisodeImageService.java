@@ -18,14 +18,14 @@ public class EpisodeImageService {
 
     private static final String THUMBNAIL_KEY_PATTERN = "webtoon/%s/thumbnail_202x120_%s";
     private static final String EPISODE_URL_KEY_PATTERN = "webtoon/%s/%s_%s_IMAG01_%s";
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
     private final S3MediaService s3MediaService;
 
     public EpisodeMediaUploadResponse uploadEpisodeMedia(String webtoonId, File thumbnail, List<File> episodeImages) {
         return new EpisodeMediaUploadResponse(
-                uploadThumbnail(webtoonId, thumbnail), // 썸네일
-                uploadEpisodeImages(webtoonId, episodeImages) // 본문 images
+                uploadThumbnail(webtoonId, thumbnail),
+                uploadEpisodeImages(webtoonId, episodeImages)
         );
     }
 
@@ -35,7 +35,7 @@ public class EpisodeImageService {
     }
 
     private List<String> uploadEpisodeImages(String webtoonId, List<File> episodeImages) {
-        String uploadedDateTime = LocalDateTime.now().format(formatter);
+        String uploadedDateTime = LocalDateTime.now().format(FORMATTER);
         UUID uuid = UUID.randomUUID();
 
         List<String> urls = new ArrayList<>();
