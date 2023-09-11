@@ -4,8 +4,8 @@ import com.wonnapark.wnpserver.episode.dto.response.EpisodeMediaUploadResponse;
 import com.wonnapark.wnpserver.media.S3MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -22,19 +22,19 @@ public class EpisodeMediaService {
 
     private final S3MediaService s3MediaService;
 
-    public EpisodeMediaUploadResponse uploadEpisodeMedia(String webtoonId, MultipartFile thumbnail, List<MultipartFile> episodeImages) {
+    public EpisodeMediaUploadResponse uploadEpisodeMedia(String webtoonId, File thumbnail, List<File> episodeImages) {
         return new EpisodeMediaUploadResponse(
                 uploadThumbnail(webtoonId, thumbnail),
                 uploadEpisodeImages(webtoonId, episodeImages)
         );
     }
 
-    private String uploadThumbnail(String webtoonId, MultipartFile thumbnail) {
+    private String uploadThumbnail(String webtoonId, File thumbnail) {
         String key = String.format(THUMBNAIL_KEY_PATTERN, webtoonId, UUID.randomUUID());
         return s3MediaService.upload(key, thumbnail);
     }
 
-    private List<String> uploadEpisodeImages(String webtoonId, List<MultipartFile> episodeImages) {
+    private List<String> uploadEpisodeImages(String webtoonId, List<File> episodeImages) {
         String uploadedDateTime = LocalDateTime.now().format(formatter);
         UUID uuid = UUID.randomUUID();
 

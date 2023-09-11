@@ -11,6 +11,7 @@ import com.wonnapark.wnpserver.episode.dto.request.EpisodeUrlsUpdateRequest;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeCreationResponse;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeMediaUploadResponse;
 import com.wonnapark.wnpserver.global.response.ApiResponse;
+import com.wonnapark.wnpserver.global.utils.FileUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -43,7 +44,7 @@ public class AdminEpisodeController {
     @PostMapping("/images")
     @ResponseStatus(CREATED)
     public ApiResponse<EpisodeMediaUploadResponse> createEpisodeImages(
-            @RequestPart("webtoonId")
+            @RequestParam("webtoonId")
             @NotNull(message = "웹툰 ID는 null일 수 없습니다.")
             String webtoonId,
             @RequestPart("thumbnail")
@@ -53,7 +54,12 @@ public class AdminEpisodeController {
             @NotNull(message = "에피소드 이미지는 null일 수 없습니다.")
             List<MultipartFile> episodeImages
     ) {
-        return ApiResponse.from(episodeMediaService.uploadEpisodeMedia(webtoonId, thumbnail, episodeImages));
+        return ApiResponse.from(episodeMediaService.uploadEpisodeMedia(
+                webtoonId,
+                FileUtils.convertMultipartFileToFile(thumbnail),
+                episodeImages.stream()
+                        .map(FileUtils::convertMultipartFileToFile).toList()
+        ));
     }
 
     @PostMapping

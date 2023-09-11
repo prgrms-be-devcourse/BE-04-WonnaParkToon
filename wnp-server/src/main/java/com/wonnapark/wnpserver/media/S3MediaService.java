@@ -1,10 +1,10 @@
 package com.wonnapark.wnpserver.media;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.wonnapark.wnpserver.global.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 
 @Service
 public class S3MediaService {
@@ -20,8 +20,8 @@ public class S3MediaService {
         this.bucketName = bucketName;
     }
 
-    public String upload(String key, MultipartFile file) {
-        amazonS3.putObject(bucketName, key, FileUtils.convertMultipartFileToFile(file));
+    public String upload(String key, File file) {
+        amazonS3.putObject(bucketName, key, file);
         return amazonS3.getUrl(bucketName, key).toExternalForm();
     }
 
