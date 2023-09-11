@@ -9,7 +9,7 @@ import java.util.List;
 public record WebtoonDetailRequest(
         String title,
         String artist,
-        String detail,
+        String summary,
         String genre,
         String ageRating,
         List<DayOfWeek> publishDays
@@ -18,7 +18,7 @@ public record WebtoonDetailRequest(
         return Webtoon.builder()
                 .title(request.title())
                 .artist(request.artist())
-                .detail(request.detail())
+                .summary(request.summary())
                 .genre(request.genre())
                 .ageRating(AgeRating.from(request.ageRating()))
                 .publishDays(request.publishDays())

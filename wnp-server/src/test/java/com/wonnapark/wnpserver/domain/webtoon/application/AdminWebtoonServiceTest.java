@@ -62,7 +62,7 @@ class AdminWebtoonServiceTest {
         // then
         assertThat(webtoon.getTitle()).isEqualTo(request.title());
         assertThat(webtoon.getArtist()).isEqualTo(request.artist());
-        assertThat(webtoon.getDetail()).isEqualTo(request.detail());
+        assertThat(webtoon.getSummary()).isEqualTo(request.summary());
         assertThat(webtoon.getGenre()).isEqualTo(request.genre());
         assertThat(webtoon.getPublishDays()).isEqualTo(request.publishDays());
         assertThat(webtoon.getAgeRating()).isEqualTo(AgeRating.from(request.ageRating()));

@@ -62,7 +62,7 @@ class GuestWebtoonControllerTest {
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("웹툰 ID"),
                                 fieldWithPath("data.title").type(JsonFieldType.STRING).description("웹툰 제목"),
                                 fieldWithPath("data.artist").type(JsonFieldType.STRING).description("웹툰 작가"),
-                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("웹툰 설명"),
+                                fieldWithPath("data.summary").type(JsonFieldType.STRING).description("웹툰 설명"),
                                 fieldWithPath("data.genre").type(JsonFieldType.STRING).description("웹툰 장르"),
                                 fieldWithPath("data.thumbnail").type(JsonFieldType.STRING).description("웹툰 썸네일"),
                                 fieldWithPath("data.ageRating").type(JsonFieldType.STRING).description("웹툰 연령 등급"),

@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.webtoon;
 
-import com.wonnapark.wnpserver.webtoon.infrastructure.AgeRatingConverter;
 import com.wonnapark.wnpserver.global.common.BaseEntity;
+import com.wonnapark.wnpserver.webtoon.infrastructure.AgeRatingConverter;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -34,7 +34,7 @@ public class Webtoon extends BaseEntity {
 
     private static final int MAX_TITLE_LENGTH = 50;
     private static final int MAX_ARTIST_LENGTH = 50;
-    private static final int MAX_DETAIL_LENGTH = 200;
+    private static final int MAX_SUMMARY_LENGTH = 200;
     private static final int MAX_GENRE_LENGTH = 50;
 
     @Id
@@ -47,8 +47,8 @@ public class Webtoon extends BaseEntity {
     @Column(name = "artist", nullable = false, length = MAX_ARTIST_LENGTH)
     private String artist;
 
-    @Column(name = "detail", nullable = false, length = MAX_DETAIL_LENGTH)
-    private String detail;
+    @Column(name = "summary", nullable = false, length = MAX_SUMMARY_LENGTH)
+    private String summary;
 
     @Column(name = "genre", nullable = false, length = MAX_GENRE_LENGTH)
     private String genre;
@@ -69,10 +69,10 @@ public class Webtoon extends BaseEntity {
     private LocalDateTime isDeleted;
 
     @Builder
-    private Webtoon(String title, String artist, String detail, String genre, String thumbnail, AgeRating ageRating, List<DayOfWeek> publishDays) {
+    private Webtoon(String title, String artist, String summary, String genre, String thumbnail, AgeRating ageRating, List<DayOfWeek> publishDays) {
         this.title = title;
         this.artist = artist;
-        this.detail = detail;
+        this.summary = summary;
         this.genre = genre;
         this.thumbnail = thumbnail;
         this.ageRating = ageRating;
@@ -85,7 +85,7 @@ public class Webtoon extends BaseEntity {
     public void changeDetail(String title, String artist, String summary, String genre, String ageRating, List<DayOfWeek> publishDays) {
         this.title = title;
         this.artist = artist;
-        this.detail = detail;
+        this.summary = summary;
         this.genre = genre;
         this.ageRating = AgeRating.from(ageRating);
         this.publishDays = new ArrayList<DayOfWeek>(publishDays);

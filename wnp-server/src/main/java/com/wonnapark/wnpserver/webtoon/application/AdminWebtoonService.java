@@ -31,7 +31,7 @@ public class AdminWebtoonService {
         webtoon.changeDetail(
                 request.title(),
                 request.artist(),
-                request.detail(),
+                request.summary(),
                 request.genre(),
                 request.ageRating(),
                 request.publishDays()
