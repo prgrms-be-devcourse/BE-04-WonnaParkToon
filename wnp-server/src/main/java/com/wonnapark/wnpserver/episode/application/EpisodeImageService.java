@@ -16,7 +16,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EpisodeImageService {
 
-    private static final String THUMBNAIL_KEY_PATTERN = "webtoon/%s/thumbnail_202x120_%s";
+    private static final String EPISODE_THUMBNAIL_KEY_PATTERN = "webtoon/%s/thumbnail_202x120_%s";
     private static final String EPISODE_URL_KEY_PATTERN = "webtoon/%s/%s_%s_IMAG01_%s";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
@@ -30,7 +30,7 @@ public class EpisodeImageService {
     }
 
     private String uploadThumbnail(String webtoonId, File thumbnail) {
-        String key = String.format(THUMBNAIL_KEY_PATTERN, webtoonId, UUID.randomUUID());
+        String key = String.format(EPISODE_THUMBNAIL_KEY_PATTERN, webtoonId, UUID.randomUUID());
         return s3MediaService.upload(key, thumbnail);
     }
 
