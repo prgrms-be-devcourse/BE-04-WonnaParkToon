@@ -38,7 +38,7 @@ jobs:
          cache: gradle
          
      - name: 그레이들 권한 부여
-       run: chomod +x gradlew
+       run: chmod +x gradlew
 
      - name: 그레이들 테스트 실행
        run: ./gradlew test
