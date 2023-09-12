@@ -5,7 +5,6 @@ import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
 import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
 import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
-import com.wonnapark.wnpserver.webtoon.AgeRating;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.application.AdminWebtoonService;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
@@ -22,14 +21,10 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.DayOfWeek;
-
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
-import static org.instancio.Select.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
@@ -47,7 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(AdminWebtoonController.class)
 @AutoConfigureRestDocs
-@MockBean(JpaMetamodelMappingContext.class)
 class AdminWebtoonControllerTest {
 
     @Autowired
