@@ -10,6 +10,7 @@ import com.wonnapark.wnpserver.episode.dto.request.EpisodeTitleUpdateRequest;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeUrlsUpdateRequest;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeCreationResponse;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeMediaUploadResponse;
+import com.wonnapark.wnpserver.global.auth.Admin;
 import com.wonnapark.wnpserver.global.response.ApiResponse;
 import com.wonnapark.wnpserver.global.utils.FileUtils;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,6 +42,7 @@ public class AdminEpisodeController {
     private final EpisodeManageUseCase episodeManageUseCase;
     private final EpisodeImageService episodeImageService;
 
+    @Admin
     @PostMapping("/images")
     @ResponseStatus(CREATED)
     public ApiResponse<EpisodeMediaUploadResponse> createEpisodeImages(
@@ -62,6 +64,7 @@ public class AdminEpisodeController {
         ));
     }
 
+    @Admin
     @PostMapping
     @ResponseStatus(CREATED)
     public ApiResponse<EpisodeCreationResponse> createEpisode(
@@ -77,30 +80,35 @@ public class AdminEpisodeController {
         return ApiResponse.from(new EpisodeCreationResponse(episodeId));
     }
 
+    @Admin
     @PatchMapping("{id}/title")
     @ResponseStatus(OK)
     public void updateEpisodeTitle(@PathVariable Long id, @RequestBody @Valid EpisodeTitleUpdateRequest request) {
         episodeManageUseCase.updateEpisodeTitle(id, request);
     }
 
+    @Admin
     @PatchMapping("/{id}/artist-comment")
     @ResponseStatus(OK)
     public void updateEpisodeArtistComment(@PathVariable Long id, @RequestBody @Valid EpisodeArtistCommentUpdateRequest request) {
         episodeManageUseCase.updateEpisodeArtistComment(id, request);
     }
 
+    @Admin
     @PatchMapping("/{id}/thumbnail")
     @ResponseStatus(OK)
     public void updateEpisodeThumbnail(@PathVariable Long id, @RequestBody @Valid EpisodeThumbnailUpdateRequest request) {
         episodeManageUseCase.updateEpisodeThumbnail(id, request);
     }
 
+    @Admin
     @PatchMapping("/{id}/release-datetime")
     @ResponseStatus(OK)
     public void updateEpisodeReleaseDateTime(@PathVariable Long id, @RequestBody @Valid EpisodeReleaseDateTimeUpdateRequest request) {
         episodeManageUseCase.updateEpisodeReleaseDateTime(id, request);
     }
 
+    @Admin
     @PatchMapping("/{id}/image-urls")
     @ResponseStatus(OK)
     public void updateEpisodeUrls(@PathVariable Long id, @RequestBody @Valid EpisodeUrlsUpdateRequest request) {

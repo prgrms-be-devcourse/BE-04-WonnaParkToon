@@ -1,10 +1,13 @@
 package com.wonnapark.wnpserver.domain.episode.presentation;
 
+import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
 import com.wonnapark.wnpserver.episode.Episode;
 import com.wonnapark.wnpserver.episode.application.EpisodeFindUseCase;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeDetailFormResponse;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.episode.presentation.CommonEpisodeController;
+import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
+import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +28,7 @@ import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createEpiso
 import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createEpisodes;
 import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createPageable;
 import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createWebtoon;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -48,6 +52,12 @@ class CommonEpisodeControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private EpisodeFindUseCase episodeFindUseCase;
+    @MockBean
+    private AuthenticationResolver authenticationResolver;
+    @MockBean
+    private AuthorizedArgumentResolver authorizedArgumentResolver;
+    @MockBean
+    private JwtAuthenticationInterceptor jwtAuthenticationInterceptor;
 
     @Test
     @DisplayName("에피소드 ID로 에피소드 상세 정보를 정상적으로 가져올 수 있다.")
@@ -56,6 +66,7 @@ class CommonEpisodeControllerTest {
         Webtoon webtoon = createWebtoon();
         Episode episode = createEpisode(webtoon);
         given(episodeFindUseCase.findEpisodeDetailForm(episode.getId())).willReturn(EpisodeDetailFormResponse.from(episode));
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
         // when // then
         this.mockMvc.perform(get("/api/v1/common/episode/{id}/detail", episode.getId())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -82,6 +93,7 @@ class CommonEpisodeControllerTest {
         Pageable pageable = createPageable();
         Webtoon webtoon = createWebtoon();
         List<Episode> episodes = createEpisodes(webtoon);
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
         given(episodeFindUseCase.findEpisodeListForm(webtoon.getId(), pageable))
                 .willReturn(new PageImpl<>(episodes, pageable, episodes.size()).map(EpisodeListFormResponse::from));
         // when // then
