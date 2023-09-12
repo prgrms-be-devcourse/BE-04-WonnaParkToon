@@ -35,7 +35,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Webtoon extends BaseEntity {
 
-    private static final String DEFAULT_WEBTOON_THUMBNAIL = "https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg";
+    private static final String DEFAULT_WEBTOON_THUMBNAIL = "'https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg'";
     private static final int MAX_TITLE_LENGTH = 50;
     private static final int MAX_ARTIST_LENGTH = 50;
     private static final int MAX_SUMMARY_LENGTH = 200;
@@ -58,7 +58,7 @@ public class Webtoon extends BaseEntity {
     private String genre;
 
     @Column(name = "thumbnail")
-//    @ColumnDefault(DEFAULT_WEBTOON_THUMBNAIL)
+    @ColumnDefault(DEFAULT_WEBTOON_THUMBNAIL)
     private String thumbnail;
 
     @Column(name = "age_rating", nullable = false)
