@@ -1,4 +1,4 @@
-package com.wonnapark.wnpserver.domain.episode.presentation;
+package com.wonnapark.wnpserver.episode.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
@@ -10,7 +10,6 @@ import com.wonnapark.wnpserver.episode.dto.request.EpisodeReleaseDateTimeUpdateR
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeThumbnailUpdateRequest;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeTitleUpdateRequest;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeUrlsUpdateRequest;
-import com.wonnapark.wnpserver.episode.presentation.AdminEpisodeController;
 import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
 import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
 import org.instancio.Instancio;

@@ -7,7 +7,7 @@ import com.wonnapark.wnpserver.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.auth.dto.AuthTokenResponse;
 import com.wonnapark.wnpserver.auth.dto.RefreshTokenResponse;
 import com.wonnapark.wnpserver.auth.exception.JwtInvalidException;
-import com.wonnapark.wnpserver.domain.common.config.TestContainerConfig;
+import com.wonnapark.wnpserver.config.TestContainerConfig;
 import com.wonnapark.wnpserver.global.auth.Authentication;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(TestContainerConfig.class)
 @SpringBootTest

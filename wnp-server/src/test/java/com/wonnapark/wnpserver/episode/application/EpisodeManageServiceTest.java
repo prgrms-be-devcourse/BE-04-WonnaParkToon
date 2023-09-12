@@ -1,8 +1,6 @@
-package com.wonnapark.wnpserver.domain.episode.application;
+package com.wonnapark.wnpserver.episode.application;
 
 import com.wonnapark.wnpserver.episode.Episode;
-import com.wonnapark.wnpserver.episode.application.EpisodeManageService;
-import com.wonnapark.wnpserver.episode.application.ViewHistoryService;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeArtistCommentUpdateRequest;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeCreationRequest;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeReleaseDateTimeUpdateRequest;

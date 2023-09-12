@@ -1,8 +1,7 @@
-package com.wonnapark.wnpserver.domain.episode.infrastructure;
+package com.wonnapark.wnpserver.episode.infrastructure;
 
 import com.wonnapark.wnpserver.episode.Episode;
-import com.wonnapark.wnpserver.domain.episode.EpisodeFixtures;
-import com.wonnapark.wnpserver.episode.infrastructure.EpisodeRepository;
+import com.wonnapark.wnpserver.episode.EpisodeFixtures;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
 import org.instancio.Instancio;

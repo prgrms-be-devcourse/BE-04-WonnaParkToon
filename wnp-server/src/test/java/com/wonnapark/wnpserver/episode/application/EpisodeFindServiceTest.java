@@ -1,8 +1,7 @@
-package com.wonnapark.wnpserver.domain.episode.application;
+package com.wonnapark.wnpserver.episode.application;
 
 import com.wonnapark.wnpserver.episode.Episode;
-import com.wonnapark.wnpserver.episode.application.EpisodeFindService;
-import com.wonnapark.wnpserver.episode.application.ViewHistoryService;
+import com.wonnapark.wnpserver.episode.EpisodeFixtures;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeDetailFormResponse;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.episode.infrastructure.EpisodeRepository;
@@ -23,11 +22,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
-import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createEpisode;
-import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createEpisodes;
-import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createPageable;
-import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createUser;
-import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createWebtoon;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -44,21 +38,25 @@ class EpisodeFindServiceTest {
 
     @BeforeEach
     void init() {
-        webtoon = createWebtoon();
+        webtoon = EpisodeFixtures.createWebtoon();
     }
 
     @Test
     @DisplayName("웹툰 ID를 통해 에피소드 리스트 폼을 페이지 조회할 수 있다.")
     void commonFindEpisodeListForm() {
         // given
-        Pageable pageable = createPageable();
-        List<Episode> episodes = createEpisodes(webtoon).subList(0, pageable.getPageSize());
-        Page<Episode> page = new PageImpl<>(episodes, pageable, episodes.size());
+        Pageable pageable = EpisodeFixtures.createPageable();
+
+        List<Episode> episodes = EpisodeFixtures.createEpisodes(webtoon);
+        int total = Math.min(episodes.size(), pageable.getPageSize());
+        List<Episode> pagedEpisode = episodes.subList(0, total);
+
+        Page<Episode> page = new PageImpl<>(pagedEpisode, pageable, total);
         given(episodeRepository.findAllByWebtoonId(webtoon.getId(), pageable)).willReturn(page);
         // when
         Page<EpisodeListFormResponse> episodeListForm = episodeFindService.findEpisodeListForm(webtoon.getId(), pageable);
         // then
-        assertThat(episodeListForm.getNumberOfElements()).isEqualTo(Math.min(episodes.size(), pageable.getPageSize()));
+        assertThat(episodeListForm.getNumberOfElements()).isEqualTo(total);
     }
 
     @Test
@@ -66,7 +64,7 @@ class EpisodeFindServiceTest {
     void commonFindEpisodeDetailForm() {
         // given
         Long episodeId = Instancio.create(Long.class);
-        Episode episode = createEpisode(webtoon);
+        Episode episode = EpisodeFixtures.createEpisode(webtoon);
         given(episodeRepository.findById(anyLong())).willReturn(Optional.of(episode));
         // when
         EpisodeDetailFormResponse episodeDetailForm = episodeFindService.findEpisodeDetailForm(episodeId);
@@ -78,10 +76,14 @@ class EpisodeFindServiceTest {
     @DisplayName("유저 ID와 웹툰 ID를 통해 이미 본 에피소드에 대한 정보를 포함한 에피소드 리스트를 페이지 조회할 수 있다.")
     void userFindEpisodeListForm() {
         // given
-        User user = createUser();
-        Pageable pageable = createPageable();
-        List<Episode> episodes = createEpisodes(webtoon).subList(0, pageable.getPageSize());
-        Page<Episode> page = new PageImpl<>(episodes, pageable, episodes.size());
+        User user = EpisodeFixtures.createUser();
+        Pageable pageable = EpisodeFixtures.createPageable();
+
+        List<Episode> episodes = EpisodeFixtures.createEpisodes(webtoon);
+        int total = Math.min(episodes.size(), pageable.getPageSize());
+        List<Episode> pagedEpisode = episodes.subList(0, total);
+
+        Page<Episode> page = new PageImpl<>(pagedEpisode, pageable, total);
         given(episodeRepository.findAllByWebtoonId(webtoon.getId(), pageable)).willReturn(page);
         given(viewHistoryService.findViewedEpisodeIdsForUser(
                         user.getId(),
@@ -99,15 +101,15 @@ class EpisodeFindServiceTest {
         // then
         assertThat(episodeListForm.getContent()).isNotEmpty();
         assertThat(episodeListForm.getContent()).allMatch(EpisodeListFormResponse::isViewed);
-        assertThat(episodeListForm.getTotalElements()).isEqualTo(Math.min(episodes.size(), pageable.getPageSize()));
+        assertThat(episodeListForm.getTotalElements()).isEqualTo(total);
     }
 
     @Test
     @DisplayName("유저 ID와 에피소드 ID를 통해 에피소드 디테일 폼을 조회할 수 있다.")
     void userFindEpisodeDetailForm() {
         // given
-        User user = createUser();
-        Episode episode = createEpisode(webtoon);
+        User user = EpisodeFixtures.createUser();
+        Episode episode = EpisodeFixtures.createEpisode(webtoon);
         given(episodeRepository.findById(episode.getId())).willReturn(Optional.of(episode));
         // when
         EpisodeDetailFormResponse episodeDetailForm = episodeFindService.findEpisodeDetailForm(user.getId(), episode.getId());

@@ -1,8 +1,5 @@
-package com.wonnapark.wnpserver.domain.episode;
+package com.wonnapark.wnpserver.episode;
 
-import com.wonnapark.wnpserver.episode.Episode;
-import com.wonnapark.wnpserver.episode.EpisodeUrl;
-import com.wonnapark.wnpserver.episode.ViewHistory;
 import com.wonnapark.wnpserver.episode.dto.request.WebtoonListPageRequest;
 import com.wonnapark.wnpserver.user.User;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
@@ -10,12 +7,14 @@ import org.instancio.Instancio;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 
 public final class EpisodeFixtures {
+
     private EpisodeFixtures() {
     }
 
@@ -37,15 +36,24 @@ public final class EpisodeFixtures {
                 .ignore(field(Episode::isDeleted))
                 .ignore(field(Episode::getEpisodeUrls))
                 .create();
-        episode.setEpisodeUrls(createEpisodeUrls());
+        episode.setEpisodeUrls(createEpisodeUrls(1L));
         return episode;
     }
 
     public static List<Episode> createEpisodes(Webtoon webtoon) {
-        List<Episode> episodes = new ArrayList<>();
-        for (int i = 0; i < Instancio.create(Integer.class); i++) {
-            episodes.add(createEpisode(webtoon));
-        }
+
+        List<Episode> episodes = Instancio.ofList(Episode.class)
+                .set(field(Episode::getWebtoon), webtoon)
+                .assign(valueOf(Episode::getId).generate(gen -> gen.longSeq().start(1L)))
+                .ignore(field(Episode::isDeleted))
+                .ignore(field(Episode::getEpisodeUrls))
+                .create();
+
+        AtomicReference<Long> episodeUrlsId = new AtomicReference<>(1L);
+        episodes.forEach(episode -> {
+            episode.setEpisodeUrls(createEpisodeUrls(episodeUrlsId.get()));
+            episodeUrlsId.updateAndGet(v -> v + episode.getEpisodeUrls().size());
+        });
         return episodes;
     }
 
@@ -65,8 +73,9 @@ public final class EpisodeFixtures {
         ).toList();
     }
 
-    public static List<EpisodeUrl> createEpisodeUrls() {
+    public static List<EpisodeUrl> createEpisodeUrls(Long initialEpisodeUrl) {
         return Instancio.ofList(EpisodeUrl.class)
+                .assign(valueOf(EpisodeUrl::getId).generate(gen -> gen.longSeq().start(initialEpisodeUrl)))
                 .ignore(field(EpisodeUrl::getEpisode))
                 .create();
     }
