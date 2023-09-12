@@ -1,12 +1,12 @@
 package com.wonnapark.wnpserver.auth.application;
 
 import com.wonnapark.wnpserver.auth.RefreshToken;
-import com.wonnapark.wnpserver.auth.dto.AccessTokenResponse;
-import com.wonnapark.wnpserver.auth.dto.AuthTokenRequest;
-import com.wonnapark.wnpserver.auth.dto.RefreshTokenResponse;
 import com.wonnapark.wnpserver.auth.config.JwtProperties;
 import com.wonnapark.wnpserver.auth.config.TokenConstants;
+import com.wonnapark.wnpserver.auth.dto.AccessTokenResponse;
+import com.wonnapark.wnpserver.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.auth.dto.AuthTokenResponse;
+import com.wonnapark.wnpserver.auth.dto.RefreshTokenResponse;
 import com.wonnapark.wnpserver.auth.infrastructure.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -43,7 +43,6 @@ public class JwtTokenService {
         long now = new Date().getTime();
         Date expiredAt = new Date(now + jwtProperties.refreshTokenExpireTime());
 
-
         String accessToken = Jwts.builder()
                 .claim(TokenConstants.AGE_CLAIM_NAME, request.age())
                 .claim(TokenConstants.ROLE_CLAIM_NAME, request.role())
@@ -61,7 +60,7 @@ public class JwtTokenService {
         long now = new Date().getTime();
         Date expiredAt = new Date(now + jwtProperties.refreshTokenExpireTime());
         RandomGenerator generator = RandomGenerator.getDefault();
-        int identifyNum = generator.ints().findAny().getAsInt();
+        int identifyNum = generator.nextInt();
 
         String refreshToken = Jwts.builder()
                 .setIssuer(String.format(TokenConstants.ISSUER + "%d", identifyNum))
