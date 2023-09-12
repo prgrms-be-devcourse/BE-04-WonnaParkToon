@@ -64,7 +64,7 @@ jobs:
        with:
          report_paths: '**/build/test-results/test/TEST-*.xml'
 
-     - name: build 실패 시 Slack으로 알립니다
+     - name: CI가 종료되면 Slack으로 알림
        uses: 8398a7/action-slack@v3
        with:
          status: ${{ job.status }}
