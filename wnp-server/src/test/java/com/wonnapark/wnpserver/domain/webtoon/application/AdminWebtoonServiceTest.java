@@ -4,10 +4,8 @@ import com.wonnapark.wnpserver.webtoon.AgeRating;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.webtoon.application.AdminWebtoonService;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateRequest;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
 import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
-import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,9 +35,9 @@ class AdminWebtoonServiceTest {
     @DisplayName("올바른 요청을 통해 웹툰을 생성할 수 있다.")
     void createWebtoon() {
         // given
-        WebtoonCreateRequest request = WebtoonFixtures.createWebtoonCreateRequest();
+        WebtoonDetailRequest request = WebtoonFixtures.createWebtoonDetailrequest();
 
-        Webtoon webtoon = WebtoonCreateRequest.toEntity(request);
+        Webtoon webtoon = WebtoonDetailRequest.toEntity(request);
         given(webtoonRepository.save(any(Webtoon.class))).willReturn(webtoon);
 
         // when
@@ -54,7 +52,7 @@ class AdminWebtoonServiceTest {
     @DisplayName("올바른 요청을 통해 웹툰을 수정할 수 있다.")
     void updateWebtoon() {
         // given
-        WebtoonUpdateRequest request = WebtoonFixtures.createWebtoonUpdateRequest();
+        WebtoonDetailRequest request = WebtoonFixtures.createWebtoonDetailrequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon();
         given(webtoonRepository.findById(any(Long.class))).willReturn(Optional.of(webtoon));
 
@@ -64,9 +62,8 @@ class AdminWebtoonServiceTest {
         // then
         assertThat(webtoon.getTitle()).isEqualTo(request.title());
         assertThat(webtoon.getArtist()).isEqualTo(request.artist());
-        assertThat(webtoon.getDetail()).isEqualTo(request.detail());
+        assertThat(webtoon.getSummary()).isEqualTo(request.summary());
         assertThat(webtoon.getGenre()).isEqualTo(request.genre());
-        assertThat(webtoon.getThumbnail()).isEqualTo(request.thumbnail());
         assertThat(webtoon.getPublishDays()).isEqualTo(request.publishDays());
         assertThat(webtoon.getAgeRating()).isEqualTo(AgeRating.from(request.ageRating()));
     }
