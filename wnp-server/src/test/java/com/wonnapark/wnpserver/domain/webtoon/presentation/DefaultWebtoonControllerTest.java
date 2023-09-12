@@ -1,12 +1,20 @@
 package com.wonnapark.wnpserver.domain.webtoon.presentation;
 
-import com.wonnapark.wnpserver.webtoon.Webtoon;
+import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
 import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
+import com.wonnapark.wnpserver.global.auth.AuthFixtures;
+import com.wonnapark.wnpserver.global.auth.Authentication;
+import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
+import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
+import com.wonnapark.wnpserver.global.common.UserInfo;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.application.DefaultWebtoonService;
 import com.wonnapark.wnpserver.webtoon.application.UserWebtoonService;
+import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonSimpleResponse;
 import com.wonnapark.wnpserver.webtoon.presentation.DefaultWebtoonController;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +30,7 @@ import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -54,7 +63,9 @@ class DefaultWebtoonControllerTest {
     @EnumSource(DayOfWeek.class)
     void findWebtoonsByPublishDay(DayOfWeek publishDay) throws Exception {
         // given
-        List<Webtoon> webtoons = WebtoonFixtures.createWebtoons();
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
+        List<Webtoon> webtoons = WebtoonFixtures.createWebtoonsOnPublishDay(publishDay);
         given(defaultWebtoonService.findWebtoonsByPublishDay(publishDay))
                 .willReturn(webtoons.stream()
                         .map(WebtoonSimpleResponse::from)
