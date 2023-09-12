@@ -1,5 +1,6 @@
 package com.wonnapark.wnpserver.webtoon.presentation;
 
+import com.wonnapark.wnpserver.global.auth.Authorized;
 import com.wonnapark.wnpserver.webtoon.application.DefaultWebtoonService;
 import com.wonnapark.wnpserver.webtoon.application.UserWebtoonService;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
@@ -27,7 +28,7 @@ public class DefaultWebtoonController {
 
     @GetMapping("/{webtoonId}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<WebtoonDetailResponse> findWebtoonById(@PathVariable Long webtoonId, UserInfo userInfo) {
+    public ApiResponse<WebtoonDetailResponse> findWebtoonById(@PathVariable Long webtoonId, @Authorized UserInfo userInfo) {
         WebtoonDetailResponse response = userWebtoonService.findWebtoonById(webtoonId, userInfo);
         return ApiResponse.from(response);
     }
