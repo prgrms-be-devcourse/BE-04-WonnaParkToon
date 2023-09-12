@@ -13,6 +13,7 @@ import java.util.List;
 import static org.instancio.Select.field;
 
 public final class WebtoonFixtures {
+    private static final String DEFAULT_WEBTOON_THUMBNAIL = "https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg";
 
     public static final List<String> ageRatingNames = Arrays.stream(AgeRating.values())
             .map(AgeRating::getRatingName).toList();
@@ -23,7 +24,7 @@ public final class WebtoonFixtures {
     public static Webtoon createWebtoon() {
         return Instancio.of(Webtoon.class)
                 .ignore(field(Webtoon::getIsDeleted))
-                .set(field(Webtoon::getThumbnail), Webtoon.DEFAULT_WEBTOON_THUMBNAIL)
+                .set(field(Webtoon::getThumbnail), DEFAULT_WEBTOON_THUMBNAIL)
                 .generate(field(Webtoon::getAgeRating), gen -> gen.enumOf(AgeRating.class))
                 .create();
     }
@@ -35,7 +36,7 @@ public final class WebtoonFixtures {
                 .set(field(Webtoon::getArtist), request.artist())
                 .set(field(Webtoon::getSummary), request.summary())
                 .set(field(Webtoon::getGenre), request.genre())
-                .set(field(Webtoon::getThumbnail), Webtoon.DEFAULT_WEBTOON_THUMBNAIL)
+                .set(field(Webtoon::getThumbnail), DEFAULT_WEBTOON_THUMBNAIL)
                 .set(field(Webtoon::getAgeRating), AgeRating.from(request.ageRating()))
                 .set(field(Webtoon::getPublishDays), request.publishDays())
                 .create();
