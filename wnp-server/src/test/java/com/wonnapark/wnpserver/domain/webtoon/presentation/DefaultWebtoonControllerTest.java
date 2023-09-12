@@ -39,6 +39,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,9 +55,49 @@ class DefaultWebtoonControllerTest {
     private DefaultWebtoonService defaultWebtoonService;
     @MockBean
     private UserWebtoonService userWebtoonService;
+    @MockBean
+    AuthenticationResolver authenticationResolver;
+    @MockBean
+    AuthorizedArgumentResolver authorizedArgumentResolver;
+    @MockBean
+    JwtAuthenticationInterceptor jwtAuthenticationInterceptor;
 
-    // TODO: 2023-09-05 findWebtoonById 테스트 코드 작성
-    // TODO: 2023-09-06 User 통합 테스트 필요 
+    @DisplayName("로그인한 모든 회원은 웹툰 ID로 18세이용가가 아닌 웹툰의 상세 정보를 조회할 수 있다.")
+    @Test
+    void findWebtoonById() throws Exception {
+        // given
+        Authentication authentication = AuthFixtures.createUserAuthentication();
+        UserInfo userInfo = UserInfo.from(authentication);
+
+        given(authorizedArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(authorizedArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(userInfo);
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
+        Webtoon webtoon = WebtoonFixtures.createWebtoonUnder18();
+        given(userWebtoonService.findWebtoonById(webtoon.getId(), userInfo)).willReturn(WebtoonDetailResponse.from(webtoon));
+        // when, then
+        mockMvc.perform(get("/api/v1/webtoons/{webtoonId}",webtoon.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("user-webtoon-v1-findWebtoonsById",
+                        resourceDetails().tag("웹툰-회원")
+                                .description("회원 웹툰 상세 정보 불러오기"),
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("webtoonId").description("웹툰 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("웹툰 ID"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("웹툰 제목"),
+                                fieldWithPath("data.artist").type(JsonFieldType.STRING).description("웹툰 작가"),
+                                fieldWithPath("data.summary").type(JsonFieldType.STRING).description("웹툰 설명"),
+                                fieldWithPath("data.genre").type(JsonFieldType.STRING).description("웹툰 장르"),
+                                fieldWithPath("data.thumbnail").type(JsonFieldType.STRING).description("웹툰 썸네일"),
+                                fieldWithPath("data.ageRating").type(JsonFieldType.STRING).description("웹툰 연령 등급"),
+                                fieldWithPath("data.publishDays").type(JsonFieldType.ARRAY).description("웹툰 연재 요일")
+                        )));
+    }
 
     @ParameterizedTest
     @DisplayName("연재 요일로 해당 연재 요일의 웹툰 목록을 조회할 수 있다.")
