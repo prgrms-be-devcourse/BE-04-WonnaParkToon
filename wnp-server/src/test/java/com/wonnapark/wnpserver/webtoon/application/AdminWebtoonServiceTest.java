@@ -1,5 +1,6 @@
 package com.wonnapark.wnpserver.webtoon.application;
 
+import com.wonnapark.wnpserver.media.S3MediaService;
 import com.wonnapark.wnpserver.webtoon.AgeRating;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.WebtoonFixtures;
@@ -28,7 +29,7 @@ class AdminWebtoonServiceTest {
     @InjectMocks
     private AdminWebtoonService adminWebtoonService;
     @Mock
-    private S3ManageService s3ManageService;
+    private S3MediaService s3MediaService;
     @Mock
     private WebtoonRepository webtoonRepository;
     private final String DEFAULT_WEBTOON_THUMBNAIL = "https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg";
