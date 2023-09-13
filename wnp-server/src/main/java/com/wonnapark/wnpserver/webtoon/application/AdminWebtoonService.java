@@ -1,5 +1,6 @@
 package com.wonnapark.wnpserver.webtoon.application;
 
+import com.wonnapark.wnpserver.media.S3MediaService;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateDetailRequest;
@@ -11,8 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
+import java.io.File;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +30,16 @@ public class AdminWebtoonService {
     public WebtoonDetailResponse createWebtoonDetail(WebtoonCreateDetailRequest request) {
         Webtoon webtoon = WebtoonCreateDetailRequest.toEntity(request, DEFAULT_WEBTOON_THUMBNAIL);
         return WebtoonDetailResponse.from(webtoonRepository.save(webtoon));
+    }
+
+    @Transactional
+    public WebtoonThumbnailResponse updateWebtoonThumbnail(File thumbnailFile, Long webtoonId) {
+        Webtoon webtoon = webtoonRepository.findById(webtoonId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(WebtoonExceptionMessage.WEBTOON_NOT_FOUND.getMessage(), webtoonId)));
+        String thumbnailUrl = uploadWebtoonThumbnail(webtoonId, thumbnailFile);
+        webtoon.changeThumbnail(thumbnailUrl);
+
+        return WebtoonThumbnailResponse.from(thumbnailUrl);
     }
 
     @Transactional
@@ -73,6 +85,11 @@ public class AdminWebtoonService {
         } catch (StringIndexOutOfBoundsException e) {
             throw new IllegalArgumentException(String.format("잘못된 파일 형식입니다: %s", fileName));
         }
+    }
+
+    public String uploadWebtoonThumbnail(Long webtoonId, File thumbnailFile) {
+        String key = createWebtoonThumbnailKey(webtoonId, thumbnailFile.getName());
+        return s3MediaService.upload(key, thumbnailFile);
     }
 
 }
