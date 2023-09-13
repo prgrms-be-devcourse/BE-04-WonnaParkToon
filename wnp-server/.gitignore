@@ -39,4 +39,4 @@ out/
 .vscode/
 
 ### env ###
-.env
+src/main/resources/static/.env

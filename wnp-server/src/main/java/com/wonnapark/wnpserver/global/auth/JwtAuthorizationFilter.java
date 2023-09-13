@@ -37,7 +37,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String[] blackList = {
                 "/api/v1/guest/",
                 "/api/v1/oauth/",
-                "/h2-console"
+                "/h2-console",
+                "/swagger-ui/",
+                "/v3/api-docs"
         };
         String path = request.getRequestURI();
         return Arrays.stream(blackList).anyMatch(path::startsWith);
@@ -46,6 +48,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
+        System.out.println("path = " + path);
         String accessToken = extractTokenFromHeader(request, HttpHeaders.AUTHORIZATION);
         try {
             authenticationResolver.validateAccessToken(accessToken);
