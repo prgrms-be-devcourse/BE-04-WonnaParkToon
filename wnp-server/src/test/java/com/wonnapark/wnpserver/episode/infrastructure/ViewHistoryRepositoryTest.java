@@ -35,16 +35,16 @@ class ViewHistoryRepositoryTest {
 
     @BeforeEach
     void init() {
-        webtoon = webtoonRepository.save(EpisodeFixtures.createWebtoon());
-        user = userRepository.save(EpisodeFixtures.createUser());
+        webtoon = webtoonRepository.save(EpisodeFixtures.webtoon());
+        user = userRepository.save(EpisodeFixtures.user());
     }
 
     @Test
     @DisplayName("유저 ID와 에피소드 ID에 해당하는 VIEW_HISTORY가 있을 때 true를 반환힐 수 있다.")
     void existsByUserIdAndEpisodeId_true() {
         // given
-        Episode episode = episodeRepository.save(EpisodeFixtures.createEpisode(webtoon));
-        ViewHistory viewHistory = viewHistoryRepository.save(EpisodeFixtures.createViewHistory(user.getId(), episode.getId()));
+        Episode episode = episodeRepository.save(EpisodeFixtures.episode(webtoon));
+        ViewHistory viewHistory = viewHistoryRepository.save(EpisodeFixtures.viewHistory(user.getId(), episode.getId()));
         // when
         boolean result = viewHistoryRepository.existsById_UserIdAndId_EpisodeId(user.getId(), episode.getId());
         // then
@@ -67,9 +67,9 @@ class ViewHistoryRepositoryTest {
     @DisplayName("주어진 유저 ID와 에피소드 ID들에 대한 VIEW_HISTORY가 존재하면 일치하는 에피소드 ID들 반환할 수 있다")
     void findEpisodeIdsInGivenEpisodeIdsByUserId_viewedEpisodeIds() {
         // given
-        List<Episode> episodes = episodeRepository.saveAll(EpisodeFixtures.createEpisodes(webtoon));
+        List<Episode> episodes = episodeRepository.saveAll(EpisodeFixtures.episodes(webtoon));
         List<Long> episodeIds = episodes.stream().map(Episode::getId).distinct().toList();
-        List<ViewHistory> viewHistories = viewHistoryRepository.saveAll(EpisodeFixtures.createViewHistories(user.getId(), episodeIds));
+        List<ViewHistory> viewHistories = viewHistoryRepository.saveAll(EpisodeFixtures.viewHistories(user.getId(), episodeIds));
         // when
         List<Long> viewedEpisodeIds = viewHistoryRepository.findEpisodeIdsInGivenEpisodeIdsByUserId(user.getId(), episodeIds);
         // then
@@ -81,7 +81,7 @@ class ViewHistoryRepositoryTest {
     @DisplayName("주어진 유저 ID와 에피소드 ID들에 대한 VIEW_HISTORY가 존재하지 않으면 빈 리스트를 반환할 수 있다")
     void findEpisodeIdsInGivenEpisodeIdsByUserId_emptyList() {
         // given
-        List<Episode> episodes = EpisodeFixtures.createEpisodes(webtoon);
+        List<Episode> episodes = EpisodeFixtures.episodes(webtoon);
         List<Long> episodeIds = episodes.stream().map(Episode::getId).toList();
         // when
         List<Long> viewedEpisodeIds = viewHistoryRepository.findEpisodeIdsInGivenEpisodeIdsByUserId(user.getId(), episodeIds);
