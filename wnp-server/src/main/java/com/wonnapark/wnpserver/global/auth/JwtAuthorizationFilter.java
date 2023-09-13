@@ -37,7 +37,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String[] blackList = {
                 "/api/v1/guest/",
                 "/api/v1/oauth/",
-                "/h2-console"
+                "/h2-console",
+                "/swagger-ui/",
+                "/v3/api-docs"
         };
         String path = request.getRequestURI();
         return Arrays.stream(blackList).anyMatch(path::startsWith);
