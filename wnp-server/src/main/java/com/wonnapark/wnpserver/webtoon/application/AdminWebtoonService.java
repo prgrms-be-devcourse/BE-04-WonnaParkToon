@@ -80,11 +80,8 @@ public class AdminWebtoonService {
     }
 
     private String getFileExtension(String fileName) {
-        try {
-            return fileName.substring(fileName.lastIndexOf("."));
-        } catch (StringIndexOutOfBoundsException e) {
-            throw new IllegalArgumentException(String.format("잘못된 파일 형식입니다: %s", fileName));
-        }
+        final String PERIOD = ".";
+        return fileName.substring(fileName.lastIndexOf(PERIOD));
     }
 
     public String uploadWebtoonThumbnail(Long webtoonId, File thumbnailFile) {
