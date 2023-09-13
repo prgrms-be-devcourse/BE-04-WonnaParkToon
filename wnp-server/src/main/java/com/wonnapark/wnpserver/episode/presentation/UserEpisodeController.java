@@ -28,7 +28,7 @@ public class UserEpisodeController {
 
     @GetMapping("/{episodeId}/detail")
     @ResponseStatus(OK)
-    ApiResponse<EpisodeDetailFormResponse> findEpisodeDetailForm(
+    public ApiResponse<EpisodeDetailFormResponse> findEpisodeDetailForm(
             @Authorized UserInfo userInfo,
             @PathVariable Long episodeId
     ) {
@@ -38,7 +38,7 @@ public class UserEpisodeController {
 
     @GetMapping("/list")
     @ResponseStatus(OK)
-    ApiResponse<PageResponse<EpisodeListFormResponse>> findEpisodeListForm(
+    public ApiResponse<PageResponse<EpisodeListFormResponse>> findEpisodeListForm(
             @Authorized UserInfo userInfo,
             @RequestParam Long webtoonId,
             @ModelAttribute WebtoonListPageRequest webtoonListPageRequest
