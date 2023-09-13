@@ -24,9 +24,8 @@ jobs:
        uses: actions/checkout@v3
 
      - name: env 파일 생성
-       with:
-         path: ~/static
-         run: echo "hello" >> .env
+       run: echo "hello" >> .env
+       working-directory: ./src/main/resources/static
       
      - name: 그레이들 캐싱
        id: gradle-cache
