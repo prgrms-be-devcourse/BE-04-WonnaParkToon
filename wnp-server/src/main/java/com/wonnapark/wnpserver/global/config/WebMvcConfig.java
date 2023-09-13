@@ -3,7 +3,6 @@ package com.wonnapark.wnpserver.global.config;
 import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
 import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
 import com.wonnapark.wnpserver.oauth.OAuthProviderConverter;
-import com.wonnapark.wnpserver.webtoon.PublishDaysConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -33,6 +32,5 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new OAuthProviderConverter());
-        registry.addConverter(new PublishDaysConverter());
     }
 }
