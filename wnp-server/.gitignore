@@ -38,5 +38,5 @@ out/
 ### VS Code ###
 .vscode/
 
-### yml ###
-/src/main/resources/.env
+### env ###
+.env

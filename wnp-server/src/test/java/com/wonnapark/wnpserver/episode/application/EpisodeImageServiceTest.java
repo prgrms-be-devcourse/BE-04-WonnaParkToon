@@ -1,6 +1,5 @@
-package com.wonnapark.wnpserver.domain.episode.application;
+package com.wonnapark.wnpserver.episode.application;
 
-import com.wonnapark.wnpserver.episode.application.EpisodeImageService;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeMediaUploadResponse;
 import com.wonnapark.wnpserver.media.S3MediaService;
 import org.junit.jupiter.api.Test;

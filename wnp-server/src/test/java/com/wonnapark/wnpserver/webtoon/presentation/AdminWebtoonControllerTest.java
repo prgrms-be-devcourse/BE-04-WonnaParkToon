@@ -1,15 +1,14 @@
-package com.wonnapark.wnpserver.domain.webtoon.presentation;
+package com.wonnapark.wnpserver.webtoon.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
-import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
 import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
+import com.wonnapark.wnpserver.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.webtoon.application.AdminWebtoonService;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
-import com.wonnapark.wnpserver.webtoon.presentation.AdminWebtoonController;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 

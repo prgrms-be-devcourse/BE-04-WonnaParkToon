@@ -1,8 +1,6 @@
-package com.wonnapark.wnpserver.domain.webtoon;
+package com.wonnapark.wnpserver.webtoon;
 
 import com.wonnapark.wnpserver.global.common.UserInfo;
-import com.wonnapark.wnpserver.webtoon.AgeRating;
-import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
 import org.instancio.Instancio;
 

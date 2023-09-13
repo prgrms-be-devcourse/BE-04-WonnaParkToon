@@ -1,9 +1,8 @@
-package com.wonnapark.wnpserver.domain.webtoon.application;
+package com.wonnapark.wnpserver.webtoon.application;
 
 import com.wonnapark.wnpserver.webtoon.AgeRating;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
-import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
-import com.wonnapark.wnpserver.webtoon.application.AdminWebtoonService;
+import com.wonnapark.wnpserver.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
 import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Select.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
