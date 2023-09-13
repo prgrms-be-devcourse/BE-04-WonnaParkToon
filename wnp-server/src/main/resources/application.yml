@@ -40,6 +40,10 @@ oauth:
       api-url: ${NAVER_API_URL}
       redirect-url: ${NAVER_REDIRECT_URL}
 
+springdoc:
+  swagger-ui:
+    path: ${SPRINGDOC_SWAGGER_UI_PATH}
+
 cloud:
   aws:
     s3:

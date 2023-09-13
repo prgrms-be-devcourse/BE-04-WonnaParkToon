@@ -23,6 +23,10 @@ jobs:
      - name: 레포지토리 체크아웃
        uses: actions/checkout@v3
 
+     - name: env 파일 생성
+       run: echo "test" >> .env
+       working-directory: wnp-server/src/main/resources
+      
      - name: 그레이들 캐싱
        id: gradle-cache
        uses: actions/cache@v3
@@ -68,7 +72,7 @@ jobs:
        uses: 8398a7/action-slack@v3
        with:
          status: ${{ job.status }}
-         author_name: 백엔드 빌드 실패 알림
+         author_name: CI 결과 알림
          fields: repo, message, commit, author, action, eventName, ref, workflow, job, took
        env:
          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
