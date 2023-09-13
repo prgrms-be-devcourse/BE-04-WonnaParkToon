@@ -25,7 +25,7 @@ jobs:
 
      - name: env 파일 생성
        run: echo "hello" >> .env
-       working-directory: wnp-server/src/main/resources
+       working-directory: wnp-server/src/main/resources/static
       
      - name: 그레이들 캐싱
        id: gradle-cache
