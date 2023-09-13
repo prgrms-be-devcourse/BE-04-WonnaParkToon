@@ -1,6 +1,8 @@
-package com.wonnapark.wnpserver.domain.episode.presentation;
+package com.wonnapark.wnpserver.episode.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
+import com.wonnapark.wnpserver.episode.application.EpisodeImageService;
 import com.wonnapark.wnpserver.episode.application.EpisodeManageUseCase;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeArtistCommentUpdateRequest;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeCreationRequest;
@@ -8,9 +10,10 @@ import com.wonnapark.wnpserver.episode.dto.request.EpisodeReleaseDateTimeUpdateR
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeThumbnailUpdateRequest;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeTitleUpdateRequest;
 import com.wonnapark.wnpserver.episode.dto.request.EpisodeUrlsUpdateRequest;
-import com.wonnapark.wnpserver.episode.presentation.AdminEpisodeController;
-import com.wonnapark.wnpserver.webtoon.Webtoon;
+import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
+import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +25,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
-import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createWebtoon;
 import static org.instancio.Select.field;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -49,25 +52,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AdminEpisodeControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     @MockBean
-    EpisodeManageUseCase episodeManageUseCase;
+    private EpisodeImageService episodeImageService;
+    @MockBean
+    private EpisodeManageUseCase episodeManageUseCase;
+    @MockBean
+    private AuthenticationResolver authenticationResolver;
+    @MockBean
+    private AuthorizedArgumentResolver authorizedArgumentResolver;
+    @MockBean
+    private JwtAuthenticationInterceptor jwtAuthenticationInterceptor;
+
+    @BeforeEach
+    void setup() throws Exception {
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
+    }
 
     @Test
     @DisplayName("새로운 에피소드를 생성하고 Location 헤더와 에피소드 ID를 반환 할 수 있다.")
     void episodeCreate() throws Exception {
         // given
-        Webtoon webtoon = createWebtoon();
+        Long webtoonId = 1L;
         EpisodeCreationRequest episodeCreationRequest = createEpisodeCreationRequest();
         Long createdEpisodeId = Instancio.create(Long.class);
-        given(episodeManageUseCase.createEpisode(webtoon.getId(), episodeCreationRequest)).willReturn(createdEpisodeId);
+        given(episodeManageUseCase.createEpisode(webtoonId, episodeCreationRequest)).willReturn(createdEpisodeId);
         // when // then
         mockMvc.perform(post("/api/v1/admin/episode")
+                        .param("webtoonId", String.valueOf(webtoonId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(episodeCreationRequest))
-                        .param("webtoonId", String.valueOf(webtoon.getId()))
                 )
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", String.format("/api/v1/common/episode/detail/%d", createdEpisodeId)))

@@ -1,4 +1,4 @@
-package com.wonnapark.wnpserver.domain.common.config;
+package com.wonnapark.wnpserver.config;
 
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;

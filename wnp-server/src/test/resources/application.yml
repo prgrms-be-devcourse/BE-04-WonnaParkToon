@@ -20,7 +20,7 @@ jwt:
 
 oauth:
   kakao:
-    client-id: 3test
+    client-id: test
     url:
       auth-url: test
       api-url: test

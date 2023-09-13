@@ -1,11 +1,17 @@
-package com.wonnapark.wnpserver.domain.episode.presentation;
+package com.wonnapark.wnpserver.episode.presentation;
 
+import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
 import com.wonnapark.wnpserver.episode.Episode;
+import com.wonnapark.wnpserver.episode.EpisodeFixtures;
 import com.wonnapark.wnpserver.episode.application.EpisodeFindUseCase;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeDetailFormResponse;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeListFormResponse;
-import com.wonnapark.wnpserver.episode.presentation.CommonEpisodeController;
+import com.wonnapark.wnpserver.global.auth.AuthFixtures;
+import com.wonnapark.wnpserver.global.auth.Authentication;
+import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
+import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +27,7 @@ import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
-import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createEpisode;
-import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createEpisodes;
-import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createPageable;
-import static com.wonnapark.wnpserver.domain.episode.EpisodeFixtures.createWebtoon;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -40,29 +43,44 @@ import static org.springframework.restdocs.request.RequestDocumentation.queryPar
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(CommonEpisodeController.class)
+@WebMvcTest(UserEpisodeController.class)
 @AutoConfigureRestDocs
-class CommonEpisodeControllerTest {
+class UserEpisodeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private EpisodeFindUseCase episodeFindUseCase;
+    @MockBean
+    private AuthenticationResolver authenticationResolver;
+    @MockBean
+    private AuthorizedArgumentResolver authorizedArgumentResolver;
+    private UserInfo userInfo;
+
+    @BeforeEach
+    void setup() throws Exception {
+        Authentication authentication = AuthFixtures.createUserAuthentication();
+        userInfo = UserInfo.from(authentication);
+
+        given(authorizedArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(authorizedArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(userInfo);
+    }
 
     @Test
     @DisplayName("에피소드 ID로 에피소드 상세 정보를 정상적으로 가져올 수 있다.")
     void findEpisodeDetailForm() throws Exception {
         // given
-        Webtoon webtoon = createWebtoon();
-        Episode episode = createEpisode(webtoon);
-        given(episodeFindUseCase.findEpisodeDetailForm(episode.getId())).willReturn(EpisodeDetailFormResponse.from(episode));
+        Long episodeId = 1L;
+        Webtoon webtoon = EpisodeFixtures.createWebtoon();
+        Episode episode = EpisodeFixtures.createEpisode(webtoon);
+        given(episodeFindUseCase.findEpisodeDetailForm(userInfo.userId(), episodeId)).willReturn(EpisodeDetailFormResponse.from(episode));
         // when // then
-        this.mockMvc.perform(get("/api/v1/common/episode/{id}/detail", episode.getId())
+        this.mockMvc.perform(get("/api/v1/user/episode/{episodeId}/detail", episodeId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("common-episode-v1-findEpisodeDetailForm",
-                        resourceDetails().tag("에피소드-공통").description("에피소드 상세 정보 불러오기"),
+                .andDo(document("user-episode-v1-findEpisodeDetailForm",
+                        resourceDetails().tag("에피소드-유저").description("에피소드 상세 정보 불러오기"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
@@ -76,23 +94,23 @@ class CommonEpisodeControllerTest {
     }
 
     @Test
-    @DisplayName("웹툰 ID로 에피소드 리스트 정보를 정상적으로 가져올 수 있다.")
+    @DisplayName("유저는 웹툰 ID로 에피소드 리스트 정보를 정상적으로 가져올 수 있다.")
     void findEpisodeListForm() throws Exception {
         // given
-        Pageable pageable = createPageable();
-        Webtoon webtoon = createWebtoon();
-        List<Episode> episodes = createEpisodes(webtoon);
-        given(episodeFindUseCase.findEpisodeListForm(webtoon.getId(), pageable))
+        Pageable pageable = EpisodeFixtures.createPageable();
+        Webtoon webtoon = EpisodeFixtures.createWebtoon();
+        List<Episode> episodes = EpisodeFixtures.createEpisodes(webtoon);
+        given(episodeFindUseCase.findEpisodeListForm(userInfo.userId(), webtoon.getId(), pageable))
                 .willReturn(new PageImpl<>(episodes, pageable, episodes.size()).map(EpisodeListFormResponse::from));
         // when // then
-        mockMvc.perform(get("/api/v1/common/episode/list")
+        mockMvc.perform(get("/api/v1/user/episode/list")
                         .param("webtoonId", String.valueOf(webtoon.getId()))
                         .param("page", "0")
                         .param("direction", "DESC"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("common-episode-v1-findEpisodeListForm",
-                        resourceDetails().tag("에피소드-공통").description("에피소드 리스트 불러오기"),
+                .andDo(document("user-episode-v1-findEpisodeListForm",
+                        resourceDetails().tag("에피소드-유저").description("에피소드 리스트 불러오기"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         queryParameters(
