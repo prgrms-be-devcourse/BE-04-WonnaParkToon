@@ -4,6 +4,7 @@ import com.wonnapark.wnpserver.global.response.ApiResponse;
 import com.wonnapark.wnpserver.webtoon.application.AdminWebtoonService;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
+import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonThumbnailResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

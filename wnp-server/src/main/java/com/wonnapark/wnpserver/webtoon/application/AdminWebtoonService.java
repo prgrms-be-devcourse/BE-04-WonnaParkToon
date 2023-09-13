@@ -3,6 +3,7 @@ package com.wonnapark.wnpserver.webtoon.application;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
+import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonThumbnailResponse;
 import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
