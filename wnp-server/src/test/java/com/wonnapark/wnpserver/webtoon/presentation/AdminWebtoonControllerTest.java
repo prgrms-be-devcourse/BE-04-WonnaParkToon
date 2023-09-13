@@ -119,7 +119,7 @@ class AdminWebtoonControllerTest {
                 request.publishDays()
         );
         WebtoonDetailResponse response = WebtoonDetailResponse.from(webtoon);
-        given(adminWebtoonService.updateWebtoon(request, webtoonId)).willReturn(response);
+        given(adminWebtoonService.updateWebtoonDetail(request, webtoonId)).willReturn(response);
 
         // when, then
         mockMvc.perform(patch("/api/v1/admin/webtoons/{webtoonId}", webtoonId)

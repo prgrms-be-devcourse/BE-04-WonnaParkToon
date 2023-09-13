@@ -52,14 +52,14 @@ class AdminWebtoonServiceTest {
 
     @Test
     @DisplayName("올바른 요청을 통해 웹툰을 수정할 수 있다.")
-    void updateWebtoon() {
+    void updateWebtoonDetail() {
         // given
         WebtoonUpdateDetailRequest request = WebtoonFixtures.createWebtoonUpdateDetailRequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon();
         given(webtoonRepository.findById(any(Long.class))).willReturn(Optional.of(webtoon));
 
         // when
-        adminWebtoonService.updateWebtoon(request, webtoon.getId());
+        adminWebtoonService.updateWebtoonDetail(request, webtoon.getId());
 
         // then
         assertThat(webtoon.getTitle()).isEqualTo(request.title());
