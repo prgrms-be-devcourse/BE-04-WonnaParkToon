@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.episode;
 
-import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.global.common.BaseEntity;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,6 +50,9 @@ public class Episode extends BaseEntity {
     @Column(name = "artist_comment", nullable = false, length = MAX_ARTIST_COMMENT_LENGTH)
     private String artistComment;
 
+    @Column(name = "view_count", nullable = false)
+    private long viewCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "webtoon_id", nullable = false)
     private Webtoon webtoon;
@@ -88,6 +91,10 @@ public class Episode extends BaseEntity {
     public void changeEpisodeUrls(List<EpisodeUrl> episodeUrls) {
         this.episodeUrls.clear();
         setEpisodeUrls(episodeUrls);
+    }
+
+    public void increaseViewCount() {
+        this.viewCount = viewCount + 1;
     }
 
     public void delete() {
