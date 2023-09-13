@@ -22,6 +22,7 @@ public class AdminWebtoonService {
     private final WebtoonRepository webtoonRepository;
     private final S3MediaService s3MediaService;
     private final String DEFAULT_WEBTOON_THUMBNAIL = "https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg";
+    private final String WEBTOON_THUMBNAIL_PATTERN = "webtoon/%d/thumbnail/thumbnail_IMAG21_%s.%s";
 
     @Transactional
     public WebtoonDetailResponse createWebtoonDetail(WebtoonCreateDetailRequest request) {
@@ -57,14 +58,13 @@ public class AdminWebtoonService {
     /**
      * [웹툰 작품명/thumbnail.확장자] 형식으로 파일 이름을 생성
      *
-     * @param folderName       파일을 저장할 폴더 이름
+     * @param webtoonId        웹툰 ID
      * @param originalFileName 파일 원본 이름
      * @return 저장 위치를 포함한 이름
      */
-    private String createFileName(String folderName, String originalFileName) {
+    private String createWebtoonThumbnailKey(Long webtoonId, String originalFileName) {
         String fileExtension = getFileExtension(originalFileName);
-        String fileName = THUMBNAIL.concat(fileExtension);
-        return folderName + "/" + fileName;
+        return String.format(WEBTOON_THUMBNAIL_PATTERN, webtoonId, UUID.randomUUID(), fileExtension);
     }
 
     private String getFileExtension(String fileName) {
