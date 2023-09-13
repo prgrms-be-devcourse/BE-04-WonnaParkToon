@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.webtoon;
 
-import com.wonnapark.wnpserver.webtoon.infrastructure.AgeRatingConverter;
 import com.wonnapark.wnpserver.global.common.BaseEntity;
+import com.wonnapark.wnpserver.webtoon.infrastructure.AgeRatingConverter;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -18,6 +18,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
 import java.time.DayOfWeek;
@@ -28,13 +30,15 @@ import java.util.List;
 @Table(name = "webtoons")
 @Entity
 @Getter
+@DynamicInsert
 @Where(clause = "is_deleted IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Webtoon extends BaseEntity {
 
+    private static final String DEFAULT_WEBTOON_THUMBNAIL = "'https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg'";
     private static final int MAX_TITLE_LENGTH = 50;
     private static final int MAX_ARTIST_LENGTH = 50;
-    private static final int MAX_DETAIL_LENGTH = 200;
+    private static final int MAX_SUMMARY_LENGTH = 200;
     private static final int MAX_GENRE_LENGTH = 50;
 
     @Id
@@ -47,13 +51,14 @@ public class Webtoon extends BaseEntity {
     @Column(name = "artist", nullable = false, length = MAX_ARTIST_LENGTH)
     private String artist;
 
-    @Column(name = "detail", nullable = false, length = MAX_DETAIL_LENGTH)
-    private String detail;
+    @Column(name = "summary", nullable = false, length = MAX_SUMMARY_LENGTH)
+    private String summary;
 
     @Column(name = "genre", nullable = false, length = MAX_GENRE_LENGTH)
     private String genre;
 
-    @Column(name = "thumbnail", nullable = false)
+    @Column(name = "thumbnail")
+    @ColumnDefault(DEFAULT_WEBTOON_THUMBNAIL)
     private String thumbnail;
 
     @Column(name = "age_rating", nullable = false)
@@ -69,10 +74,10 @@ public class Webtoon extends BaseEntity {
     private LocalDateTime isDeleted;
 
     @Builder
-    private Webtoon(String title, String artist, String detail, String genre, String thumbnail, AgeRating ageRating, List<DayOfWeek> publishDays) {
+    private Webtoon(String title, String artist, String summary, String genre, String thumbnail, AgeRating ageRating, List<DayOfWeek> publishDays) {
         this.title = title;
         this.artist = artist;
-        this.detail = detail;
+        this.summary = summary;
         this.genre = genre;
         this.thumbnail = thumbnail;
         this.ageRating = ageRating;
@@ -80,16 +85,23 @@ public class Webtoon extends BaseEntity {
     }
 
     /**
-     * Webtoon 멤버 변수를 새로운 값으로 변경하는 메서드
+     * Webtoon thumbnail을 제외한 멤버 변수를 새로운 값으로 변경하는 메서드
      */
-    public void change(String title, String artist, String detail, String genre, String thumbnail, String ageRating, List<DayOfWeek> publishDays) {
+    public void changeDetail(String title, String artist, String summary, String genre, String ageRating, List<DayOfWeek> publishDays) {
         this.title = title;
         this.artist = artist;
-        this.detail = detail;
+        this.summary = summary;
         this.genre = genre;
-        this.thumbnail = thumbnail;
         this.ageRating = AgeRating.from(ageRating);
         this.publishDays = new ArrayList<DayOfWeek>(publishDays);
+    }
+
+    /**
+     * Webtoon thumbnail URL을 사로운 값으로 변경하는 메서드
+     * @param thumbnail 새로운 썸네일 URL
+     */
+    public void changeThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     /**

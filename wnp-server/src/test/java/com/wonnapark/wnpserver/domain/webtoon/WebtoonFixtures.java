@@ -3,8 +3,7 @@ package com.wonnapark.wnpserver.domain.webtoon;
 import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.webtoon.AgeRating;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateRequest;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
 import org.instancio.Instancio;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -15,6 +14,7 @@ import java.util.List;
 import static org.instancio.Select.field;
 
 public final class WebtoonFixtures {
+    private static final String DEFAULT_WEBTOON_THUMBNAIL = "https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg";
 
     public static final List<String> ageRatingNames = Arrays.stream(AgeRating.values())
             .map(AgeRating::getRatingName).toList();
@@ -25,7 +25,28 @@ public final class WebtoonFixtures {
     public static Webtoon createWebtoon() {
         return Instancio.of(Webtoon.class)
                 .ignore(field(Webtoon::getIsDeleted))
+                .set(field(Webtoon::getThumbnail), DEFAULT_WEBTOON_THUMBNAIL)
                 .generate(field(Webtoon::getAgeRating), gen -> gen.enumOf(AgeRating.class))
+                .create();
+    }
+
+    public static Webtoon createWebtoon(WebtoonDetailRequest request) {
+        return Instancio.of(Webtoon.class)
+                .ignore(field(Webtoon::getIsDeleted))
+                .set(field(Webtoon::getTitle), request.title())
+                .set(field(Webtoon::getArtist), request.artist())
+                .set(field(Webtoon::getSummary), request.summary())
+                .set(field(Webtoon::getGenre), request.genre())
+                .set(field(Webtoon::getThumbnail), DEFAULT_WEBTOON_THUMBNAIL)
+                .set(field(Webtoon::getAgeRating), AgeRating.from(request.ageRating()))
+                .set(field(Webtoon::getPublishDays), request.publishDays())
+                .create();
+    }
+
+    public static Webtoon createWebtoon(Long webtoonId) {
+        return Instancio.of(Webtoon.class)
+                .ignore(field(Webtoon::getIsDeleted))
+                .set(field(Webtoon::getId), webtoonId)
                 .create();
     }
 
@@ -100,19 +121,10 @@ public final class WebtoonFixtures {
                 .create();
     }
 
-    public static WebtoonCreateRequest createWebtoonCreateRequest() {
-        byte[] content = "test image content".getBytes();
-        MockMultipartFile thumbnailMockFile = new MockMultipartFile("thumbnail.jpg", "thumbnail.jpg", "image/jpeg", content);
-
-        return Instancio.of(WebtoonCreateRequest.class)
-                .set(field(WebtoonCreateRequest::thumbnail), thumbnailMockFile)
-                .generate(field(WebtoonCreateRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
+    public static WebtoonDetailRequest createWebtoonDetailrequest() {
+        return Instancio.of(WebtoonDetailRequest.class)
+                .generate(field(WebtoonDetailRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
                 .create();
     }
 
-    public static WebtoonUpdateRequest createWebtoonUpdateRequest() {
-        return Instancio.of(WebtoonUpdateRequest.class)
-                .generate(field(WebtoonUpdateRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
-                .create();
-    }
 }

@@ -1,7 +1,10 @@
 package com.wonnapark.wnpserver.domain.webtoon.presentation;
 
-import com.wonnapark.wnpserver.webtoon.Webtoon;
+import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
 import com.wonnapark.wnpserver.domain.webtoon.WebtoonFixtures;
+import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
+import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
+import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.application.GuestWebtoonService;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import com.wonnapark.wnpserver.webtoon.presentation.GuestWebtoonController;
@@ -11,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -31,21 +34,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(GuestWebtoonController.class)
 @AutoConfigureRestDocs
-@MockBean(JpaMetamodelMappingContext.class)
 class GuestWebtoonControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private GuestWebtoonService guestWebtoonService;
+    GuestWebtoonService guestWebtoonService;
+
+    @MockBean
+    AuthenticationResolver authenticationResolver;
+
+    @MockBean
+    AuthorizedArgumentResolver authorizedArgumentResolver;
+
+    @MockBean
+    JwtAuthenticationInterceptor jwtAuthenticationInterceptor;
 
     @Test
-    @DisplayName("로그인한 사용자는 웹툰 ID로 18세 이용가가 아닌 웹툰의 상세 정보를 조회할 수 있다.")
+    @DisplayName("로그인하지 않은 사용자는 웹툰 ID로 18세 이용가가 아닌 웹툰의 상세 정보를 조회할 수 있다.")
     void findWebtoonById() throws Exception {
         // given
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
         Webtoon webtoon = WebtoonFixtures.createWebtoonUnder18();
-        given(guestWebtoonService.findWebtoonById(webtoon.getId()))
-                .willReturn(WebtoonDetailResponse.from(webtoon));
+        given(guestWebtoonService.findWebtoonById(webtoon.getId())).willReturn(WebtoonDetailResponse.from(webtoon));
 
         // when, then
         mockMvc.perform(get("/api/v1/guest/webtoons/{webtoonId}", webtoon.getId()))
@@ -62,7 +74,7 @@ class GuestWebtoonControllerTest {
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("웹툰 ID"),
                                 fieldWithPath("data.title").type(JsonFieldType.STRING).description("웹툰 제목"),
                                 fieldWithPath("data.artist").type(JsonFieldType.STRING).description("웹툰 작가"),
-                                fieldWithPath("data.detail").type(JsonFieldType.STRING).description("웹툰 설명"),
+                                fieldWithPath("data.summary").type(JsonFieldType.STRING).description("웹툰 설명"),
                                 fieldWithPath("data.genre").type(JsonFieldType.STRING).description("웹툰 장르"),
                                 fieldWithPath("data.thumbnail").type(JsonFieldType.STRING).description("웹툰 썸네일"),
                                 fieldWithPath("data.ageRating").type(JsonFieldType.STRING).description("웹툰 연령 등급"),

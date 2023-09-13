@@ -1,9 +1,7 @@
 package com.wonnapark.wnpserver.webtoon.application;
 
-import com.wonnapark.wnpserver.media.S3ManageService;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateRequest;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,25 +22,20 @@ public class AdminWebtoonService {
     private final String THUMBNAIL = "thumbnail";
 
     @Transactional
-    public WebtoonDetailResponse createWebtoon(WebtoonCreateRequest request) throws IOException {
-        String key = createFileName(request.title(), request.thumbnail().getOriginalFilename());
-        s3ManageService.upload(key, request.thumbnail());
-        String thumbnailUrl = s3ManageService.findObjectUrlByName(key);
-        Webtoon webtoon = WebtoonCreateRequest.toEntity(request, thumbnailUrl);
-
+    public WebtoonDetailResponse createWebtoon(WebtoonDetailRequest request) {
+        Webtoon webtoon = WebtoonDetailRequest.toEntity(request);
         return WebtoonDetailResponse.from(webtoonRepository.save(webtoon));
     }
 
     @Transactional
-    public WebtoonDetailResponse updateWebtoon(WebtoonUpdateRequest request, Long webtoonId) {
+    public WebtoonDetailResponse updateWebtoon(WebtoonDetailRequest request, Long webtoonId) {
         Webtoon webtoon = webtoonRepository.findById(webtoonId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(WebtoonExceptionMessage.WEBTOON_NOT_FOUND.getMessage(), webtoonId)));
-        webtoon.change(
+        webtoon.changeDetail(
                 request.title(),
                 request.artist(),
-                request.detail(),
+                request.summary(),
                 request.genre(),
-                request.thumbnail(),
                 request.ageRating(),
                 request.publishDays()
         );

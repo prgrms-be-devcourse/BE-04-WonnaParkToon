@@ -1,7 +1,6 @@
-package com.wonnapark.wnpserver.domain.auth.application;
+package com.wonnapark.wnpserver.auth.application;
 
-import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
-import com.wonnapark.wnpserver.auth.application.JwtTokenService;
+import com.wonnapark.wnpserver.auth.config.JwtProperties;
 import com.wonnapark.wnpserver.auth.config.TokenConstants;
 import com.wonnapark.wnpserver.auth.dto.AccessTokenResponse;
 import com.wonnapark.wnpserver.auth.dto.AuthTokenRequest;
@@ -24,13 +23,14 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 class AuthIntegrationTest {
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;
-
     @Autowired
     private JwtTokenService jwtTokenService;
 
     @Autowired
     private AuthenticationResolver authenticationResolver;
+
+    @Autowired
+    private JwtProperties jwtProperties;
 
     @Test
     @DisplayName("AccessToken 생성 성공 테스트")
@@ -43,7 +43,7 @@ class AuthIntegrationTest {
 
         // then
         assertThat(accessTokenResponse.grantType()).isEqualTo(TokenConstants.BEARER_TYPE);
-        assertThat(accessTokenResponse.accessTokenExpiresIn()).isEqualTo(ACCESS_TOKEN_EXPIRE_TIME);
+        assertThat(accessTokenResponse.accessTokenExpiresIn()).isEqualTo(jwtProperties.accessTokenExpireTime());
     }
 
     @Test
@@ -70,7 +70,7 @@ class AuthIntegrationTest {
 
         // then
         assertThat(authTokenResponse.grantType()).isEqualTo(TokenConstants.BEARER_TYPE);
-        assertThat(authTokenResponse.accessTokenExpiresIn()).isEqualTo(ACCESS_TOKEN_EXPIRE_TIME);
+        assertThat(authTokenResponse.accessTokenExpiresIn()).isEqualTo(jwtProperties.accessTokenExpireTime());
     }
 
     @Test

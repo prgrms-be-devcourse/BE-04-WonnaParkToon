@@ -2,27 +2,24 @@ package com.wonnapark.wnpserver.webtoon.dto.request;
 
 import com.wonnapark.wnpserver.webtoon.AgeRating;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.DayOfWeek;
 import java.util.List;
 
-public record WebtoonCreateRequest(
+public record WebtoonDetailRequest(
         String title,
         String artist,
-        String detail,
+        String summary,
         String genre,
-        MultipartFile thumbnail,
         String ageRating,
         List<DayOfWeek> publishDays
 ) {
-    public static Webtoon toEntity(WebtoonCreateRequest request, String thumbnailUrl) {
+    public static Webtoon toEntity(WebtoonDetailRequest request) {
         return Webtoon.builder()
                 .title(request.title())
                 .artist(request.artist())
-                .detail(request.detail())
+                .summary(request.summary())
                 .genre(request.genre())
-                .thumbnail(thumbnailUrl)
                 .ageRating(AgeRating.from(request.ageRating()))
                 .publishDays(request.publishDays())
                 .build();

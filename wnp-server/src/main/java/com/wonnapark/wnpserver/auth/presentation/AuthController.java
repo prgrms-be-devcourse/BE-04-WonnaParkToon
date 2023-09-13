@@ -1,14 +1,15 @@
 package com.wonnapark.wnpserver.auth.presentation;
 
-import com.wonnapark.wnpserver.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.auth.application.JwtTokenService;
+import com.wonnapark.wnpserver.auth.config.TokenConstants;
+import com.wonnapark.wnpserver.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.auth.dto.AuthTokenResponse;
-import com.wonnapark.wnpserver.oauth.application.OAuthLogoutService;
 import com.wonnapark.wnpserver.global.auth.Authentication;
 import com.wonnapark.wnpserver.global.auth.AuthenticationContextHolder;
 import com.wonnapark.wnpserver.global.auth.Authorized;
 import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.global.response.ApiResponse;
+import com.wonnapark.wnpserver.oauth.application.OAuthLogoutService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -37,7 +38,7 @@ public class AuthController {
     @GetMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(@Authorized UserInfo userInfo, HttpServletRequest request) {
-        String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION).substring(TokenConstants.BEARER_TYPE.length());
         oAuthLogoutService.logout(userInfo.userId(), accessToken);
     }
 
