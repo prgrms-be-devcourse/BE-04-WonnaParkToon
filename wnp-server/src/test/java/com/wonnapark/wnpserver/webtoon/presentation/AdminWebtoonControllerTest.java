@@ -65,7 +65,7 @@ class AdminWebtoonControllerTest {
         WebtoonCreateDetailRequest request = WebtoonFixtures.createWebtoonCreateDetailRequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon(request);
         WebtoonDetailResponse response = WebtoonDetailResponse.from(webtoon);
-        given(adminWebtoonService.createWebtoon(request)).willReturn(response);
+        given(adminWebtoonService.createWebtoonDetail(request)).willReturn(response);
 
         // when, then
         mockMvc.perform(post("/api/v1/admin/webtoons")

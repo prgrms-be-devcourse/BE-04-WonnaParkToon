@@ -35,7 +35,7 @@ class AdminWebtoonServiceTest {
 
     @Test
     @DisplayName("올바른 요청을 통해 웹툰을 생성할 수 있다.")
-    void createWebtoon() {
+    void createWebtoonDetail() {
         // given
         WebtoonCreateDetailRequest request = WebtoonFixtures.createWebtoonCreateDetailRequest();
 
@@ -43,7 +43,7 @@ class AdminWebtoonServiceTest {
         given(webtoonRepository.save(any(Webtoon.class))).willReturn(webtoon);
 
         // when
-        Long returnedId = adminWebtoonService.createWebtoon(request).id();
+        Long returnedId = adminWebtoonService.createWebtoonDetail(request).id();
 
         // then
         assertThat(returnedId).isEqualTo(webtoon.getId());
