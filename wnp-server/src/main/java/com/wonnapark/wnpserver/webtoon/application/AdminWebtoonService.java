@@ -20,8 +20,8 @@ import java.time.LocalDateTime;
 public class AdminWebtoonService {
 
     private final WebtoonRepository webtoonRepository;
-    private final S3ManageService s3ManageService;
-    private final String THUMBNAIL = "thumbnail";
+    private final S3MediaService s3MediaService;
+    private final String DEFAULT_WEBTOON_THUMBNAIL = "https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg";
 
     @Transactional
     public WebtoonDetailResponse createWebtoonDetail(WebtoonCreateDetailRequest request) {

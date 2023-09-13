@@ -31,6 +31,7 @@ class AdminWebtoonServiceTest {
     private S3ManageService s3ManageService;
     @Mock
     private WebtoonRepository webtoonRepository;
+    private final String DEFAULT_WEBTOON_THUMBNAIL = "https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg";
 
     @Test
     @DisplayName("올바른 요청을 통해 웹툰을 생성할 수 있다.")
