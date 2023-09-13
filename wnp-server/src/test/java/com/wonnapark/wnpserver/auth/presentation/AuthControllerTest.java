@@ -15,19 +15,29 @@ import com.wonnapark.wnpserver.oauth.application.OAuthLogoutService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@AutoConfigureRestDocs
 @WebMvcTest(AuthController.class)
 class AuthControllerTest {
 
@@ -68,6 +78,22 @@ class AuthControllerTest {
                         .header(TokenConstants.REFRESH_TOKEN, "refreshToken"))
                 .andExpect(status().isCreated())
                 .andExpect(content().string(objectMapper.writeValueAsString(response)))
+                .andDo(document("authToken-reissue",
+                                resourceDetails().tag("토큰").description("토큰 재발급"),
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("액세스 토큰"),
+                                        headerWithName(TokenConstants.REFRESH_TOKEN).description("리프레시 토큰")
+                                ),
+                                responseFields(
+                                        fieldWithPath("data.grantType").type(JsonFieldType.STRING).description("인증 타입"),
+                                        fieldWithPath("data.accessToken").type(JsonFieldType.STRING).description("액세스 토큰"),
+                                        fieldWithPath("data.accessTokenExpiresIn").type(JsonFieldType.NUMBER).description("액세스 토큰 유효시간"),
+                                        fieldWithPath("data.refreshToken").type(JsonFieldType.STRING).description("리프레시 토큰")
+                                )
+                        )
+                )
                 .andDo(print());
     }
 
@@ -92,6 +118,16 @@ class AuthControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "accessToken")
                         .header(TokenConstants.REFRESH_TOKEN, "refreshToken"))
                 .andExpect(status().isNoContent())
+                .andDo(document("auth-logout",
+                                resourceDetails().tag("토큰").description("토큰 로그아웃 처리"),
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("액세스 토큰"),
+                                        headerWithName(TokenConstants.REFRESH_TOKEN).description("리프레시 토큰")
+                                )
+                        )
+                )
                 .andDo(print());
     }
 }
