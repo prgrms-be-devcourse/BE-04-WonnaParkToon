@@ -7,7 +7,8 @@ import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.webtoon.application.AdminWebtoonService;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateDetailRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
@@ -61,7 +62,7 @@ class AdminWebtoonControllerTest {
         // given
         given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
-        WebtoonDetailRequest request = WebtoonFixtures.createWebtoonDetailrequest();
+        WebtoonCreateDetailRequest request = WebtoonFixtures.createWebtoonCreateDetailRequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon(request);
         WebtoonDetailResponse response = WebtoonDetailResponse.from(webtoon);
         given(adminWebtoonService.createWebtoon(request)).willReturn(response);
@@ -107,7 +108,7 @@ class AdminWebtoonControllerTest {
         given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         Long webtoonId = Instancio.create(Long.class);
-        WebtoonDetailRequest request = WebtoonFixtures.createWebtoonDetailrequest();
+        WebtoonUpdateDetailRequest request = WebtoonFixtures.createWebtoonUpdateDetailRequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon(webtoonId);
         webtoon.changeDetail(
                 request.title(),

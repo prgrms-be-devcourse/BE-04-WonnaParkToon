@@ -2,7 +2,8 @@ package com.wonnapark.wnpserver.webtoon.presentation;
 
 import com.wonnapark.wnpserver.global.response.ApiResponse;
 import com.wonnapark.wnpserver.webtoon.application.AdminWebtoonService;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateDetailRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonThumbnailResponse;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,8 +32,8 @@ public class AdminWebtoonController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<WebtoonDetailResponse> createWebtoon(@RequestBody WebtoonDetailRequest request, HttpServletResponse response) {
-        WebtoonDetailResponse data = adminWebtoonService.createWebtoon(request);
+    public ApiResponse<WebtoonDetailResponse> createWebtoonDetail(@RequestBody WebtoonCreateDetailRequest request, HttpServletResponse response) {
+        WebtoonDetailResponse data = adminWebtoonService.createWebtoonDetail(request);
         String uri = URI.create(String.format("/api/v1/webtoons/%d", data.id())).toString();
         response.setHeader("Location", uri);
 
@@ -41,8 +42,8 @@ public class AdminWebtoonController {
 
     @PatchMapping("/{webtoonId}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<WebtoonDetailResponse> updateWebtoon(@PathVariable Long webtoonId, @RequestBody WebtoonDetailRequest request) {
-        WebtoonDetailResponse response = adminWebtoonService.updateWebtoon(request, webtoonId);
+    public ApiResponse<WebtoonDetailResponse> updateWebtoonDetail(@PathVariable Long webtoonId, @RequestBody WebtoonUpdateDetailRequest request) {
+        WebtoonDetailResponse response = adminWebtoonService.updateWebtoonDetail(request, webtoonId);
 
         return ApiResponse.from(response);
     }

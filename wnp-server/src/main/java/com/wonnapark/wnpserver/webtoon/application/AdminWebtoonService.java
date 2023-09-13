@@ -1,7 +1,8 @@
 package com.wonnapark.wnpserver.webtoon.application;
 
 import com.wonnapark.wnpserver.webtoon.Webtoon;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateDetailRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonThumbnailResponse;
 import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
@@ -23,13 +24,13 @@ public class AdminWebtoonService {
     private final String THUMBNAIL = "thumbnail";
 
     @Transactional
-    public WebtoonDetailResponse createWebtoon(WebtoonDetailRequest request) {
-        Webtoon webtoon = WebtoonDetailRequest.toEntity(request);
+    public WebtoonDetailResponse createWebtoonDetail(WebtoonCreateDetailRequest request) {
+        Webtoon webtoon = WebtoonCreateDetailRequest.toEntity(request, DEFAULT_WEBTOON_THUMBNAIL);
         return WebtoonDetailResponse.from(webtoonRepository.save(webtoon));
     }
 
     @Transactional
-    public WebtoonDetailResponse updateWebtoon(WebtoonDetailRequest request, Long webtoonId) {
+    public WebtoonDetailResponse updateWebtoonDetail(WebtoonUpdateDetailRequest request, Long webtoonId) {
         Webtoon webtoon = webtoonRepository.findById(webtoonId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(WebtoonExceptionMessage.WEBTOON_NOT_FOUND.getMessage(), webtoonId)));
         webtoon.changeDetail(

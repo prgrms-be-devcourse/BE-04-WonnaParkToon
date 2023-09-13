@@ -3,7 +3,8 @@ package com.wonnapark.wnpserver.webtoon.application;
 import com.wonnapark.wnpserver.webtoon.AgeRating;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.WebtoonFixtures;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateDetailRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,9 +36,9 @@ class AdminWebtoonServiceTest {
     @DisplayName("올바른 요청을 통해 웹툰을 생성할 수 있다.")
     void createWebtoon() {
         // given
-        WebtoonDetailRequest request = WebtoonFixtures.createWebtoonDetailrequest();
+        WebtoonCreateDetailRequest request = WebtoonFixtures.createWebtoonCreateDetailRequest();
 
-        Webtoon webtoon = WebtoonDetailRequest.toEntity(request);
+        Webtoon webtoon = WebtoonCreateDetailRequest.toEntity(request, DEFAULT_WEBTOON_THUMBNAIL);
         given(webtoonRepository.save(any(Webtoon.class))).willReturn(webtoon);
 
         // when
@@ -52,7 +53,7 @@ class AdminWebtoonServiceTest {
     @DisplayName("올바른 요청을 통해 웹툰을 수정할 수 있다.")
     void updateWebtoon() {
         // given
-        WebtoonDetailRequest request = WebtoonFixtures.createWebtoonDetailrequest();
+        WebtoonUpdateDetailRequest request = WebtoonFixtures.createWebtoonUpdateDetailRequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon();
         given(webtoonRepository.findById(any(Long.class))).willReturn(Optional.of(webtoon));
 

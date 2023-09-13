@@ -1,7 +1,8 @@
 package com.wonnapark.wnpserver.webtoon;
 
 import com.wonnapark.wnpserver.global.common.UserInfo;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateDetailRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateDetailRequest;
 import org.instancio.Instancio;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -28,7 +29,7 @@ public final class WebtoonFixtures {
                 .create();
     }
 
-    public static Webtoon createWebtoon(WebtoonDetailRequest request) {
+    public static Webtoon createWebtoon(WebtoonCreateDetailRequest request) {
         return Instancio.of(Webtoon.class)
                 .ignore(field(Webtoon::getIsDeleted))
                 .set(field(Webtoon::getTitle), request.title())
@@ -119,9 +120,15 @@ public final class WebtoonFixtures {
                 .create();
     }
 
-    public static WebtoonDetailRequest createWebtoonDetailrequest() {
-        return Instancio.of(WebtoonDetailRequest.class)
-                .generate(field(WebtoonDetailRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
+    public static WebtoonCreateDetailRequest createWebtoonCreateDetailRequest() {
+        return Instancio.of(WebtoonCreateDetailRequest.class)
+                .generate(field(WebtoonCreateDetailRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
+                .create();
+    }
+
+    public static WebtoonUpdateDetailRequest createWebtoonUpdateDetailRequest() {
+        return Instancio.of(WebtoonUpdateDetailRequest.class)
+                .generate(field(WebtoonUpdateDetailRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
                 .create();
     }
 
