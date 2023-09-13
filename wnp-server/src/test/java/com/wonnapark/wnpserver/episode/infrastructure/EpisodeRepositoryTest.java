@@ -1,7 +1,6 @@
 package com.wonnapark.wnpserver.episode.infrastructure;
 
 import com.wonnapark.wnpserver.episode.Episode;
-import com.wonnapark.wnpserver.episode.EpisodeFixtures;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
 import org.instancio.Instancio;
@@ -17,6 +16,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.wonnapark.wnpserver.episode.EpisodeFixtures.episode;
+import static com.wonnapark.wnpserver.episode.EpisodeFixtures.episodes;
+import static com.wonnapark.wnpserver.episode.EpisodeFixtures.pageable;
+import static com.wonnapark.wnpserver.episode.EpisodeFixtures.webtoon;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -31,15 +34,15 @@ class EpisodeRepositoryTest {
 
     @BeforeEach
     void init() {
-        webtoon = webtoonRepository.save(EpisodeFixtures.createWebtoon());
+        webtoon = webtoonRepository.save(webtoon());
     }
 
     @Test
     @DisplayName("특정 웹툰아이디를 통해 에피소드를 페이지 조회할 수 있다.")
     void findAllByWebtoonId() {
         // given
-        Pageable pageable = EpisodeFixtures.createPageable();
-        List<Episode> episodes = episodeRepository.saveAll(EpisodeFixtures.createEpisodes(webtoon));
+        Pageable pageable = pageable();
+        List<Episode> episodes = episodeRepository.saveAll(episodes(webtoon));
 
         // when
         Page<Episode> episodePage = episodeRepository.findAllByWebtoonId(webtoon.getId(), pageable);
@@ -56,7 +59,7 @@ class EpisodeRepositoryTest {
     @DisplayName("해당 title을 가진 에피소드가 있는지 확인할 수 있다.")
     void existsByTitle_True() {
         // given
-        Episode episode = episodeRepository.save(EpisodeFixtures.createEpisode(webtoon));
+        Episode episode = episodeRepository.save(episode(webtoon));
         // when
         boolean result = episodeRepository.existsByWebtoonIdAndTitle(webtoon.getId(), episode.getTitle());
         // then
