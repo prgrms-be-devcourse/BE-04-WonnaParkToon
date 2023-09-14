@@ -17,4 +17,8 @@ public class ViewCoolTime {
         this.viewTime = viewTime;
     }
 
+    public static String generateKey(Object prefix, Object postfix) {
+        return String.format("%s:%s", prefix, postfix);
+    }
+
 }
