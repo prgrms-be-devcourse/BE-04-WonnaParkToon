@@ -23,12 +23,11 @@ public class AdminWebtoonService {
 
     private final WebtoonRepository webtoonRepository;
     private final S3MediaService s3MediaService;
-    private final String DEFAULT_WEBTOON_THUMBNAIL = "https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg";
     private final String WEBTOON_THUMBNAIL_PATTERN = "webtoon/%d/thumbnail/thumbnail_IMAG21_%s.%s";
 
     @Transactional
     public WebtoonDetailResponse createWebtoonDetail(WebtoonCreateDetailRequest request) {
-        Webtoon webtoon = WebtoonCreateDetailRequest.toEntity(request, DEFAULT_WEBTOON_THUMBNAIL);
+        Webtoon webtoon = WebtoonCreateDetailRequest.toEntity(request);
         return WebtoonDetailResponse.from(webtoonRepository.save(webtoon));
     }
 

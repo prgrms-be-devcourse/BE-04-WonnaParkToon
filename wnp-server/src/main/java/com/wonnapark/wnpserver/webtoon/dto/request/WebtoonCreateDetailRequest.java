@@ -14,13 +14,12 @@ public record WebtoonCreateDetailRequest(
         String ageRating,
         List<DayOfWeek> publishDays
 ) {
-    public static Webtoon toEntity(WebtoonCreateDetailRequest request, String thumbnailUrl) {
+    public static Webtoon toEntity(WebtoonCreateDetailRequest request) {
         return Webtoon.builder()
                 .title(request.title())
                 .artist(request.artist())
                 .summary(request.summary())
                 .genre(request.genre())
-                .thumbnail(thumbnailUrl)
                 .ageRating(AgeRating.from(request.ageRating()))
                 .publishDays(request.publishDays())
                 .build();

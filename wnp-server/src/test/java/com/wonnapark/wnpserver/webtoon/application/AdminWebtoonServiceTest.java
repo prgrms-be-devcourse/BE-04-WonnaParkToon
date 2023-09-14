@@ -40,7 +40,7 @@ class AdminWebtoonServiceTest {
         // given
         WebtoonCreateDetailRequest request = WebtoonFixtures.createWebtoonCreateDetailRequest();
 
-        Webtoon webtoon = WebtoonCreateDetailRequest.toEntity(request, DEFAULT_WEBTOON_THUMBNAIL);
+        Webtoon webtoon = WebtoonCreateDetailRequest.toEntity(request);
         given(webtoonRepository.save(any(Webtoon.class))).willReturn(webtoon);
 
         // when

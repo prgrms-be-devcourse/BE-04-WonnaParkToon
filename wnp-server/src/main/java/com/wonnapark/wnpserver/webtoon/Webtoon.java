@@ -36,6 +36,7 @@ public class Webtoon extends BaseEntity {
     private static final int MAX_ARTIST_LENGTH = 50;
     private static final int MAX_SUMMARY_LENGTH = 200;
     private static final int MAX_GENRE_LENGTH = 50;
+    private static final String DEFAULT_WEBTOON_THUMBNAIL = "https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,12 +70,12 @@ public class Webtoon extends BaseEntity {
     private LocalDateTime isDeleted;
 
     @Builder
-    private Webtoon(String title, String artist, String summary, String genre, String thumbnail, AgeRating ageRating, List<DayOfWeek> publishDays) {
+    private Webtoon(String title, String artist, String summary, String genre, AgeRating ageRating, List<DayOfWeek> publishDays) {
         this.title = title;
         this.artist = artist;
         this.summary = summary;
         this.genre = genre;
-        this.thumbnail = thumbnail;
+        this.thumbnail = DEFAULT_WEBTOON_THUMBNAIL;
         this.ageRating = ageRating;
         this.publishDays = new ArrayList<DayOfWeek>(publishDays);
     }
