@@ -1,5 +1,6 @@
 package com.wonnapark.wnpserver.episode.application;
 
+import com.wonnapark.wnpserver.episode.Episode;
 import com.wonnapark.wnpserver.episode.ViewCoolTime;
 import com.wonnapark.wnpserver.episode.infrastructure.ViewCoolTimeRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -9,9 +10,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.wonnapark.wnpserver.episode.EpisodeFixtures.ip;
-import static com.wonnapark.wnpserver.episode.EpisodeFixtures.viewCoolTimeRedisKey;
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.wonnapark.wnpserver.episode.EpisodeFixtures.episode;
+import static com.wonnapark.wnpserver.episode.EpisodeFixtures.ipv4;
+import static com.wonnapark.wnpserver.episode.EpisodeFixtures.webtoon;
+import static com.wonnapark.wnpserver.episode.ViewCoolTime.generateKey;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -33,16 +35,17 @@ class EpisodeViewServiceTest {
     void user_saveViewInfo_true() {
         // given
         Long userId = 1L;
-        Long episodeId = 1L;
-        String key = viewCoolTimeRedisKey(userId, episodeId);
+        Episode episode = episode(webtoon());
+        String key = generateKey(userId, episode.getId());
 
         given(viewCoolTimeRepository.existsById(key)).willReturn(true);
 
         // when
-        boolean result = episodeViewService.saveViewInfo(userId, episodeId);
+        episodeViewService.saveViewInfo(userId, episode);
 
         // then
-        assertThat(result).isFalse();
+        then(viewHistoryService).should(never()).saveViewHistory(userId, episode.getId());
+        then(viewCoolTimeRepository).should(never()).save(any());
     }
 
     @Test
@@ -50,17 +53,16 @@ class EpisodeViewServiceTest {
     void user_saveViewInfo_false() {
         // given
         Long userId = 1L;
-        Long episodeId = 1L;
-        String key = viewCoolTimeRedisKey(userId, episodeId);
+        Episode episode = episode(webtoon());
+        String key = generateKey(userId, episode.getId());
 
         given(viewCoolTimeRepository.existsById(key)).willReturn(false);
 
         // when
-        boolean result = episodeViewService.saveViewInfo(userId, episodeId);
+        episodeViewService.saveViewInfo(userId, episode);
 
         // then
-        assertThat(result).isTrue();
-        then(viewHistoryService).should(atMostOnce()).saveViewHistory(userId, episodeId);
+        then(viewHistoryService).should(atMostOnce()).saveViewHistory(userId, episode.getId());
         then(viewCoolTimeRepository).should(atMostOnce()).save(new ViewCoolTime(key, any()));
     }
 
@@ -68,34 +70,32 @@ class EpisodeViewServiceTest {
     @DisplayName("비회원의 조회 정보를 저장할 수 있다")
     void guest_saveViewInfo_false() {
         // Arrange
-        String ip = "127.0.0.1";
-        Long episodeId = 1L;
-        String key = viewCoolTimeRedisKey(ip, episodeId);
+        String ip = ipv4();
+        Episode episode = episode(webtoon());
+        String key = generateKey(ip, episode.getId());
 
         given(viewCoolTimeRepository.existsById(key)).willReturn(false);
 
         // Act
-        boolean result = episodeViewService.saveViewInfo(ip, episodeId);
+        episodeViewService.saveViewInfo(ip, episode);
 
         // Assert
-        assertThat(result).isTrue();
         then(viewCoolTimeRepository).should(atMostOnce()).save(any(ViewCoolTime.class));
     }
 
     @Test
     void guest_saveViewInfo_true() {
         // Arrange
-        String ip = ip();
-        Long episodeId = 1L;
-        String key = viewCoolTimeRedisKey(ip, episodeId);
+        String ip = ipv4();
+        Episode episode = episode(webtoon());
+        String key = generateKey(ip, episode.getId());
 
         given(viewCoolTimeRepository.existsById(key)).willReturn(true);
 
         // Act
-        boolean result = episodeViewService.saveViewInfo(ip, episodeId);
+        episodeViewService.saveViewInfo(ip, episode);
 
         // Assert
-        assertThat(result).isFalse();
         then(viewCoolTimeRepository).should(never()).save(any(ViewCoolTime.class));
     }
 }
