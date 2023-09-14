@@ -45,28 +45,24 @@ public class EpisodeFindService implements EpisodeFindUseCase {
         });
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public EpisodeDetailFormResponse findEpisodeDetailForm(String ip, Long episodeId) {
         Episode episode = episodeRepository.findById(episodeId)
                 .orElseThrow(() -> new EntityNotFoundException(EPISODE_NOT_FOUND.getMessage(episodeId)));
 
-        if (episodeViewService.saveViewInfo(ip, episodeId)) {
-            episode.increaseViewCount();
-        }
+        episodeViewService.saveViewInfo(ip, episode);
 
         return EpisodeDetailFormResponse.from(episode);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public EpisodeDetailFormResponse findEpisodeDetailForm(Long userId, Long episodeId) {
         Episode episode = episodeRepository.findById(episodeId)
                 .orElseThrow(() -> new EntityNotFoundException(EPISODE_NOT_FOUND.getMessage(episodeId)));
 
-        if (episodeViewService.saveViewInfo(userId, episodeId)) {
-            episode.increaseViewCount();
-        }
+        episodeViewService.saveViewInfo(userId, episode);
 
         return EpisodeDetailFormResponse.from(episode);
     }
