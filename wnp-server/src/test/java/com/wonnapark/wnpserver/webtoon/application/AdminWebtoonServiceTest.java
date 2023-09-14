@@ -1,9 +1,11 @@
 package com.wonnapark.wnpserver.webtoon.application;
 
+import com.wonnapark.wnpserver.media.S3MediaService;
 import com.wonnapark.wnpserver.webtoon.AgeRating;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.WebtoonFixtures;
-import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonDetailRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateDetailRequest;
+import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,19 +29,22 @@ class AdminWebtoonServiceTest {
     @InjectMocks
     private AdminWebtoonService adminWebtoonService;
     @Mock
+    private S3MediaService s3MediaService;
+    @Mock
     private WebtoonRepository webtoonRepository;
+    private final String DEFAULT_WEBTOON_THUMBNAIL = "https://wonnapark-bucket.s3.ap-northeast-2.amazonaws.com/webtoon/thumbnail_default.jpg";
 
     @Test
     @DisplayName("올바른 요청을 통해 웹툰을 생성할 수 있다.")
-    void createWebtoon() {
+    void createWebtoonDetail() {
         // given
-        WebtoonDetailRequest request = WebtoonFixtures.createWebtoonDetailrequest();
+        WebtoonCreateDetailRequest request = WebtoonFixtures.createWebtoonCreateDetailRequest();
 
-        Webtoon webtoon = WebtoonDetailRequest.toEntity(request);
+        Webtoon webtoon = WebtoonCreateDetailRequest.toEntity(request);
         given(webtoonRepository.save(any(Webtoon.class))).willReturn(webtoon);
 
         // when
-        Long returnedId = adminWebtoonService.createWebtoon(request).id();
+        Long returnedId = adminWebtoonService.createWebtoonDetail(request).id();
 
         // then
         assertThat(returnedId).isEqualTo(webtoon.getId());
@@ -48,14 +53,14 @@ class AdminWebtoonServiceTest {
 
     @Test
     @DisplayName("올바른 요청을 통해 웹툰을 수정할 수 있다.")
-    void updateWebtoon() {
+    void updateWebtoonDetail() {
         // given
-        WebtoonDetailRequest request = WebtoonFixtures.createWebtoonDetailrequest();
+        WebtoonUpdateDetailRequest request = WebtoonFixtures.createWebtoonUpdateDetailRequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon();
         given(webtoonRepository.findById(any(Long.class))).willReturn(Optional.of(webtoon));
 
         // when
-        adminWebtoonService.updateWebtoon(request, webtoon.getId());
+        adminWebtoonService.updateWebtoonDetail(request, webtoon.getId());
 
         // then
         assertThat(webtoon.getTitle()).isEqualTo(request.title());

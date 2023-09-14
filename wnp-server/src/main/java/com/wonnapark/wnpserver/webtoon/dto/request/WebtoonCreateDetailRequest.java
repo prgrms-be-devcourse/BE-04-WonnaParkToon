@@ -6,7 +6,7 @@ import com.wonnapark.wnpserver.webtoon.Webtoon;
 import java.time.DayOfWeek;
 import java.util.List;
 
-public record WebtoonDetailRequest(
+public record WebtoonCreateDetailRequest(
         String title,
         String artist,
         String summary,
@@ -14,7 +14,7 @@ public record WebtoonDetailRequest(
         String ageRating,
         List<DayOfWeek> publishDays
 ) {
-    public static Webtoon toEntity(WebtoonDetailRequest request) {
+    public static Webtoon toEntity(WebtoonCreateDetailRequest request) {
         return Webtoon.builder()
                 .title(request.title())
                 .artist(request.artist())
@@ -24,4 +24,5 @@ public record WebtoonDetailRequest(
                 .publishDays(request.publishDays())
                 .build();
     }
+
 }

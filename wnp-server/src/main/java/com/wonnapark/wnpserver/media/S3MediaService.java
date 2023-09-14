@@ -29,4 +29,8 @@ public class S3MediaService {
         amazonS3.deleteObject(bucketName, key);
     }
 
+    public String findObjectUrlByName(String key) {
+        return amazonS3.getUrl(bucketName, key).toString();
+    }
+
 }
