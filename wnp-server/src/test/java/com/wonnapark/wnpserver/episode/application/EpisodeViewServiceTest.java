@@ -69,33 +69,35 @@ class EpisodeViewServiceTest {
     @Test
     @DisplayName("비회원의 조회 정보를 저장할 수 있다")
     void guest_saveViewInfo_false() {
-        // Arrange
+        // given
         String ip = ipv4();
         Episode episode = episode(webtoon());
         String key = generateKey(ip, episode.getId());
 
         given(viewCoolTimeRepository.existsById(key)).willReturn(false);
 
-        // Act
+        // when
         episodeViewService.saveViewInfo(ip, episode);
 
-        // Assert
+        // then
         then(viewCoolTimeRepository).should(atMostOnce()).save(any(ViewCoolTime.class));
     }
 
     @Test
+    @DisplayName("비회원의 레디스에 해당 키가 있으면 조회 정보를 저장하지 않을 수 있다")
     void guest_saveViewInfo_true() {
-        // Arrange
+        // given
         String ip = ipv4();
         Episode episode = episode(webtoon());
         String key = generateKey(ip, episode.getId());
 
         given(viewCoolTimeRepository.existsById(key)).willReturn(true);
 
-        // Act
+        // when
         episodeViewService.saveViewInfo(ip, episode);
 
-        // Assert
+        // then
         then(viewCoolTimeRepository).should(never()).save(any(ViewCoolTime.class));
     }
+
 }
