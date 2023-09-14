@@ -5,7 +5,6 @@ import com.wonnapark.wnpserver.episode.ViewCoolTime;
 import com.wonnapark.wnpserver.episode.infrastructure.ViewCoolTimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -13,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.wonnapark.wnpserver.episode.ViewCoolTime.generateKey;
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class EpisodeViewService {
     private final ViewCoolTimeRepository viewCoolTimeRepository;
     private final ViewHistoryService viewHistoryService;
 
-    @Transactional(propagation = Propagation.NESTED)
+    @Transactional(propagation = REQUIRES_NEW)
     public void saveViewInfo(Long userId, Episode episode) {
         String key = generateKey(userId, episode.getId());
 
@@ -34,7 +34,7 @@ public class EpisodeViewService {
         viewCoolTimeRepository.save(new ViewCoolTime(key, LocalDateTime.now()));
     }
 
-    @Transactional(propagation = Propagation.NESTED)
+    @Transactional(propagation = REQUIRES_NEW)
     public void saveViewInfo(String ip, Episode episode) {
         String key = generateKey(ip, episode.getId());
 
