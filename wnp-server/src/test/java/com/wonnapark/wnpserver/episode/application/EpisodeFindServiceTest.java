@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import static com.wonnapark.wnpserver.episode.EpisodeFixtures.episode;
 import static com.wonnapark.wnpserver.episode.EpisodeFixtures.episodes;
-import static com.wonnapark.wnpserver.episode.EpisodeFixtures.ip;
+import static com.wonnapark.wnpserver.episode.EpisodeFixtures.ipv4;
 import static com.wonnapark.wnpserver.episode.EpisodeFixtures.pageable;
 import static com.wonnapark.wnpserver.episode.EpisodeFixtures.user;
 import static com.wonnapark.wnpserver.episode.EpisodeFixtures.webtoon;
@@ -69,7 +69,7 @@ class EpisodeFindServiceTest {
     @DisplayName("에피소드 ID를 통해 에피소드 디테일 폼을 조회할 수 있다.")
     void commonFindEpisodeDetailForm() {
         // given
-        String ip = ip();
+        String ip = ipv4();
         Episode episode = episode(webtoon);
         given(episodeRepository.findById(episode.getId())).willReturn(Optional.of(episode));
 
@@ -78,7 +78,7 @@ class EpisodeFindServiceTest {
 
         // then
         assertThat(episodeDetailForm.title()).isEqualTo(episode.getTitle());
-        then(episodeViewService).should(atMostOnce()).saveViewInfo(ip, episode.getId());
+        then(episodeViewService).should(atMostOnce()).saveViewInfo(ip, episode);
     }
 
     @Test
@@ -120,7 +120,7 @@ class EpisodeFindServiceTest {
 
         // then
         assertThat(episodeDetailForm.id()).isEqualTo(episode.getId());
-        then(episodeViewService).should(atMostOnce()).saveViewInfo(user.getId(), episode.getId());
+        then(episodeViewService).should(atMostOnce()).saveViewInfo(user.getId(), episode);
     }
 
 }

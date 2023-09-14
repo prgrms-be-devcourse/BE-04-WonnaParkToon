@@ -19,7 +19,7 @@ public final class EpisodeFixtures {
     private EpisodeFixtures() {
     }
 
-    public static String ip() {
+    public static String ipv4() {
         Random random = new Random();
         int first = random.nextInt(256);  // 0~255
         int second = random.nextInt(256);  // 0~255
@@ -94,10 +94,6 @@ public final class EpisodeFixtures {
 
     public static Pageable pageable() {
         return new WebtoonListPageRequest(0, Sort.Direction.DESC).toPageable();
-    }
-
-    public static String viewCoolTimeRedisKey(Object prefix, Object postfix) {
-        return String.format("%s:%s", prefix, postfix);
     }
 
 }
