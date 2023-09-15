@@ -71,8 +71,8 @@ class UserEpisodeControllerTest {
     void findEpisodeDetailForm() throws Exception {
         // given
         Long episodeId = 1L;
-        Webtoon webtoon = EpisodeFixtures.createWebtoon();
-        Episode episode = EpisodeFixtures.createEpisode(webtoon);
+        Webtoon webtoon = EpisodeFixtures.webtoon();
+        Episode episode = EpisodeFixtures.episode(webtoon);
         given(episodeFindUseCase.findEpisodeDetailForm(userInfo.userId(), episodeId)).willReturn(EpisodeDetailFormResponse.from(episode));
         // when // then
         this.mockMvc.perform(get("/api/v1/user/episode/{episodeId}/detail", episodeId)
@@ -97,9 +97,9 @@ class UserEpisodeControllerTest {
     @DisplayName("유저는 웹툰 ID로 에피소드 리스트 정보를 정상적으로 가져올 수 있다.")
     void findEpisodeListForm() throws Exception {
         // given
-        Pageable pageable = EpisodeFixtures.createPageable();
-        Webtoon webtoon = EpisodeFixtures.createWebtoon();
-        List<Episode> episodes = EpisodeFixtures.createEpisodes(webtoon);
+        Pageable pageable = EpisodeFixtures.pageable();
+        Webtoon webtoon = EpisodeFixtures.webtoon();
+        List<Episode> episodes = EpisodeFixtures.episodes(webtoon);
         given(episodeFindUseCase.findEpisodeListForm(userInfo.userId(), webtoon.getId(), pageable))
                 .willReturn(new PageImpl<>(episodes, pageable, episodes.size()).map(EpisodeListFormResponse::from));
         // when // then

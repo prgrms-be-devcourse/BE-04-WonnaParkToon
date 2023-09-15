@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.instancio.Assign.valueOf;
@@ -18,29 +19,40 @@ public final class EpisodeFixtures {
     private EpisodeFixtures() {
     }
 
-    public static Webtoon createWebtoon() {
+    public static String ipv4() {
+        Random random = new Random();
+        int first = random.nextInt(256);  // 0~255
+        int second = random.nextInt(256);  // 0~255
+        int third = random.nextInt(256);  // 0~255
+        int fourth = random.nextInt(256);  // 0~255
+        return String.join(".",
+                String.valueOf(first), String.valueOf(second), String.valueOf(third), String.valueOf(fourth)
+        );
+    }
+
+    public static Webtoon webtoon() {
         return Instancio.of(Webtoon.class)
                 .ignore(field(Webtoon::getIsDeleted))
                 .create();
     }
 
-    public static User createUser() {
+    public static User user() {
         return Instancio.of(User.class)
                 .ignore(field(User::getIsDeleted))
                 .create();
     }
 
-    public static Episode createEpisode(Webtoon webtoon) {
+    public static Episode episode(Webtoon webtoon) {
         Episode episode = Instancio.of(Episode.class)
                 .set(field(Episode::getWebtoon), webtoon)
                 .ignore(field(Episode::isDeleted))
                 .ignore(field(Episode::getEpisodeUrls))
                 .create();
-        episode.setEpisodeUrls(createEpisodeUrls(1L));
+        episode.setEpisodeUrls(episodeUrls(1L));
         return episode;
     }
 
-    public static List<Episode> createEpisodes(Webtoon webtoon) {
+    public static List<Episode> episodes(Webtoon webtoon) {
 
         List<Episode> episodes = Instancio.ofList(Episode.class)
                 .set(field(Episode::getWebtoon), webtoon)
@@ -51,20 +63,20 @@ public final class EpisodeFixtures {
 
         AtomicReference<Long> episodeUrlsId = new AtomicReference<>(1L);
         episodes.forEach(episode -> {
-            episode.setEpisodeUrls(createEpisodeUrls(episodeUrlsId.get()));
+            episode.setEpisodeUrls(episodeUrls(episodeUrlsId.get()));
             episodeUrlsId.updateAndGet(v -> v + episode.getEpisodeUrls().size());
         });
         return episodes;
     }
 
-    public static ViewHistory createViewHistory(Long userId, Long episodeId) {
+    public static ViewHistory viewHistory(Long userId, Long episodeId) {
         return ViewHistory.builder()
                 .userId(userId)
                 .episodeId(episodeId)
                 .build();
     }
 
-    public static List<ViewHistory> createViewHistories(Long userId, List<Long> episodeIds) {
+    public static List<ViewHistory> viewHistories(Long userId, List<Long> episodeIds) {
         return episodeIds.stream().map(
                 episodeId -> ViewHistory.builder()
                         .userId(userId)
@@ -73,14 +85,14 @@ public final class EpisodeFixtures {
         ).toList();
     }
 
-    public static List<EpisodeUrl> createEpisodeUrls(Long initialEpisodeUrl) {
+    public static List<EpisodeUrl> episodeUrls(Long initialEpisodeUrl) {
         return Instancio.ofList(EpisodeUrl.class)
                 .assign(valueOf(EpisodeUrl::getId).generate(gen -> gen.longSeq().start(initialEpisodeUrl)))
                 .ignore(field(EpisodeUrl::getEpisode))
                 .create();
     }
 
-    public static Pageable createPageable() {
+    public static Pageable pageable() {
         return new WebtoonListPageRequest(0, Sort.Direction.DESC).toPageable();
     }
 

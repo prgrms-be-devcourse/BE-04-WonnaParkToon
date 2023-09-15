@@ -11,7 +11,7 @@ public interface EpisodeFindUseCase {
 
     Page<EpisodeListFormResponse> findEpisodeListForm(Long userId, Long webtoonId, Pageable pageable);
 
-    EpisodeDetailFormResponse findEpisodeDetailForm(Long episodeId);
+    EpisodeDetailFormResponse findEpisodeDetailForm(String ip, Long episodeId);
 
     EpisodeDetailFormResponse findEpisodeDetailForm(Long userId, Long episodeId);
 
