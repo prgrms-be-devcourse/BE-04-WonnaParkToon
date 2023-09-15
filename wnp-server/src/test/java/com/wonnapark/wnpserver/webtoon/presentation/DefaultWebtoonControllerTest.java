@@ -104,7 +104,7 @@ class DefaultWebtoonControllerTest {
         given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         List<Webtoon> webtoons = WebtoonFixtures.createWebtoonsOnPublishDay(publishDay);
-        given(defaultWebtoonService.findWebtoonsByPublishDay(publishDay))
+        given(defaultWebtoonService.findWebtoonsByPublishDayInView(publishDay))
                 .willReturn(webtoons.stream()
                         .map(WebtoonSimpleResponse::from)
                         .toList());
