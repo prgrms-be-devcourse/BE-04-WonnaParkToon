@@ -97,30 +97,33 @@ class DefaultWebtoonControllerTest {
     }
 
     @ParameterizedTest
-    @DisplayName("연재 요일로 해당 연재 요일의 웹툰 목록을 조회할 수 있다.")
+    @DisplayName("연재 요일로 해당 연재 요일의 웹툰 목록을 조회순으로 조회할 수 있다.")
     @EnumSource(DayOfWeek.class)
     void findWebtoonsByPublishDay(DayOfWeek publishDay) throws Exception {
         // given
         given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         List<Webtoon> webtoons = WebtoonFixtures.createWebtoonsOnPublishDay(publishDay);
-        given(defaultWebtoonService.findWebtoonsByPublishDay(publishDay))
+        given(defaultWebtoonService.findWebtoonsByPublishDayInView(publishDay))
                 .willReturn(webtoons.stream()
                         .map(WebtoonSimpleResponse::from)
                         .toList());
 
+        // TODO: 2023-09-16 조회순 정렬 확인 로직 추가 필요
         // when, then
         mockMvc.perform(get("/api/v1/webtoons/list")
-                        .queryParam("publishDay", publishDay.name()))
+                        .queryParam("publishDay", publishDay.name())
+                        .queryParam("orderOption", OrderOption.VIEW.name()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("default-webtoon-v1-findWebtoonsByPublishDay",
                         resourceDetails().tag("웹툰-기본")
-                                .description("특정 요일의 웹툰 상세 정보 불러오기"),
+                                .description("특정 요일의 웹툰 정보 불러오기"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         queryParameters(
-                                parameterWithName("publishDay").description("연재 요일")
+                                parameterWithName("publishDay").description("연재 요일"),
+                                parameterWithName("orderOption").description("정렬 조건")
                         ),
                         responseFields(
                                 fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description("웹툰 ID"),

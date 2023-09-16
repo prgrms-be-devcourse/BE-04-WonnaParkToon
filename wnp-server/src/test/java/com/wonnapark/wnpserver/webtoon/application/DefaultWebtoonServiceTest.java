@@ -62,7 +62,7 @@ class DefaultWebtoonServiceTest {
         // when
         Map<DayOfWeek, List<WebtoonSimpleResponse>> responsesOnDayOfWeek = new HashMap<>();
         for (DayOfWeek publishDay : DayOfWeek.values()) {
-            responsesOnDayOfWeek.put(publishDay, defaultWebtoonService.findWebtoonsByPublishDay(publishDay));
+            responsesOnDayOfWeek.put(publishDay, defaultWebtoonService.findWebtoonsByPublishDayInView(publishDay));
         }
 
         // then
