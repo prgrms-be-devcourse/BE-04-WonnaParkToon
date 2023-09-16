@@ -78,7 +78,7 @@ class EpisodeFindServiceTest {
 
         // then
         assertThat(episodeDetailForm.title()).isEqualTo(episode.getTitle());
-        then(episodeViewService).should(atMostOnce()).saveViewInfo(ip, episode);
+        then(episodeViewService).should(atMostOnce()).saveViewInfo(ip, episode.getId());
     }
 
     @Test
@@ -120,7 +120,7 @@ class EpisodeFindServiceTest {
 
         // then
         assertThat(episodeDetailForm.id()).isEqualTo(episode.getId());
-        then(episodeViewService).should(atMostOnce()).saveViewInfo(user.getId(), episode);
+        then(episodeViewService).should(atMostOnce()).saveViewInfo(user.getId(), episode.getId());
     }
 
 }

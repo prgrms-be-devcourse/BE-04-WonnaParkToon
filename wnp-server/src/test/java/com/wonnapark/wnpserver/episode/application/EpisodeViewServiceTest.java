@@ -2,6 +2,7 @@ package com.wonnapark.wnpserver.episode.application;
 
 import com.wonnapark.wnpserver.episode.Episode;
 import com.wonnapark.wnpserver.episode.ViewCoolTime;
+import com.wonnapark.wnpserver.episode.infrastructure.EpisodeRepository;
 import com.wonnapark.wnpserver.episode.infrastructure.ViewCoolTimeRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,8 @@ class EpisodeViewServiceTest {
     private ViewCoolTimeRepository viewCoolTimeRepository;
     @Mock
     private ViewHistoryService viewHistoryService;
+    @Mock
+    private EpisodeRepository episodeRepository;
 
     @Test
     @DisplayName("회원의 레디스에 해당 키가 있으면 조회 정보를 저장하지 않을 수 있다")
@@ -41,9 +44,10 @@ class EpisodeViewServiceTest {
         given(viewCoolTimeRepository.existsById(key)).willReturn(true);
 
         // when
-        episodeViewService.saveViewInfo(userId, episode);
+        episodeViewService.saveViewInfo(userId, episode.getId());
 
         // then
+        then(episodeRepository).should(never()).increaseEpisodeViewCount(episode.getId());
         then(viewHistoryService).should(never()).saveViewHistory(userId, episode.getId());
         then(viewCoolTimeRepository).should(never()).save(any());
     }
@@ -59,9 +63,10 @@ class EpisodeViewServiceTest {
         given(viewCoolTimeRepository.existsById(key)).willReturn(false);
 
         // when
-        episodeViewService.saveViewInfo(userId, episode);
+        episodeViewService.saveViewInfo(userId, episode.getId());
 
         // then
+        then(episodeRepository).should(atMostOnce()).increaseEpisodeViewCount(episode.getId());
         then(viewHistoryService).should(atMostOnce()).saveViewHistory(userId, episode.getId());
         then(viewCoolTimeRepository).should(atMostOnce()).save(new ViewCoolTime(key, any()));
     }
@@ -77,9 +82,10 @@ class EpisodeViewServiceTest {
         given(viewCoolTimeRepository.existsById(key)).willReturn(false);
 
         // when
-        episodeViewService.saveViewInfo(ip, episode);
+        episodeViewService.saveViewInfo(ip, episode.getId());
 
         // then
+        then(episodeRepository).should(atMostOnce()).increaseEpisodeViewCount(episode.getId());
         then(viewCoolTimeRepository).should(atMostOnce()).save(any(ViewCoolTime.class));
     }
 
@@ -94,9 +100,10 @@ class EpisodeViewServiceTest {
         given(viewCoolTimeRepository.existsById(key)).willReturn(true);
 
         // when
-        episodeViewService.saveViewInfo(ip, episode);
+        episodeViewService.saveViewInfo(ip, episode.getId());
 
         // then
+        then(episodeRepository).should(never()).increaseEpisodeViewCount(episode.getId());
         then(viewCoolTimeRepository).should(never()).save(any(ViewCoolTime.class));
     }
 
