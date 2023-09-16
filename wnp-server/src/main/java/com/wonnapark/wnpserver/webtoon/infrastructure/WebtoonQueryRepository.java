@@ -8,5 +8,5 @@ import com.wonnapark.wnpserver.webtoon.Webtoon;
 public interface WebtoonQueryRepository {
 
     List<Webtoon> findWebtoonsByPublishDayInViewCount(DayOfWeek publishDay);
-
+    List<Webtoon> findWebtoonsByPublishDayInPopularity(DayOfWeek publishDay);
 }

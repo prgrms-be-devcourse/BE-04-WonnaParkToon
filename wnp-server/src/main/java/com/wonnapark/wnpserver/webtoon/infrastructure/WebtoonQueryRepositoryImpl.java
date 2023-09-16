@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.util.List;
 
+import static com.wonnapark.wnpserver.episode.QEpisode.episode;
 import static com.wonnapark.wnpserver.webtoon.QWebtoon.webtoon;
 
 @Repository
@@ -37,6 +38,17 @@ public class WebtoonQueryRepositoryImpl implements WebtoonQueryRepository {
                 .fetch();
 
         return webtoons;
+    }
+
+    @Override
+    public List<Webtoon> findWebtoonsByPublishDayInPopularity(DayOfWeek publishDay) {
+        return jpaQueryFactory
+                .selectFrom(webtoon)
+                .innerJoin(episode).on(webtoon.id.eq(episode.webtoon.id))
+                .groupBy(webtoon.id)
+                .orderBy(episode.viewCount.avg().desc())
+                .where(webtoon.publishDays.contains(publishDay))
+                .fetch();
     }
 
 }
