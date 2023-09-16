@@ -18,11 +18,9 @@ public class EpisodeViewCountRepositoryImpl implements EpisodeViewCountRepositor
                                 UPDATE episodes
                                 SET view_count = view_count + 1
                                 WHERE id = :episodeId
-                        """).unwrap(org.hibernate.query.Query.class)
+                        """)
                 .setParameter("episodeId", episodeId)
                 .executeUpdate();
-        entityManager.flush();
-        entityManager.clear();
     }
 
 }
