@@ -42,4 +42,10 @@ public class DefaultWebtoonService {
                 .toList();
     }
 
+    public List<WebtoonSimpleResponse> findWebtoonsByPublishDayInPopularity(DayOfWeek publishDay){
+        return webtoonQueryRepository.findWebtoonsByPublishDayInPopularity(publishDay).stream()
+                .map(WebtoonSimpleResponse::from)
+                .toList();
+    }
+
 }

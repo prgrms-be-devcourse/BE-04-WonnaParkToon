@@ -13,7 +13,6 @@ defaults:
 jobs:
   test:
     runs-on: ubuntu-latest
-    environment: CI_Envirionment
     
     permissions:
      checks: write
