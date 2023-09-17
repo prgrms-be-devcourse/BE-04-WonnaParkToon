@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 
 files:
-  - source: / # 전체 파일을 의미
+  - source: /
     destination: /home/ubuntu/wonnapark
     overwrite: yes
 
