@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -35,8 +36,17 @@ public class DefaultWebtoonController {
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<List<WebtoonSimpleResponse>> findWebtoonsByPublishDay(@RequestParam DayOfWeek publishDay) {
-        List<WebtoonSimpleResponse> data = defaultWebtoonService.findWebtoonsByPublishDay(publishDay);
+    public ApiResponse<List<WebtoonSimpleResponse>> findWebtoonsByPublishDay(
+            @RequestParam DayOfWeek publishDay,
+            @RequestParam(required = false) OrderOption orderOption
+    ) {
+        List<WebtoonSimpleResponse> data = new ArrayList<>();
+
+        if(orderOption.equals(OrderOption.VIEW)){
+            data = defaultWebtoonService.findWebtoonsByPublishDayInView(publishDay);
+        }
+        // TODO: 2023-09-16 정렬 조건이 인기순일 때
+
         return ApiResponse.from(data);
     }
 
