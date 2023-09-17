@@ -17,11 +17,7 @@ public enum ErrorCode {
     EXPIRED_TOKEN(400, "T002", "만료된 토큰입니다."),
     UNSUPPORTED_TOKEN(400, "T003", "잘못된 형식의 토큰입니다."),
     WRONG_SIGNATURE_TOKEN(400, "T004", "변조된 토큰입니다. 토큰이 탈취되었을 수도 있습니다."),
-    LOGOUT_TOKEN(400, "T005", "로그아웃 처리된 토큰입니다. 로그인을 재시도 해주세요."),
-
-    // User
-    USER_NOT_FOUND(404, "U001", "유저를 찾을 수 없습니다.");
-
+    LOGOUT_TOKEN(400, "T005", "로그아웃 처리된 토큰입니다. 로그인을 재시도 해주세요.");
 
     private final int value;
     private final String code;

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 
-import static com.wonnapark.wnpserver.episode.application.EpisodeErrorMessage.EPISODE_NOT_FOUND;
+import static com.wonnapark.wnpserver.episode.EpisodeErrorMessage.EPISODE_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

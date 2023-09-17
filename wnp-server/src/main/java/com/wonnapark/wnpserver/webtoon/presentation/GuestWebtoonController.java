@@ -1,8 +1,8 @@
 package com.wonnapark.wnpserver.webtoon.presentation;
 
+import com.wonnapark.wnpserver.global.response.ApiResponse;
 import com.wonnapark.wnpserver.webtoon.application.GuestWebtoonService;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
-import com.wonnapark.wnpserver.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.oauth.application;
 
-import com.wonnapark.wnpserver.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.auth.application.JwtTokenService;
+import com.wonnapark.wnpserver.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.auth.dto.AuthTokenResponse;
 import com.wonnapark.wnpserver.oauth.OAuthProvider;
 import com.wonnapark.wnpserver.oauth.dto.request.OAuthLoginRequest;

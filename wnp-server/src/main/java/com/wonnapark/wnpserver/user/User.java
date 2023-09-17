@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.user;
 
-import com.wonnapark.wnpserver.oauth.OAuthProvider;
 import com.wonnapark.wnpserver.global.common.BaseEntity;
+import com.wonnapark.wnpserver.oauth.OAuthProvider;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
