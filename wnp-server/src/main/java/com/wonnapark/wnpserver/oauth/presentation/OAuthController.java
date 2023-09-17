@@ -1,11 +1,11 @@
 package com.wonnapark.wnpserver.oauth.presentation;
 
 import com.wonnapark.wnpserver.auth.dto.AuthTokenResponse;
+import com.wonnapark.wnpserver.global.response.ApiResponse;
 import com.wonnapark.wnpserver.oauth.OAuthProvider;
 import com.wonnapark.wnpserver.oauth.application.OAuthLoginService;
 import com.wonnapark.wnpserver.oauth.dto.request.KakaoLoginRequest;
 import com.wonnapark.wnpserver.oauth.dto.request.NaverLoginRequest;
-import com.wonnapark.wnpserver.global.response.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

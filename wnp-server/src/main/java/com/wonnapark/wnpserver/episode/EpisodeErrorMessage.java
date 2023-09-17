@@ -1,9 +1,9 @@
-package com.wonnapark.wnpserver.episode.application;
+package com.wonnapark.wnpserver.episode;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-enum EpisodeErrorMessage {
+public enum EpisodeErrorMessage {
 
     EPISODE_NOT_FOUND("해당 ID(%s)의 에피소드를 찾을 수 없습니다"),
     WEBTOON_NOT_FOUND("해당 ID(%s)의 웹툰을 찾을 수 없습니다"),

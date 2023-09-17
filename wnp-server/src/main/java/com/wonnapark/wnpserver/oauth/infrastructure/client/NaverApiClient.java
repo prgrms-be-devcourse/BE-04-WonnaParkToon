@@ -1,13 +1,13 @@
 package com.wonnapark.wnpserver.oauth.infrastructure.client;
 
 import com.wonnapark.wnpserver.auth.config.TokenConstants;
+import com.wonnapark.wnpserver.global.response.ErrorCode;
 import com.wonnapark.wnpserver.oauth.OAuthProvider;
 import com.wonnapark.wnpserver.oauth.config.OauthProperties;
 import com.wonnapark.wnpserver.oauth.dto.request.OAuthLoginRequest;
 import com.wonnapark.wnpserver.oauth.dto.response.NaverInfoResponse;
 import com.wonnapark.wnpserver.oauth.dto.response.OAuthInfoResponse;
 import com.wonnapark.wnpserver.oauth.infrastructure.NaverToken;
-import com.wonnapark.wnpserver.global.response.ErrorCode;
 import io.jsonwebtoken.lang.Assert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -47,7 +47,6 @@ public class NaverApiClient implements OAuthApiClient {
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
         NaverToken response = restTemplate.postForObject(url, request, NaverToken.class);
-
         Assert.notNull(response, ErrorCode.OAUTH_RESPONSE_NOT_FOUND.getMessage());
         return response.accessToken();
     }
@@ -62,6 +61,8 @@ public class NaverApiClient implements OAuthApiClient {
 
         HttpEntity<?> request = new HttpEntity<>(httpHeaders);
 
-        return restTemplate.postForObject(url, request, NaverInfoResponse.class);
+        NaverInfoResponse naverInfoResponse = restTemplate.postForObject(url, request, NaverInfoResponse.class);
+        Assert.notNull(naverInfoResponse, ErrorCode.OAUTH_RESPONSE_NOT_FOUND.getMessage());
+        return naverInfoResponse;
     }
 }

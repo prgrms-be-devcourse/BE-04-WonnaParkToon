@@ -1,9 +1,9 @@
 package com.wonnapark.wnpserver.global.auth;
 
 import com.wonnapark.wnpserver.auth.exception.JwtInvalidException;
-import com.wonnapark.wnpserver.user.infrastructure.UserRepository;
 import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.global.response.ErrorCode;
+import com.wonnapark.wnpserver.user.infrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

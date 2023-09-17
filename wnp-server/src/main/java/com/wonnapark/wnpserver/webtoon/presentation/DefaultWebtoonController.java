@@ -1,13 +1,13 @@
 package com.wonnapark.wnpserver.webtoon.presentation;
 
 import com.wonnapark.wnpserver.global.auth.Authorized;
+import com.wonnapark.wnpserver.global.common.UserInfo;
+import com.wonnapark.wnpserver.global.response.ApiResponse;
 import com.wonnapark.wnpserver.webtoon.application.DefaultWebtoonService;
 import com.wonnapark.wnpserver.webtoon.application.UserWebtoonService;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonSimpleResponse;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonsOnPublishDayResponse;
-import com.wonnapark.wnpserver.global.common.UserInfo;
-import com.wonnapark.wnpserver.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

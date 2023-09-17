@@ -1,7 +1,7 @@
 package com.wonnapark.wnpserver.auth.dto;
 
-import com.wonnapark.wnpserver.user.Role;
 import com.wonnapark.wnpserver.global.auth.Authentication;
+import com.wonnapark.wnpserver.user.Role;
 
 public record AuthTokenRequest(
         Long userId,

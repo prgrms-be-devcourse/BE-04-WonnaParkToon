@@ -6,11 +6,12 @@ import com.wonnapark.wnpserver.user.Role;
 import com.wonnapark.wnpserver.user.User;
 import com.wonnapark.wnpserver.user.dto.UserResponse;
 import com.wonnapark.wnpserver.user.infrastructure.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
+import static com.wonnapark.wnpserver.user.UserErrorMessage.USER_NOT_FOUND;
 
 @Transactional(readOnly = true)
 @Service
@@ -35,7 +36,7 @@ public class DefaultUserService implements UserService {
 
     public UserResponse findUserByProviderIdAndPlatform(String providerId, OAuthProvider platform) {
         User user = userRepository.findByProviderIdAndPlatform(providerId, platform)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND.getMessage(platform, providerId)));
         return UserResponse.from(user);
     }
 

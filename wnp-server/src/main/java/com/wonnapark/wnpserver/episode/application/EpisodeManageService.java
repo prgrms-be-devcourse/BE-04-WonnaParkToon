@@ -1,12 +1,7 @@
 package com.wonnapark.wnpserver.episode.application;
 
 import com.wonnapark.wnpserver.episode.Episode;
-import com.wonnapark.wnpserver.episode.dto.request.EpisodeArtistCommentUpdateRequest;
-import com.wonnapark.wnpserver.episode.dto.request.EpisodeCreationRequest;
-import com.wonnapark.wnpserver.episode.dto.request.EpisodeReleaseDateTimeUpdateRequest;
-import com.wonnapark.wnpserver.episode.dto.request.EpisodeThumbnailUpdateRequest;
-import com.wonnapark.wnpserver.episode.dto.request.EpisodeTitleUpdateRequest;
-import com.wonnapark.wnpserver.episode.dto.request.EpisodeUrlsUpdateRequest;
+import com.wonnapark.wnpserver.episode.dto.request.*;
 import com.wonnapark.wnpserver.episode.infrastructure.EpisodeRepository;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
@@ -16,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.wonnapark.wnpserver.episode.application.EpisodeErrorMessage.DUPLICATED_EPISODE_TITLE;
-import static com.wonnapark.wnpserver.episode.application.EpisodeErrorMessage.EPISODE_NOT_FOUND;
-import static com.wonnapark.wnpserver.episode.application.EpisodeErrorMessage.WEBTOON_NOT_FOUND;
+import static com.wonnapark.wnpserver.episode.EpisodeErrorMessage.*;
 
 
 @Service

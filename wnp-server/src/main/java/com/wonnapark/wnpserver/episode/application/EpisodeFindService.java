@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 
-import static com.wonnapark.wnpserver.episode.application.EpisodeErrorMessage.EPISODE_NOT_FOUND;
+import static com.wonnapark.wnpserver.episode.EpisodeErrorMessage.EPISODE_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +51,7 @@ public class EpisodeFindService implements EpisodeFindUseCase {
         Episode episode = episodeRepository.findById(episodeId)
                 .orElseThrow(() -> new EntityNotFoundException(EPISODE_NOT_FOUND.getMessage(episodeId)));
 
-        episodeViewService.saveViewInfo(ip, episode);
+        episodeViewService.saveViewInfo(ip, episode.getId());
 
         return EpisodeDetailFormResponse.from(episode);
     }
@@ -62,7 +62,7 @@ public class EpisodeFindService implements EpisodeFindUseCase {
         Episode episode = episodeRepository.findById(episodeId)
                 .orElseThrow(() -> new EntityNotFoundException(EPISODE_NOT_FOUND.getMessage(episodeId)));
 
-        episodeViewService.saveViewInfo(userId, episode);
+        episodeViewService.saveViewInfo(userId, episode.getId());
 
         return EpisodeDetailFormResponse.from(episode);
     }
