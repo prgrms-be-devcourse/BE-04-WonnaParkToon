@@ -3,10 +3,13 @@ package com.wonnapark.wnpserver.webtoon.application;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonSimpleResponse;
+import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonQueryRepository;
 import com.wonnapark.wnpserver.webtoon.infrastructure.WebtoonRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,6 +35,8 @@ class DefaultWebtoonServiceTest {
     private DefaultWebtoonService defaultWebtoonService;
     @Mock
     private WebtoonRepository webtoonRepository;
+    @Mock
+    private WebtoonQueryRepository webtoonQueryRepository;
 
     @Test
     @DisplayName("전체 웹툰을 페이지 조회할 수 있다.")
@@ -49,29 +54,20 @@ class DefaultWebtoonServiceTest {
         assertThat(response.getTotalElements()).isEqualTo(Math.min(webtoons.size(), pageable.getPageSize()));
     }
 
-    @Test
+    @ParameterizedTest
+    @EnumSource(DayOfWeek.class)
     @DisplayName("요일별 웹툰 목록을 조회할 수 있다.")
-    void findWebtoonsByPublishDay() {
+    void findWebtoonsByPublishDay(DayOfWeek publishDay) {
         // given
-        Map<DayOfWeek, List<Webtoon>> webtoonsOnDayOfWeek = new HashMap<>();
-        for (DayOfWeek publishDay : DayOfWeek.values()) {
-            webtoonsOnDayOfWeek.put(publishDay, WebtoonFixtures.createWebtoonsOnPublishDay(publishDay));
-            given(webtoonRepository.findByPublishDaysContains(eq(publishDay))).willReturn(webtoonsOnDayOfWeek.get(publishDay));
-        }
+        List<Webtoon> webtoons = WebtoonFixtures.createWebtoonsOnPublishDay(publishDay);
+        given(webtoonQueryRepository.findWebtoonsByPublishDayInViewCount(eq(publishDay))).willReturn(webtoons);
 
         // when
-        Map<DayOfWeek, List<WebtoonSimpleResponse>> responsesOnDayOfWeek = new HashMap<>();
-        for (DayOfWeek publishDay : DayOfWeek.values()) {
-            responsesOnDayOfWeek.put(publishDay, defaultWebtoonService.findWebtoonsByPublishDayInView(publishDay));
-        }
+        List<WebtoonSimpleResponse> responsesOnDayOfWeek = defaultWebtoonService.findWebtoonsByPublishDayInView(publishDay);
 
         // then
-        for (DayOfWeek publishDay : DayOfWeek.values()) {
-            assertThat(responsesOnDayOfWeek.get(publishDay).size()).isEqualTo(webtoonsOnDayOfWeek.get(publishDay).size());
-            assertThat(responsesOnDayOfWeek.get(publishDay)).isEqualTo(
-                    webtoonsOnDayOfWeek.get(publishDay).stream().map(WebtoonSimpleResponse::from).toList()
-            );
-        }
+        assertThat(responsesOnDayOfWeek).isEqualTo(webtoons.stream().map(WebtoonSimpleResponse::from).toList());
+        // TODO: 2023-09-17 정렬 결과 검증 추가
     }
 
     // TODO: 2023-09-03 findAllWebtoonsForEachDayOfWeek 테스트 코드 추가
