@@ -45,7 +45,9 @@ public class DefaultWebtoonController {
         if(orderOption.equals(OrderOption.VIEW)){
             data = defaultWebtoonService.findWebtoonsByPublishDayInView(publishDay);
         }
-        // TODO: 2023-09-16 정렬 조건이 인기순일 때
+        else if (orderOption.equals(OrderOption.POPULARITY)){
+            data = defaultWebtoonService.findWebtoonsByPublishDayInPopularity(publishDay);
+        }
 
         return ApiResponse.from(data);
     }
