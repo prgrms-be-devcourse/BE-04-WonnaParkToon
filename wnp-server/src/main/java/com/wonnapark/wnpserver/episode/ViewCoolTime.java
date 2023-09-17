@@ -5,7 +5,7 @@ import org.springframework.data.redis.core.RedisHash;
 
 import java.time.LocalDateTime;
 
-@RedisHash(value = "episode_view_infos", timeToLive = 12 * 12 * 60)
+@RedisHash(value = "episode_view_cool_times", timeToLive = 12 * 12 * 60)
 public class ViewCoolTime {
 
     @Id
@@ -17,8 +17,8 @@ public class ViewCoolTime {
         this.viewTime = viewTime;
     }
 
-    public static String generateKey(Object prefix, Object postfix) {
-        return String.format("%s:%s", prefix, postfix);
+    public static String generateKey(Object identifier, Object episodeId) {
+        return String.format("%s:%s", identifier, episodeId);
     }
 
 }
