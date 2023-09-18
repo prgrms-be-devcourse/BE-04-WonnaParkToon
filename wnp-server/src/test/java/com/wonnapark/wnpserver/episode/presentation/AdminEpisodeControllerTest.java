@@ -30,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -217,6 +218,24 @@ class AdminEpisodeControllerTest {
                         requestFields(
                                 fieldWithPath("urls[]").description("에피소드 이미지 URL 목록")
                         )));
+    }
+
+    @Test
+    @DisplayName("에피소드를 삭제할 수 있다.")
+    void deleteEpisode() throws Exception {
+        Long episodeId = Instancio.create(Long.class);
+
+        mockMvc.perform(delete("/api/v1/admin/episode/{id}", episodeId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("admin-episode-v1-delete-deleteEpisode",
+                        resourceDetails().tag("에피소드-관리자").description("에피소드 삭제"),
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("id").description("에피소드 ID")
+                        )
+                ));
     }
 
     private EpisodeCreationRequest createEpisodeCreationRequest() {

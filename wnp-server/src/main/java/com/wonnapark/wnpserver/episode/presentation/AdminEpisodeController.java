@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -113,6 +114,13 @@ public class AdminEpisodeController {
     @ResponseStatus(OK)
     public void updateEpisodeUrls(@PathVariable Long id, @RequestBody @Valid EpisodeUrlsUpdateRequest request) {
         episodeManageUseCase.updateEpisodeUrls(id, request);
+    }
+
+    @Admin
+    @DeleteMapping("/{id}")
+    @ResponseStatus(OK)
+    public void deleteEpisode(@PathVariable Long id) {
+        episodeManageUseCase.deleteEpisode(id);
     }
 
 }
