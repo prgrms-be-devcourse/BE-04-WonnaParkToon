@@ -34,12 +34,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+
         String[] blackList = {
                 "/api/v1/guest/",
                 "/api/v1/oauth/",
                 "/h2-console",
                 "/swagger-ui/",
-                "/v3/api-docs"
+                "/v3/api-docs",
+                "/wonna-park.json"
         };
         String path = request.getRequestURI();
         return Arrays.stream(blackList).anyMatch(path::startsWith);
