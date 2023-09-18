@@ -12,6 +12,7 @@ import com.wonnapark.wnpserver.webtoon.application.DefaultWebtoonService;
 import com.wonnapark.wnpserver.webtoon.application.UserWebtoonService;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonSimpleResponse;
+import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonsOnPublishDayResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,6 +25,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -118,7 +120,7 @@ class DefaultWebtoonControllerTest {
                 .andExpect(status().isOk())
                 .andDo(document("default-webtoon-v1-findWebtoonsByPublishDay",
                         resourceDetails().tag("웹툰-기본")
-                                .description("특정 요일의 웹툰 정보 불러오기"),
+                                .description("특정 요일의 웹툰 정보 조회순으로 불러오기"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         queryParameters(
@@ -131,6 +133,57 @@ class DefaultWebtoonControllerTest {
                                 fieldWithPath("data[].artist").type(JsonFieldType.STRING).description("웹툰 작가"),
                                 fieldWithPath("data[].thumbnail").type(JsonFieldType.STRING).description("웹툰 썸네일"),
                                 fieldWithPath("data[].ageRating").type(JsonFieldType.STRING).description("웹툰 연령 등급")
+                        )));
+
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = OrderOption.class, mode = EnumSource.Mode.EXCLUDE, names = {"UPDATE"})
+    @DisplayName("랭킹 옵션에 맞게 모든 연재 요일의 웹툰 목록을 조회할 수 있다.")
+    void findAllWebtoons(OrderOption orderOption) throws Exception {
+        // given
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
+        List<Webtoon> webtoons = WebtoonFixtures.createWebtoons();
+        List<WebtoonsOnPublishDayResponse> webtoonsOnPublishDay = new ArrayList<>();
+        for(DayOfWeek publishDay:DayOfWeek.values()){
+            List<WebtoonSimpleResponse> webtoonSimpleResponses = webtoons.stream()
+                    .filter(webtoon->webtoon.getPublishDays().contains(publishDay))
+                    .map(WebtoonSimpleResponse::from)
+                    .toList();
+
+            webtoonsOnPublishDay.add(WebtoonsOnPublishDayResponse.of(publishDay, webtoonSimpleResponses));
+        }
+
+        if(orderOption.equals(OrderOption.VIEW)){
+            given(defaultWebtoonService.findAllWebtoonsOrderByView())
+                    .willReturn(webtoonsOnPublishDay);
+        }else if(orderOption.equals(OrderOption.POPULARITY)){
+            given(defaultWebtoonService.findAllWebtoonsOrderByPopularity())
+                    .willReturn(webtoonsOnPublishDay);
+        }
+
+        // when, then
+        mockMvc.perform(get("/api/v1/webtoons")
+                        .queryParam("orderOption", orderOption.name()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("default-webtoon-v1-findWebtoonsByPublishDay",
+                        resourceDetails().tag("웹툰-기본")
+                                .description("모든 요일의 웹툰 정보 랭킹 조건에 따라 불러오기"),
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("orderOption").description("랭킹 조건")
+                        ),
+                        responseFields(
+                                fieldWithPath("data[].publishDay").type(JsonFieldType.STRING).description("연재 요일"),
+                                fieldWithPath("data[].webtoons").type(JsonFieldType.ARRAY).description("해당 연재 요일의 웹툰 목록"),
+                                fieldWithPath("data[].webtoons[].id").type(JsonFieldType.NUMBER).description("웹툰 ID"),
+                                fieldWithPath("data[].webtoons[].title").type(JsonFieldType.STRING).description("웹툰 제목"),
+                                fieldWithPath("data[].webtoons[].artist").type(JsonFieldType.STRING).description("웹툰 작가"),
+                                fieldWithPath("data[].webtoons[].thumbnail").type(JsonFieldType.STRING).description("웹툰 썸네일"),
+                                fieldWithPath("data[].webtoons[].ageRating").type(JsonFieldType.STRING).description("웹툰 연령 등급")
                         )));
 
     }
