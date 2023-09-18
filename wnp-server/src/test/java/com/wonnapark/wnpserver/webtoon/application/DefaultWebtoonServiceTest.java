@@ -21,7 +21,6 @@ import org.springframework.data.domain.Sort;
 
 import java.time.DayOfWeek;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -64,7 +63,7 @@ class DefaultWebtoonServiceTest {
         given(webtoonQueryRepository.findWebtoonsByPublishDayOrderByLatestViewCount(eq(publishDay))).willReturn(webtoonsOnPublishDay);
 
         // when
-        List<WebtoonSimpleResponse> responsesOnDayOfWeek = defaultWebtoonService.findWebtoonsByPublishDayInView(publishDay);
+        List<WebtoonSimpleResponse> responsesOnDayOfWeek = defaultWebtoonService.findWebtoonsByPublishDayOrderByView(publishDay);
 
         // then
         assertThat(responsesOnDayOfWeek).isEqualTo(webtoons.stream().map(WebtoonSimpleResponse::from).toList());
