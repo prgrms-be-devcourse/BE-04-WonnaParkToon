@@ -1,5 +1,6 @@
 package com.wonnapark.wnpserver.webtoon;
 
+import com.wonnapark.wnpserver.episode.Episode;
 import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateDetailRequest;
@@ -21,6 +22,7 @@ public final class WebtoonFixtures {
     private WebtoonFixtures() {
     }
 
+    // Webtoon 엔티티 생성 Fixtures
     public static Webtoon createWebtoon() {
         return Instancio.of(Webtoon.class)
                 .ignore(field(Webtoon::getIsDeleted))
@@ -89,6 +91,20 @@ public final class WebtoonFixtures {
                 .create();
     }
 
+    // Webtoon DTO 생성 Fixtures
+    public static WebtoonCreateDetailRequest createWebtoonCreateDetailRequest() {
+        return Instancio.of(WebtoonCreateDetailRequest.class)
+                .generate(field(WebtoonCreateDetailRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
+                .create();
+    }
+
+    public static WebtoonUpdateDetailRequest createWebtoonUpdateDetailRequest() {
+        return Instancio.of(WebtoonUpdateDetailRequest.class)
+                .generate(field(WebtoonUpdateDetailRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
+                .create();
+    }
+
+    // 타 도메인 Entity 생성 Fixtures
     /**
      * 나이 조건 없이 사용자 정보를 생성하는 메서드
      *
@@ -117,18 +133,6 @@ public final class WebtoonFixtures {
     public static UserInfo createUserInfoUnder18() {
         return Instancio.of(UserInfo.class)
                 .generate(field(UserInfo::age), gen -> gen.ints().range(0, 18))
-                .create();
-    }
-
-    public static WebtoonCreateDetailRequest createWebtoonCreateDetailRequest() {
-        return Instancio.of(WebtoonCreateDetailRequest.class)
-                .generate(field(WebtoonCreateDetailRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
-                .create();
-    }
-
-    public static WebtoonUpdateDetailRequest createWebtoonUpdateDetailRequest() {
-        return Instancio.of(WebtoonUpdateDetailRequest.class)
-                .generate(field(WebtoonUpdateDetailRequest::ageRating), gen -> gen.oneOf(WebtoonFixtures.ageRatingNames))
                 .create();
     }
 
