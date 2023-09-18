@@ -99,12 +99,12 @@ class DefaultWebtoonControllerTest {
     @ParameterizedTest
     @EnumSource(DayOfWeek.class)
     @DisplayName("연재 요일로 해당 연재 요일의 웹툰 목록을 조회순으로 조회할 수 있다.")
-    void findWebtoonsByPublishDay(DayOfWeek publishDay) throws Exception {
+    void findWebtoonsByPublishDayOrdrByView(DayOfWeek publishDay) throws Exception {
         // given
         given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         List<Webtoon> webtoons = WebtoonFixtures.createWebtoonsOnPublishDay(publishDay);
-        given(defaultWebtoonService.findWebtoonsByPublishDayInView(publishDay))
+        given(defaultWebtoonService.findWebtoonsByPublishDayOrderByView(publishDay))
                 .willReturn(webtoons.stream()
                         .map(WebtoonSimpleResponse::from)
                         .toList());

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -27,23 +27,14 @@ public class DefaultWebtoonService {
                 .map(WebtoonSimpleResponse::from);
     }
 
-    public List<WebtoonsOnPublishDayResponse> findAllWebtoonsForEachDayOfWeek() {
-        List<WebtoonsOnPublishDayResponse> responseList = new ArrayList<>();
-        for (DayOfWeek publishDay : DayOfWeek.values()) {
-            responseList.add(WebtoonsOnPublishDayResponse.of(publishDay, findWebtoonsByPublishDayInView(publishDay)));
-        }
-
-        return responseList;
-    }
-
-    public List<WebtoonSimpleResponse> findWebtoonsByPublishDayInView(DayOfWeek publishDay) {
-        return webtoonQueryRepository.findWebtoonsByPublishDayInViewCount(publishDay).stream()
+    public List<WebtoonSimpleResponse> findWebtoonsByPublishDayOrderByView(DayOfWeek publishDay) {
+        return webtoonQueryRepository.findWebtoonsByPublishDayOrderByLatestViewCount(publishDay).stream()
                 .map(WebtoonSimpleResponse::from)
                 .toList();
     }
 
-    public List<WebtoonSimpleResponse> findWebtoonsByPublishDayInPopularity(DayOfWeek publishDay){
-        return webtoonQueryRepository.findWebtoonsByPublishDayInPopularity(publishDay).stream()
+    public List<WebtoonSimpleResponse> findWebtoonsByPublishDayOrderByPopularity(DayOfWeek publishDay){
+        return webtoonQueryRepository.findWebtoonsByPublishDayOrderByView(publishDay).stream()
                 .map(WebtoonSimpleResponse::from)
                 .toList();
     }

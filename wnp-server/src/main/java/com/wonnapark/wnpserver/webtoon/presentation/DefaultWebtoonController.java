@@ -42,11 +42,10 @@ public class DefaultWebtoonController {
     ) {
         List<WebtoonSimpleResponse> data = new ArrayList<>();
 
-        if(orderOption.equals(OrderOption.VIEW)){
-            data = defaultWebtoonService.findWebtoonsByPublishDayInView(publishDay);
-        }
-        else if (orderOption.equals(OrderOption.POPULARITY)){
-            data = defaultWebtoonService.findWebtoonsByPublishDayInPopularity(publishDay);
+        if (orderOption.equals(OrderOption.VIEW)) {
+            data = defaultWebtoonService.findWebtoonsByPublishDayOrderByView(publishDay);
+        } else if (orderOption.equals(OrderOption.POPULARITY)) {
+            data = defaultWebtoonService.findWebtoonsByPublishDayOrderByPopularity(publishDay);
         }
 
         return ApiResponse.from(data);
