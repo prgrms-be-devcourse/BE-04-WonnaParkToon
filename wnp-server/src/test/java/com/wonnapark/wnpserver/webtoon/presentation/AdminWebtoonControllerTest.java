@@ -9,10 +9,7 @@ import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
@@ -27,11 +24,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AdminWebtoonController.class)
 class AdminWebtoonControllerTest extends ControllerTestConfig {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     @DisplayName("새로운 웹툰을 생성하고 웹툰 상세 정보를 반환할 수 있다.")
@@ -82,7 +75,7 @@ class AdminWebtoonControllerTest extends ControllerTestConfig {
     @DisplayName("웹툰 상세 정보를 수정하고 수정된 결과를 반환할 수 있다.")
     void updateWebtoon() throws Exception {
         // given
-//        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         Long webtoonId = Instancio.create(Long.class);
         WebtoonUpdateDetailRequest request = WebtoonFixtures.createWebtoonUpdateDetailRequest();

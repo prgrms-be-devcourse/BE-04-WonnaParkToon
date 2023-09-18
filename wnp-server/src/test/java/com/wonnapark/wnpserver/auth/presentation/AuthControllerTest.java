@@ -10,11 +10,8 @@ import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.global.response.ApiResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
@@ -31,11 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AuthController.class)
 class AuthControllerTest extends ControllerTestConfig {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     @DisplayName("인증 정보로 액세스 토큰과 리프레시 토큰을 재발급한다.")
@@ -47,6 +40,9 @@ class AuthControllerTest extends ControllerTestConfig {
 
         willDoNothing().given(authenticationResolver).validateAccessToken(any());
         given(authenticationResolver.extractAuthentication(any())).willReturn(authentication);
+        willDoNothing().given(authenticationResolver).validateRefreshToken(any(), any());
+
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         given(jwtTokenService.generateAuthToken(any(AuthTokenRequest.class))).willReturn(authTokenResponse);
 
@@ -85,6 +81,8 @@ class AuthControllerTest extends ControllerTestConfig {
         willDoNothing().given(authenticationResolver).validateAccessToken(any());
         given(authenticationResolver.extractAuthentication(any())).willReturn(authentication);
         willDoNothing().given(authenticationResolver).validateRefreshToken(any(), any());
+
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         given(authorizedArgumentResolver.supportsParameter(any())).willReturn(true);
         given(authorizedArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(userInfo);

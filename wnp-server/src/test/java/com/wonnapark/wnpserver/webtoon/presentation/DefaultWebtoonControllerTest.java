@@ -12,10 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.DayOfWeek;
 import java.util.List;
@@ -32,11 +29,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(DefaultWebtoonController.class)
 class DefaultWebtoonControllerTest extends ControllerTestConfig {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @DisplayName("로그인한 모든 회원은 웹툰 ID로 18세이용가가 아닌 웹툰의 상세 정보를 조회할 수 있다.")
     @Test
@@ -80,7 +73,7 @@ class DefaultWebtoonControllerTest extends ControllerTestConfig {
     @DisplayName("연재 요일로 해당 연재 요일의 웹툰 목록을 조회순으로 조회할 수 있다.")
     void findWebtoonsByPublishDay(DayOfWeek publishDay) throws Exception {
         // given
-//        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         List<Webtoon> webtoons = WebtoonFixtures.createWebtoonsOnPublishDay(publishDay);
         given(defaultWebtoonService.findWebtoonsByPublishDayInView(publishDay))
