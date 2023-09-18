@@ -66,7 +66,8 @@ class DefaultWebtoonServiceTest {
         List<WebtoonSimpleResponse> responsesOnDayOfWeek = defaultWebtoonService.findWebtoonsByPublishDayOrderByView(publishDay);
 
         // then
-        assertThat(responsesOnDayOfWeek).isEqualTo(webtoons.stream().map(WebtoonSimpleResponse::from).toList());
+        then(webtoonQueryRepository).should(atMostOnce()).findWebtoonsByPublishDayOrderByLatestViewCount(publishDay);
+        assertThat(responsesOnDayOfWeek).isEqualTo(webtoonsOnPublishDay.stream().map(WebtoonSimpleResponse::from).toList());
         // TODO: 2023-09-17 정렬 결과 검증 추가
     }
 
