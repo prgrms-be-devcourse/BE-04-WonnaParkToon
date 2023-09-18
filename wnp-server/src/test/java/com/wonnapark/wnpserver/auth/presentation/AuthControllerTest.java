@@ -1,23 +1,17 @@
 package com.wonnapark.wnpserver.auth.presentation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
-import com.wonnapark.wnpserver.auth.application.JwtTokenService;
 import com.wonnapark.wnpserver.auth.config.TokenConstants;
 import com.wonnapark.wnpserver.auth.dto.AuthTokenRequest;
 import com.wonnapark.wnpserver.auth.dto.AuthTokenResponse;
+import com.wonnapark.wnpserver.config.ControllerTestConfig;
 import com.wonnapark.wnpserver.global.auth.AuthFixtures;
 import com.wonnapark.wnpserver.global.auth.Authentication;
-import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
 import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.global.response.ApiResponse;
-import com.wonnapark.wnpserver.oauth.application.OAuthLogoutService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,27 +31,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureRestDocs
 @WebMvcTest(AuthController.class)
-class AuthControllerTest {
+class AuthControllerTest extends ControllerTestConfig {
 
     @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @MockBean
-    OAuthLogoutService oAuthLogoutService;
-
-    @MockBean
-    JwtTokenService jwtTokenService;
-
-    @MockBean
-    AuthenticationResolver authenticationResolver;
-
-    @MockBean
-    AuthorizedArgumentResolver authorizedArgumentResolver;
+    private MockMvc mockMvc;
 
     @Test
     @DisplayName("인증 정보로 액세스 토큰과 리프레시 토큰을 재발급한다.")

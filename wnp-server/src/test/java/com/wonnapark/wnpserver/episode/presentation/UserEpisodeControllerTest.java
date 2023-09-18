@@ -1,23 +1,19 @@
 package com.wonnapark.wnpserver.episode.presentation;
 
-import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
+import com.wonnapark.wnpserver.config.ControllerTestConfig;
 import com.wonnapark.wnpserver.episode.Episode;
 import com.wonnapark.wnpserver.episode.EpisodeFixtures;
-import com.wonnapark.wnpserver.episode.application.EpisodeFindUseCase;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeDetailFormResponse;
 import com.wonnapark.wnpserver.episode.dto.response.EpisodeListFormResponse;
 import com.wonnapark.wnpserver.global.auth.AuthFixtures;
 import com.wonnapark.wnpserver.global.auth.Authentication;
-import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
 import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -30,12 +26,8 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resour
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
-import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -44,17 +36,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserEpisodeController.class)
-@AutoConfigureRestDocs
-class UserEpisodeControllerTest {
+class UserEpisodeControllerTest extends ControllerTestConfig {
 
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
-    private EpisodeFindUseCase episodeFindUseCase;
-    @MockBean
-    private AuthenticationResolver authenticationResolver;
-    @MockBean
-    private AuthorizedArgumentResolver authorizedArgumentResolver;
     private UserInfo userInfo;
 
     @BeforeEach

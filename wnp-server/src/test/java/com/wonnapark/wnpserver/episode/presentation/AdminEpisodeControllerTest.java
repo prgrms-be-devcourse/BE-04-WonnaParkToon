@@ -1,25 +1,13 @@
 package com.wonnapark.wnpserver.episode.presentation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
-import com.wonnapark.wnpserver.episode.application.EpisodeImageService;
-import com.wonnapark.wnpserver.episode.application.EpisodeManageUseCase;
-import com.wonnapark.wnpserver.episode.dto.request.EpisodeArtistCommentUpdateRequest;
-import com.wonnapark.wnpserver.episode.dto.request.EpisodeCreationRequest;
-import com.wonnapark.wnpserver.episode.dto.request.EpisodeReleaseDateTimeUpdateRequest;
-import com.wonnapark.wnpserver.episode.dto.request.EpisodeThumbnailUpdateRequest;
-import com.wonnapark.wnpserver.episode.dto.request.EpisodeTitleUpdateRequest;
-import com.wonnapark.wnpserver.episode.dto.request.EpisodeUrlsUpdateRequest;
-import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
-import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
+import com.wonnapark.wnpserver.config.ControllerTestConfig;
+import com.wonnapark.wnpserver.episode.dto.request.*;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -30,42 +18,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
-import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AdminEpisodeController.class)
-@AutoConfigureRestDocs
-class AdminEpisodeControllerTest {
+class AdminEpisodeControllerTest extends ControllerTestConfig {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockBean
-    private EpisodeImageService episodeImageService;
-    @MockBean
-    private EpisodeManageUseCase episodeManageUseCase;
-    @MockBean
-    private AuthenticationResolver authenticationResolver;
-    @MockBean
-    private AuthorizedArgumentResolver authorizedArgumentResolver;
-    @MockBean
-    private JwtAuthenticationInterceptor jwtAuthenticationInterceptor;
 
     @BeforeEach
     void setup() throws Exception {
