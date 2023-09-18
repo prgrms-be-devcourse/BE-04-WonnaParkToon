@@ -118,7 +118,7 @@ class DefaultWebtoonControllerTest {
                         .queryParam("orderOption", OrderOption.VIEW.name()))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("default-webtoon-v1-findWebtoonsByPublishDay",
+                .andDo(document("default-webtoon-v1-findWebtoonsByPublishDayOrderByView",
                         resourceDetails().tag("웹툰-기본")
                                 .description("특정 요일의 웹툰 정보 조회순으로 불러오기"),
                         preprocessRequest(prettyPrint()),
@@ -168,7 +168,7 @@ class DefaultWebtoonControllerTest {
                         .queryParam("orderOption", orderOption.name()))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("default-webtoon-v1-findWebtoonsByPublishDay",
+                .andDo(document("default-webtoon-v1-findAllWebtoons",
                         resourceDetails().tag("웹툰-기본")
                                 .description("모든 요일의 웹툰 정보 랭킹 조건에 따라 불러오기"),
                         preprocessRequest(prettyPrint()),
