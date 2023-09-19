@@ -7,6 +7,7 @@ import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -26,12 +27,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class AdminWebtoonControllerTest extends ControllerTestConfig {
 
+    @BeforeEach
+    void setUp() throws Exception {
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
+    }
+
     @Test
     @DisplayName("새로운 웹툰을 생성하고 웹툰 상세 정보를 반환할 수 있다.")
     void createWebtoon() throws Exception {
         // given
-        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
-
         WebtoonCreateDetailRequest request = WebtoonFixtures.createWebtoonCreateDetailRequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon(request);
         WebtoonDetailResponse response = WebtoonDetailResponse.from(webtoon);
@@ -75,8 +79,6 @@ class AdminWebtoonControllerTest extends ControllerTestConfig {
     @DisplayName("웹툰 상세 정보를 수정하고 수정된 결과를 반환할 수 있다.")
     void updateWebtoon() throws Exception {
         // given
-        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
-
         Long webtoonId = Instancio.create(Long.class);
         WebtoonUpdateDetailRequest request = WebtoonFixtures.createWebtoonUpdateDetailRequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon(webtoonId);
