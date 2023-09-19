@@ -1,29 +1,19 @@
 package com.wonnapark.wnpserver.webtoon.presentation;
 
-import com.wonnapark.wnpserver.auth.application.AuthenticationResolver;
-import com.wonnapark.wnpserver.global.auth.AuthorizedArgumentResolver;
-import com.wonnapark.wnpserver.global.auth.JwtAuthenticationInterceptor;
+import com.wonnapark.wnpserver.config.ControllerTestConfig;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import com.wonnapark.wnpserver.webtoon.WebtoonFixtures;
-import com.wonnapark.wnpserver.webtoon.application.GuestWebtoonService;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -31,23 +21,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(GuestWebtoonController.class)
-@AutoConfigureRestDocs
-class GuestWebtoonControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-    @MockBean
-    GuestWebtoonService guestWebtoonService;
-
-    @MockBean
-    AuthenticationResolver authenticationResolver;
-
-    @MockBean
-    AuthorizedArgumentResolver authorizedArgumentResolver;
-
-    @MockBean
-    JwtAuthenticationInterceptor jwtAuthenticationInterceptor;
+class GuestWebtoonControllerTest extends ControllerTestConfig {
 
     @Test
     @DisplayName("로그인하지 않은 사용자는 웹툰 ID로 18세 이용가가 아닌 웹툰의 상세 정보를 조회할 수 있다.")
