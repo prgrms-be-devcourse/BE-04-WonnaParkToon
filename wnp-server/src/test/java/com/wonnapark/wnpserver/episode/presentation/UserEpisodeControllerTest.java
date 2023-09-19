@@ -22,9 +22,16 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.JsonFieldType.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
+import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
+import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -56,6 +63,7 @@ class UserEpisodeControllerTest extends ControllerTestConfig {
         given(episodeFindUseCase.findEpisodeDetailForm(userInfo.userId(), episodeId)).willReturn(EpisodeDetailFormResponse.from(episode));
         // when // then
         this.mockMvc.perform(get("/api/v1/user/episode/{episodeId}/detail", episodeId)
+                        .header(AUTHORIZATION, TOKEN)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -63,6 +71,9 @@ class UserEpisodeControllerTest extends ControllerTestConfig {
                         resourceDetails().tag("에피소드-유저").description("에피소드 상세 정보 불러오기"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description("엑세스 토큰")
+                        ),
                         responseFields(
                                 fieldWithPath("data.id").type(NUMBER).description("에피소드 ID"),
                                 fieldWithPath("data.artistComment").type(STRING).description("작가의 말"),
@@ -84,6 +95,7 @@ class UserEpisodeControllerTest extends ControllerTestConfig {
                 .willReturn(new PageImpl<>(episodes, pageable, episodes.size()).map(EpisodeListFormResponse::from));
         // when // then
         mockMvc.perform(get("/api/v1/user/episode/list")
+                        .header(AUTHORIZATION, TOKEN)
                         .param("webtoonId", String.valueOf(webtoon.getId()))
                         .param("page", "0")
                         .param("direction", "DESC"))
@@ -93,6 +105,9 @@ class UserEpisodeControllerTest extends ControllerTestConfig {
                         resourceDetails().tag("에피소드-유저").description("에피소드 리스트 불러오기"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description("엑세스 토큰")
+                        ),
                         queryParameters(
                                 parameterWithName("webtoonId").description("웹툰 ID"),
                                 parameterWithName("page").description("페이지 번호"),
