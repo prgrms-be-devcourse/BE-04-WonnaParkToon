@@ -23,9 +23,11 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resour
 import static org.instancio.Select.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
@@ -66,6 +68,7 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
         given(episodeManageUseCase.createEpisode(webtoonId, episodeCreationRequest)).willReturn(createdEpisodeId);
         // when // then
         mockMvc.perform(post("/api/v1/admin/episode")
+                        .header(AUTHORIZATION, TOKEN)
                         .param("webtoonId", String.valueOf(webtoonId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(episodeCreationRequest))
@@ -76,6 +79,9 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
                         resourceDetails().tag("에피소드-관리자").description("에피소드 생성"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description("엑세스 토큰")
+                        ),
                         queryParameters(
                                 parameterWithName("webtoonId").description("웹툰 ID")
                         ),
@@ -101,6 +107,7 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
         EpisodeTitleUpdateRequest request = episodeTitleUpdateRequest();
 
         mockMvc.perform(patch("/api/v1/admin/episode/{id}/title", episodeId)
+                        .header(AUTHORIZATION, TOKEN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -108,6 +115,9 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
                         resourceDetails().tag("에피소드-관리자").description("에피소드 제목 수정"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description("엑세스 토큰")
+                        ),
                         pathParameters(
                                 parameterWithName("id").description("에피소드 ID")
                         ),
@@ -123,6 +133,7 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
         EpisodeArtistCommentUpdateRequest request = episodeArtistCommentUpdateRequest();
 
         mockMvc.perform(patch("/api/v1/admin/episode/{id}/artist-comment", episodeId)
+                        .header(AUTHORIZATION, TOKEN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -130,6 +141,9 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
                         resourceDetails().tag("에피소드-관리자").description("에피소드 작가의 말 수정"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description("엑세스 토큰")
+                        ),
                         pathParameters(
                                 parameterWithName("id").description("에피소드 ID")
                         ),
@@ -145,6 +159,7 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
         EpisodeThumbnailUpdateRequest request = episodeThumbnailUpdateRequest();
 
         mockMvc.perform(patch("/api/v1/admin/episode/{id}/thumbnail", episodeId)
+                        .header(AUTHORIZATION, TOKEN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -152,6 +167,9 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
                         resourceDetails().tag("에피소드-관리자").description("에피소드 썸네일 수정"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description("엑세스 토큰")
+                        ),
                         pathParameters(
                                 parameterWithName("id").description("에피소드 ID")
                         ),
@@ -167,6 +185,7 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
         EpisodeReleaseDateTimeUpdateRequest request = episodeReleaseDateTimeUpdateRequest();
 
         mockMvc.perform(patch("/api/v1/admin/episode/{id}/release-datetime", episodeId)
+                        .header(AUTHORIZATION, TOKEN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -174,6 +193,9 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
                         resourceDetails().tag("에피소드-관리자").description("에피소드 공개일 수정"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description("엑세스 토큰")
+                        ),
                         pathParameters(
                                 parameterWithName("id").description("에피소드 ID")
                         ),
@@ -189,6 +211,7 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
         EpisodeUrlsUpdateRequest request = episodeUrlsUpdateRequest();
 
         mockMvc.perform(patch("/api/v1/admin/episode/{id}/image-urls", episodeId)
+                        .header(AUTHORIZATION, TOKEN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -196,6 +219,9 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
                         resourceDetails().tag("에피소드-관리자").description("에피소드 URL 수정"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description("엑세스 토큰")
+                        ),
                         pathParameters(
                                 parameterWithName("id").description("에피소드 ID")
                         ),
@@ -210,12 +236,16 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
         Long episodeId = Instancio.create(Long.class);
 
         mockMvc.perform(delete("/api/v1/admin/episode/{id}", episodeId)
+                        .header(AUTHORIZATION, TOKEN)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("admin-episode-v1-delete-deleteEpisode",
                         resourceDetails().tag("에피소드-관리자").description("에피소드 삭제"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description("엑세스 토큰")
+                        ),
                         pathParameters(
                                 parameterWithName("id").description("에피소드 ID")
                         )
@@ -259,6 +289,7 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
                         .file("episodeImages", episodeImages.get(0).getBytes())
                         .file("episodeImages", episodeImages.get(1).getBytes())
                         .file("episodeImages", episodeImages.get(2).getBytes())
+                        .header(AUTHORIZATION, TOKEN)
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .queryParam("webtoonId", String.valueOf(webtoonId))
                 )
@@ -267,6 +298,9 @@ class AdminEpisodeControllerTest extends ControllerTestConfig {
                         resourceDetails().tag("에피소드-관리자").description("에피소드 이미지 업로드"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description("엑세스 토큰")
+                        ),
                         queryParameters(
                                 parameterWithName("webtoonId").description("웹툰 ID")
                         ),
