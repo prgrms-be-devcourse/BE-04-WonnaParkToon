@@ -1,14 +1,13 @@
 package com.wonnapark.wnpserver.webtoon;
 
-import com.wonnapark.wnpserver.episode.Episode;
 import com.wonnapark.wnpserver.global.common.UserInfo;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateDetailRequest;
 import org.instancio.Instancio;
-import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.DayOfWeek;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.instancio.Select.field;
@@ -87,7 +86,7 @@ public final class WebtoonFixtures {
      */
     public static List<Webtoon> createWebtoonsOnPublishDay(DayOfWeek publishDay) {
         return Instancio.ofList(Webtoon.class)
-                .set(field(Webtoon::getPublishDays), Arrays.asList(publishDay))
+                .set(field(Webtoon::getPublishDays), Collections.singletonList(publishDay))
                 .create();
     }
 
@@ -105,6 +104,7 @@ public final class WebtoonFixtures {
     }
 
     // 타 도메인 Entity 생성 Fixtures
+
     /**
      * 나이 조건 없이 사용자 정보를 생성하는 메서드
      *

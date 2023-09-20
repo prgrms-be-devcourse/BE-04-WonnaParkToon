@@ -27,10 +27,14 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -126,19 +130,19 @@ class DefaultWebtoonControllerTest extends ControllerTestConfig {
 
         List<Webtoon> webtoons = WebtoonFixtures.createWebtoons();
         List<WebtoonsOnPublishDayResponse> webtoonsOnPublishDay = new ArrayList<>();
-        for(DayOfWeek publishDay:DayOfWeek.values()){
+        for (DayOfWeek publishDay : DayOfWeek.values()) {
             List<WebtoonSimpleResponse> webtoonSimpleResponses = webtoons.stream()
-                    .filter(webtoon->webtoon.getPublishDays().contains(publishDay))
+                    .filter(webtoon -> webtoon.getPublishDays().contains(publishDay))
                     .map(WebtoonSimpleResponse::from)
                     .toList();
 
             webtoonsOnPublishDay.add(WebtoonsOnPublishDayResponse.of(publishDay, webtoonSimpleResponses));
         }
 
-        if(orderOption.equals(OrderOption.VIEW)){
+        if (orderOption.equals(OrderOption.VIEW)) {
             given(defaultWebtoonService.findAllWebtoonsOrderByView())
                     .willReturn(webtoonsOnPublishDay);
-        }else if(orderOption.equals(OrderOption.POPULARITY)){
+        } else if (orderOption.equals(OrderOption.POPULARITY)) {
             given(defaultWebtoonService.findAllWebtoonsOrderByPopularity())
                     .willReturn(webtoonsOnPublishDay);
         }
