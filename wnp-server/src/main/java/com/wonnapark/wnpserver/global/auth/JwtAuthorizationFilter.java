@@ -33,7 +33,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper;
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
 
         String[] blackList = {
                 "/api/v1/guest/",
@@ -58,20 +58,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             if (path.equals(REISSUE_URI) || path.equals(LOGOUT_URI)) {
                 String refreshToken = extractTokenFromHeader(request, TokenConstants.REFRESH_TOKEN);
-                try {
-                    authenticationResolver.validateRefreshToken(refreshToken, authentication.userId());
-                } catch (JwtInvalidException jwtInvalidException) {
-                    setErrorResponse(response, jwtInvalidException, RE_LOGIN_URI);
-                    AuthenticationContextHolder.clearContext();
-                    return;
-                }
+                authenticationResolver.validateRefreshToken(refreshToken, authentication.userId());
             }
+
             filterChain.doFilter(request, response);
-        } catch (JwtInvalidException jwtInvalidException) {
-            setErrorResponse(response, jwtInvalidException, REISSUE_URI);
+        } catch (
+                JwtInvalidException jwtInvalidException) {
+            setErrorResponse(response, jwtInvalidException);
         } finally {
             AuthenticationContextHolder.clearContext();
         }
+
     }
 
     private String extractTokenFromHeader(HttpServletRequest request, String headerName) {
@@ -82,12 +79,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    private void setErrorResponse(HttpServletResponse response, JwtInvalidException exception, String redirectUri) throws IOException {
+    private void setErrorResponse(HttpServletResponse response, JwtInvalidException exception) {
         ErrorCode errorCode = exception.getErrorCode();
+        if (errorCode.equals(ErrorCode.EXPIRED_ACCESS_TOKEN)) response.setHeader(HttpHeaders.LOCATION, REISSUE_URI);
+        if (errorCode.equals(ErrorCode.EXPIRED_REFRESH_TOKEN)) response.setHeader(HttpHeaders.LOCATION, RE_LOGIN_URI);
         response.setStatus(errorCode.getValue());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader(HttpHeaders.LOCATION, redirectUri);
         ErrorResponse errorResponse = ErrorResponse.create(errorCode);
         try {
             String json = objectMapper.writeValueAsString(errorResponse);
@@ -97,4 +95,5 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             log.warn(e.getMessage(), e);
         }
     }
+
 }
