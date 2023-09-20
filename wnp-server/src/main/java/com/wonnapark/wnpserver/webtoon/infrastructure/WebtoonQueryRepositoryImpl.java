@@ -22,6 +22,7 @@ public class WebtoonQueryRepositoryImpl implements WebtoonQueryRepository {
 
     /**
      * 해당 요일의 웹툰 목록을 최신 에피소드 조회수를 기준으로 가져오기
+     *
      * @param publishDay 연재 요일
      * @return 최신 에피소드의 조회순으로 정렬된 해당 연재 요일의 웹툰 엔티티 리스트
      */
