@@ -63,7 +63,7 @@ class DefaultWebtoonServiceTest {
         given(webtoonQueryRepository.findWebtoonsByPublishDayOrderByLatestViewCount(eq(publishDay))).willReturn(webtoonsOnPublishDay);
 
         // when
-        List<WebtoonSimpleResponse> responsesOnDayOfWeek = defaultWebtoonService.findWebtoonsByPublishDayOrderByView(publishDay);
+        List<WebtoonSimpleResponse> responsesOnDayOfWeek = defaultWebtoonService.findWebtoonsByPublishDayOrderByViewCount(publishDay);
 
         // then
         then(webtoonQueryRepository).should(atMostOnce()).findWebtoonsByPublishDayOrderByLatestViewCount(publishDay);

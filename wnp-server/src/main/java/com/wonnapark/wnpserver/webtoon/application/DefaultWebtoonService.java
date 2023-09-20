@@ -27,21 +27,21 @@ public class DefaultWebtoonService {
                 .map(WebtoonSimpleResponse::from);
     }
 
-    public List<WebtoonSimpleResponse> findWebtoonsByPublishDayOrderByView(DayOfWeek publishDay) {
+    public List<WebtoonSimpleResponse> findWebtoonsByPublishDayOrderByViewCount(DayOfWeek publishDay) {
         return webtoonQueryRepository.findWebtoonsByPublishDayOrderByLatestViewCount(publishDay).stream()
                 .map(WebtoonSimpleResponse::from)
                 .toList();
     }
 
     public List<WebtoonSimpleResponse> findWebtoonsByPublishDayOrderByPopularity(DayOfWeek publishDay) {
-        return webtoonQueryRepository.findWebtoonsByPublishDayOrderByView(publishDay).stream()
+        return webtoonQueryRepository.findWebtoonsByPublishDayOrderByPopularity(publishDay).stream()
                 .map(WebtoonSimpleResponse::from)
                 .toList();
     }
 
-    public List<WebtoonsOnPublishDayResponse> findAllWebtoonsOrderByView() {
+    public List<WebtoonsOnPublishDayResponse> findAllWebtoonsOrderByViewCount() {
         return Arrays.stream(DayOfWeek.values())
-                .map(publishDay -> WebtoonsOnPublishDayResponse.of(publishDay, findWebtoonsByPublishDayOrderByView(publishDay)))
+                .map(publishDay -> WebtoonsOnPublishDayResponse.of(publishDay, findWebtoonsByPublishDayOrderByViewCount(publishDay)))
                 .toList();
     }
 

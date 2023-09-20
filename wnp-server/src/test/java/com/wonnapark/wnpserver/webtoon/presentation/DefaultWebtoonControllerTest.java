@@ -90,7 +90,7 @@ class DefaultWebtoonControllerTest extends ControllerTestConfig {
         given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         List<Webtoon> webtoons = WebtoonFixtures.createWebtoonsOnPublishDay(publishDay);
-        given(defaultWebtoonService.findWebtoonsByPublishDayOrderByView(publishDay))
+        given(defaultWebtoonService.findWebtoonsByPublishDayOrderByViewCount(publishDay))
                 .willReturn(webtoons.stream()
                         .map(WebtoonSimpleResponse::from)
                         .toList());
@@ -99,7 +99,7 @@ class DefaultWebtoonControllerTest extends ControllerTestConfig {
         // when, then
         mockMvc.perform(get("/api/v1/webtoons/list")
                         .queryParam("publishDay", publishDay.name())
-                        .queryParam("orderOption", OrderOption.VIEW.name()))
+                        .queryParam("orderOption", OrderOption.VIEW_COUNT.name()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("default-webtoon-v1-findWebtoonsByPublishDayOrderByView",
@@ -139,8 +139,8 @@ class DefaultWebtoonControllerTest extends ControllerTestConfig {
             webtoonsOnPublishDay.add(WebtoonsOnPublishDayResponse.of(publishDay, webtoonSimpleResponses));
         }
 
-        if (orderOption.equals(OrderOption.VIEW)) {
-            given(defaultWebtoonService.findAllWebtoonsOrderByView())
+        if (orderOption.equals(OrderOption.VIEW_COUNT)) {
+            given(defaultWebtoonService.findAllWebtoonsOrderByViewCount())
                     .willReturn(webtoonsOnPublishDay);
         } else if (orderOption.equals(OrderOption.POPULARITY)) {
             given(defaultWebtoonService.findAllWebtoonsOrderByPopularity())

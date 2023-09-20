@@ -47,8 +47,8 @@ public class DefaultWebtoonController {
     ) {
         List<WebtoonSimpleResponse> data = new ArrayList<>();
 
-        if (orderOption.equals(OrderOption.VIEW)) {
-            data = defaultWebtoonService.findWebtoonsByPublishDayOrderByView(publishDay);
+        if (orderOption.equals(OrderOption.VIEW_COUNT)) {
+            data = defaultWebtoonService.findWebtoonsByPublishDayOrderByViewCount(publishDay);
         } else if (orderOption.equals(OrderOption.POPULARITY)) {
             data = defaultWebtoonService.findWebtoonsByPublishDayOrderByPopularity(publishDay);
         }
@@ -70,8 +70,8 @@ public class DefaultWebtoonController {
             @RequestParam(required = false) OrderOption orderOption
     ) {
         List<WebtoonsOnPublishDayResponse> data = new ArrayList<>();
-        if (orderOption.equals(OrderOption.VIEW)) {
-            data = defaultWebtoonService.findAllWebtoonsOrderByView();
+        if (orderOption.equals(OrderOption.VIEW_COUNT)) {
+            data = defaultWebtoonService.findAllWebtoonsOrderByViewCount();
         } else if (orderOption.equals(OrderOption.POPULARITY)) {
             data = defaultWebtoonService.findAllWebtoonsOrderByPopularity();
         }

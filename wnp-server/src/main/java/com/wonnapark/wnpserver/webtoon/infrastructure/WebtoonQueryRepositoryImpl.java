@@ -42,7 +42,7 @@ public class WebtoonQueryRepositoryImpl implements WebtoonQueryRepository {
     }
 
     @Override
-    public List<Webtoon> findWebtoonsByPublishDayOrderByView(DayOfWeek publishDay) {
+    public List<Webtoon> findWebtoonsByPublishDayOrderByPopularity(DayOfWeek publishDay) {
         return jpaQueryFactory
                 .selectFrom(webtoon)
                 .innerJoin(episode).on(webtoon.id.eq(episode.webtoon.id))

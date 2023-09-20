@@ -9,5 +9,5 @@ public interface WebtoonQueryRepository {
 
     List<Webtoon> findWebtoonsByPublishDayOrderByLatestViewCount(DayOfWeek publishDay);
 
-    List<Webtoon> findWebtoonsByPublishDayOrderByView(DayOfWeek publishDay);
+    List<Webtoon> findWebtoonsByPublishDayOrderByPopularity(DayOfWeek publishDay);
 }
