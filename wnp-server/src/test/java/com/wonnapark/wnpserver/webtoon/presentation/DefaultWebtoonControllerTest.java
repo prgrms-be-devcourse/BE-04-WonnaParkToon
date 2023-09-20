@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.DayOfWeek;
@@ -23,6 +24,8 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -47,7 +50,9 @@ class DefaultWebtoonControllerTest extends ControllerTestConfig {
         Webtoon webtoon = WebtoonFixtures.createWebtoonUnder18();
         given(userWebtoonService.findWebtoonById(webtoon.getId(), userInfo)).willReturn(WebtoonDetailResponse.from(webtoon));
         // when, then
-        mockMvc.perform(get("/api/v1/webtoons/{webtoonId}", webtoon.getId()))
+        mockMvc.perform(get("/api/v1/webtoons/{webtoonId}", webtoon.getId())
+                        .header(HttpHeaders.AUTHORIZATION, TOKEN)
+                )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("user-webtoon-v1-findWebtoonsById",
@@ -55,6 +60,9 @@ class DefaultWebtoonControllerTest extends ControllerTestConfig {
                                 .description("회원 웹툰 상세 정보 불러오기"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("액세스 토큰")
+                        ),
                         pathParameters(
                                 parameterWithName("webtoonId").description("웹툰 ID")
                         ),

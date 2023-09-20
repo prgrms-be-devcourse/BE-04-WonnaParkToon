@@ -51,7 +51,7 @@ class AdminWebtoonControllerTest extends ControllerTestConfig {
 
         // when, then
         mockMvc.perform(post("/api/v1/admin/webtoons")
-                        .header(HttpHeaders.AUTHORIZATION, "accessToken")
+                        .header(HttpHeaders.AUTHORIZATION, TOKEN)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
@@ -107,7 +107,7 @@ class AdminWebtoonControllerTest extends ControllerTestConfig {
 
         // when, then
         mockMvc.perform(patch("/api/v1/admin/webtoons/{webtoonId}", webtoonId)
-                        .header(HttpHeaders.AUTHORIZATION, "accessToken")
+                        .header(HttpHeaders.AUTHORIZATION, TOKEN)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(request))
                 )
