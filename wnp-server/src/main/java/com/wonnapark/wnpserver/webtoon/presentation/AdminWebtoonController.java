@@ -50,7 +50,7 @@ public class AdminWebtoonController {
             MultipartFile thumbnailMultipartFile,
             @PathVariable
             Long webtoonId
-    ){
+    ) {
         WebtoonThumbnailResponse response = adminWebtoonService.updateWebtoonThumbnail(
                 FileUtils.convertMultipartFileToFile(thumbnailMultipartFile),
                 webtoonId

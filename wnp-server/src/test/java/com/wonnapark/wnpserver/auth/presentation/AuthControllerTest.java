@@ -48,8 +48,8 @@ class AuthControllerTest extends ControllerTestConfig {
 
         // when // then
         mockMvc.perform(get("/api/v1/auth/reissue")
-                        .header(HttpHeaders.AUTHORIZATION, "accessToken")
-                        .header(TokenConstants.REFRESH_TOKEN, "refreshToken"))
+                        .header(HttpHeaders.AUTHORIZATION, TOKEN)
+                        .header(TokenConstants.REFRESH_TOKEN, TOKEN))
                 .andExpect(status().isCreated())
                 .andExpect(content().string(objectMapper.writeValueAsString(response)))
                 .andDo(document("authToken-reissue",
@@ -91,8 +91,8 @@ class AuthControllerTest extends ControllerTestConfig {
 
         // when // then
         mockMvc.perform(get("/api/v1/auth/logout")
-                        .header(HttpHeaders.AUTHORIZATION, "accessToken")
-                        .header(TokenConstants.REFRESH_TOKEN, "refreshToken"))
+                        .header(HttpHeaders.AUTHORIZATION, TOKEN)
+                        .header(TokenConstants.REFRESH_TOKEN, TOKEN))
                 .andExpect(status().isNoContent())
                 .andDo(document("auth-logout",
                                 resourceDetails().tag("토큰").description("토큰 로그아웃 처리"),

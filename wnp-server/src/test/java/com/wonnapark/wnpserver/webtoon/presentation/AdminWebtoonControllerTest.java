@@ -7,8 +7,10 @@ import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -16,22 +18,32 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resour
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AdminWebtoonControllerTest extends ControllerTestConfig {
+
+    @BeforeEach
+    void setUp() throws Exception {
+        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
+    }
 
     @Test
     @DisplayName("새로운 웹툰을 생성하고 웹툰 상세 정보를 반환할 수 있다.")
     void createWebtoon() throws Exception {
         // given
-        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
-
         WebtoonCreateDetailRequest request = WebtoonFixtures.createWebtoonCreateDetailRequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon(request);
         WebtoonDetailResponse response = WebtoonDetailResponse.from(webtoon);
@@ -39,6 +51,7 @@ class AdminWebtoonControllerTest extends ControllerTestConfig {
 
         // when, then
         mockMvc.perform(post("/api/v1/admin/webtoons")
+                        .header(HttpHeaders.AUTHORIZATION, TOKEN)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
@@ -49,6 +62,9 @@ class AdminWebtoonControllerTest extends ControllerTestConfig {
                         resourceDetails().tag("웹툰-관리자").description("웹툰 생성"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("액세스 토큰")
+                        ),
                         requestFields(
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("웹툰 제목"),
                                 fieldWithPath("artist").type(JsonFieldType.STRING).description("웹툰 작가"),
@@ -75,8 +91,6 @@ class AdminWebtoonControllerTest extends ControllerTestConfig {
     @DisplayName("웹툰 상세 정보를 수정하고 수정된 결과를 반환할 수 있다.")
     void updateWebtoon() throws Exception {
         // given
-        given(jwtAuthenticationInterceptor.preHandle(any(), any(), any())).willReturn(true);
-
         Long webtoonId = Instancio.create(Long.class);
         WebtoonUpdateDetailRequest request = WebtoonFixtures.createWebtoonUpdateDetailRequest();
         Webtoon webtoon = WebtoonFixtures.createWebtoon(webtoonId);
@@ -93,6 +107,7 @@ class AdminWebtoonControllerTest extends ControllerTestConfig {
 
         // when, then
         mockMvc.perform(patch("/api/v1/admin/webtoons/{webtoonId}", webtoonId)
+                        .header(HttpHeaders.AUTHORIZATION, TOKEN)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(request))
                 )
@@ -108,6 +123,9 @@ class AdminWebtoonControllerTest extends ControllerTestConfig {
                         resourceDetails().tag("웹툰-관리자").description("웹툰 수정"),
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("액세스 토큰")
+                        ),
                         requestFields(
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("웹툰 제목"),
                                 fieldWithPath("artist").type(JsonFieldType.STRING).description("웹툰 작가"),
