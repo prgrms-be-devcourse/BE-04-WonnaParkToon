@@ -22,11 +22,12 @@ public class WebtoonQueryRepositoryImpl implements WebtoonQueryRepository {
 
     /**
      * 해당 요일의 웹툰 목록을 최신 에피소드 조회수를 기준으로 가져오기
+     *
      * @param publishDay 연재 요일
      * @return 최신 에피소드의 조회순으로 정렬된 해당 연재 요일의 웹툰 엔티티 리스트
      */
     @Override
-    public List<Webtoon> findWebtoonsByPublishDayInViewCount(DayOfWeek publishDay) {
+    public List<Webtoon> findWebtoonsByPublishDayOrderByLatestViewCount(DayOfWeek publishDay) {
         QEpisode episode1 = new QEpisode("episode1");
         QEpisode episode2 = new QEpisode("episode2");
         List<Webtoon> webtoons = jpaQueryFactory
@@ -41,7 +42,7 @@ public class WebtoonQueryRepositoryImpl implements WebtoonQueryRepository {
     }
 
     @Override
-    public List<Webtoon> findWebtoonsByPublishDayInPopularity(DayOfWeek publishDay) {
+    public List<Webtoon> findWebtoonsByPublishDayOrderByPopularity(DayOfWeek publishDay) {
         return jpaQueryFactory
                 .selectFrom(webtoon)
                 .innerJoin(episode).on(webtoon.id.eq(episode.webtoon.id))
