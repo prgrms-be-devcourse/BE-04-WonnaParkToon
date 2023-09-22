@@ -73,10 +73,8 @@ public class AdminWebtoonController {
     @Admin
     @DeleteMapping("/{webtoonId}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<LocalDateTime> deleteWebtoon(@PathVariable Long webtoonId) {
-        LocalDateTime deletedDateTime = adminWebtoonService.deleteWebtoon(webtoonId);
-
-        return ApiResponse.from(deletedDateTime);
+    public void deleteWebtoon(@PathVariable Long webtoonId) {
+        adminWebtoonService.deleteWebtoon(webtoonId);
     }
 
 }
