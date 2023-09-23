@@ -6,15 +6,22 @@ import com.wonnapark.wnpserver.webtoon.WebtoonFixtures;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonCreateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.request.WebtoonUpdateDetailRequest;
 import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonDetailResponse;
+import com.wonnapark.wnpserver.webtoon.dto.response.WebtoonThumbnailResponse;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
+
+import java.io.File;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
+import static org.instancio.Select.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -23,6 +30,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -31,6 +39,10 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -150,6 +162,49 @@ class AdminWebtoonControllerTest extends ControllerTestConfig {
                 ));
     }
 
+    @Test
+    @DisplayName("웹툰 썸네일 사진을 수정하고 수정된 URL을 반환할 수 있다.")
+    void updateWebtoonThumbnail() throws Exception {
+        // given
+        Long webtoonId = Instancio.create(Long.class);
+
+        byte[] content = "test_image".getBytes();
+        MockMultipartFile thumbnailMultipartFile = new MockMultipartFile("thumbnail", "thumbnail.jpg", "image/jpeg", content);
+        WebtoonThumbnailResponse expectedResponse = Instancio.of(WebtoonThumbnailResponse.class)
+                .generate(field(WebtoonThumbnailResponse::thumbnailUrl), gen -> gen.net().url().asString())
+                .create();
+        given(adminWebtoonService.updateWebtoonThumbnail(
+                any(File.class), anyLong()
+        )).willReturn(expectedResponse);
+
+        // when, then
+        mockMvc.perform(multipart("/api/v1/admin/webtoons/{webtoonId}/thumbnail", webtoonId)
+                        .file(thumbnailMultipartFile)
+                        .header(HttpHeaders.AUTHORIZATION, TOKEN)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .with(request -> {
+                            request.setMethod(HttpMethod.PATCH.toString());
+                            return request;
+                        })
+                ).andExpect(status().isOk())
+                .andDo(document("admin-webtoon-v1-patch-updateWebtoonThumbnail",
+                        resourceDetails().tag("웹툰-관리자").description("웹툰 썸네일 수정"),
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("액세스 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("webtoonId").description("웹툰 ID")
+                        ),
+                        requestParts(
+                                partWithName("thumbnail").description("웹툰 썸네일 파일")
+                        ),
+                        responseFields(
+                                fieldWithPath("data.thumbnailUrl").type(JsonFieldType.STRING).description("새로운 웹툰 썸네일")
+                        )));
+    }
+    
     @Test
     @DisplayName("웹툰을 삭제할 수 있다.")
     void deleteWebtoon() throws Exception {
