@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wonnapark.wnpserver.episode.QEpisode;
 import com.wonnapark.wnpserver.webtoon.Webtoon;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ public class WebtoonQueryRepositoryImpl implements WebtoonQueryRepository {
      * @return 최신 에피소드의 조회순으로 정렬된 해당 연재 요일의 웹툰 엔티티 리스트
      */
     @Override
+    @Cacheable(key = "#publishDay", value = "webtoonsByPublishDayOrderByViewCount")
     public List<Webtoon> findWebtoonsByPublishDayOrderByLatestViewCount(DayOfWeek publishDay) {
         QEpisode episode1 = new QEpisode("episode1");
         QEpisode episode2 = new QEpisode("episode2");
@@ -48,6 +50,7 @@ public class WebtoonQueryRepositoryImpl implements WebtoonQueryRepository {
      * @return 에피소드 조회수의 평균값 순으로 정렬된 해당 연재 요일의 웹툰 엔티티 리스트
      */
     @Override
+    @Cacheable(key = "#publishDay", value = "webtoonsByPublishDayOrderByPopularity")
     public List<Webtoon> findWebtoonsByPublishDayOrderByPopularity(DayOfWeek publishDay) {
         return jpaQueryFactory
                 .selectFrom(webtoon)
