@@ -16,10 +16,13 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -143,6 +146,28 @@ class AdminWebtoonControllerTest extends ControllerTestConfig {
                                 fieldWithPath("data.thumbnail").type(JsonFieldType.STRING).description("웹툰 썸네일"),
                                 fieldWithPath("data.ageRating").type(JsonFieldType.STRING).description("웹툰 연령 등급"),
                                 fieldWithPath("data.publishDays").type(JsonFieldType.ARRAY).description("웹툰 연재 요일")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("웹툰을 삭제할 수 있다.")
+    void deleteWebtoon() throws Exception {
+        // given
+        Webtoon webtoon = WebtoonFixtures.createWebtoon();
+        willDoNothing().given(adminWebtoonService).deleteWebtoon(anyLong());
+
+        // when, then
+        mockMvc.perform(delete("/api/v1/admin/webtoons/{webtoonId}", webtoon.getId())
+                        .header(HttpHeaders.AUTHORIZATION, TOKEN))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("admin-webtoon-v1-delete-deleteWebtoon",
+                        resourceDetails().tag("웹툰-관리자").description("웹툰 삭제"),
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("액세스 토큰")
                         )
                 ));
     }
