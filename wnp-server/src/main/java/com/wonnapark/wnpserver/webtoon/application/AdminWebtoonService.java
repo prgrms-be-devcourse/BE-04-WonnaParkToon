@@ -83,7 +83,7 @@ public class AdminWebtoonService {
                     @CacheEvict(value = "webtoonsByPublishDayOrderByPopularity", allEntries = true)
             }
     )
-    public LocalDateTime deleteWebtoon(Long webtoonId) {
+    public void deleteWebtoon(Long webtoonId) {
         Webtoon webtoon = webtoonRepository.findById(webtoonId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(WebtoonExceptionMessage.WEBTOON_NOT_FOUND.getMessage(), webtoonId)));
         webtoon.delete();
