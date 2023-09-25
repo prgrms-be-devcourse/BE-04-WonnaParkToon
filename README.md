@@ -63,15 +63,15 @@
 
 [Swagger](http://54.180.66.111/swagger-ui/index.html)
 
+## 고민
+
+[Notion](https://backend-devcourse.notion.site/46ba50c00d6a4fcdbcec1e00489224c1?v=a9f99b2e6b25437daaeb60859e4939db&pvs=4)
+
 ## 설계
 
 ### ERD
 
 ![image](https://github.com/Wonna-Park-Toon/server/assets/70051888/1b6121ce-d228-4923-9f80-0f1d82db533e)
-
-## 고민
-
-[Notion](https://backend-devcourse.notion.site/46ba50c00d6a4fcdbcec1e00489224c1?v=a9f99b2e6b25437daaeb60859e4939db&pvs=4)
 
 ### CI
 
