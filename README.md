@@ -14,14 +14,14 @@
 - CS 기반의 의사결정을 하자!
 
 ## 팀 규칙
-
 - 매일 코어타임(1시) 팀 스크럼 진행
     - 팀 스크럼 시
-        - Notion TO-DO 작성
+        - 매일 Notion TO-DO 작성
         - Github issue 작성
-        - 특이사항(잘 모르겠는 부분, 공부한 부분 ...) 공유
-        - 어떤 것을 했는지 공유
+        - 특이사항(어려운 부분, 고민되는 부분, 공부한 부분 ...) 공유
+        - 이전 스크럼부터 현 스크럼까지 한 일 공유
         - 코드 리뷰
+- 어떤 사소한 고민이라도 다 기록하기
 - 1일 1PR
 
 ## 기술 스택
@@ -64,8 +64,8 @@
 [Swagger](http://54.180.66.111/swagger-ui/index.html)
 
 ## 고민
-
-[Notion](https://backend-devcourse.notion.site/46ba50c00d6a4fcdbcec1e00489224c1?v=a9f99b2e6b25437daaeb60859e4939db&pvs=4)
+[도메인 분석](https://backend-devcourse.notion.site/dc07ca47b00246c6a32ddbc8e02d21f8?pvs=4)  
+[프로젝트 중 한 고민들](https://backend-devcourse.notion.site/46ba50c00d6a4fcdbcec1e00489224c1?v=a9f99b2e6b25437daaeb60859e4939db&pvs=4)
 
 ## 설계
 
